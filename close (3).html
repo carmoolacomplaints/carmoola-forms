@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complaint Closure Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root{--pink:#F90081;--pink-dark:#B8005F;--tint:#FFEAF4;--tint-soft:#FDF6FA;--ink:#1A1523;--muted:#6B6472;--line:#ECE7EF;--line-strong:#DCD5E2;--white:#FFF;--bg:#FFF4FA;--bg2:#FDECF5;--good:#12855B;--good-tint:#E7F5EF;--err:#C81E4E;--shadow:0 1px 2px rgba(26,21,35,.04),0 8px 30px rgba(26,21,35,.06);--radius:14px}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 340px,var(--bg) 340px);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;padding-bottom:140px}
+  .shell{max-width:760px;margin:0 auto;padding:26px 20px 40px}
+  .loading{max-width:760px;margin:0 auto;padding:80px 20px;text-align:center;color:var(--muted)}
+  .spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--pink);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .logo{height:28px;margin-bottom:22px;display:block}
+  .head{margin-bottom:18px}
+  .head h1{font-size:27px;font-weight:800;letter-spacing:-.02em;margin:0;color:var(--pink)}
+  .refsection{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:12px 16px;margin:14px 0 16px}
+  .refsection .refwrap{display:flex;align-items:center;gap:10px}
+  .refsection .refk{font-size:10.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .refsection .refv{font-size:16px;font-weight:700}
+  .returnbtn{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;border-radius:10px;padding:9px 15px;font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:.14s}
+  .returnbtn:hover{background:#000}
+  .returnbtn svg{flex:none}
+  .infobox{display:flex;gap:0;background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin:0 0 22px;overflow:hidden}
+  .infobox .cell{flex:1;padding:12px 16px;border-left:1px solid var(--line)}
+  .infobox .cell:first-child{border-left:0}
+  .infobox .k{font-size:10.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+  .infobox .v{font-size:14.5px;font-weight:600}
+  @media(max-width:560px){.infobox{flex-direction:column}.infobox .cell{border-left:0;border-top:1px solid var(--line)}.infobox .cell:first-child{border-top:0}}
+  .tabs{display:flex;gap:4px;background:#F3E3EE;padding:4px;border-radius:12px;margin-bottom:22px}
+  .tab{flex:1;border:0;background:transparent;cursor:pointer;font-family:inherit;font-size:14.5px;font-weight:600;color:var(--muted);padding:11px 12px;border-radius:9px;transition:.16s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .tab[aria-selected=true]{background:var(--white);color:var(--ink);box-shadow:var(--shadow)}
+  .tab:disabled{cursor:not-allowed;color:#B4AEBB}
+  .tab:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+  .panel{display:none}.panel.active{display:block}
+  .disabled-note{background:var(--white);border:1px dashed var(--line-strong);border-radius:var(--radius);padding:34px 26px;text-align:center;color:var(--muted);box-shadow:var(--shadow)}
+  .disabled-note .ico{width:44px;height:44px;border-radius:50%;background:#F1EDF4;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+  .disabled-note h3{margin:0 0 5px;color:var(--ink);font-size:16.5px;font-weight:700}.disabled-note p{margin:0;font-size:14px}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 20px 20px;margin-bottom:16px}
+  .card>.card-head{display:flex;align-items:center;gap:9px;padding:15px 0 4px}
+  .card-head .num{font-size:11px;font-weight:700;color:var(--pink);background:var(--tint);border-radius:6px;padding:3px 7px;letter-spacing:.04em}
+  .card-head h2{font-size:15px;font-weight:700;margin:0}
+  .field{padding:14px 0;border-top:1px solid var(--line)}.field:first-of-type{border-top:0}
+  .field.hiddenrow{display:none}
+  .field>label,.field>.lab{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;font-weight:600;margin-bottom:3px}
+  .req{color:var(--pink);font-weight:700}
+  .help{font-size:12.5px;color:var(--muted);margin:0 0 9px;max-width:62ch}
+  .pill{font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:3px 7px;border-radius:5px;line-height:1}
+  .pill.jira{background:var(--tint);color:var(--pink-dark)}.pill.auto{background:var(--good-tint);color:var(--good)}
+  input[type=text],select{width:100%;font-family:inherit;font-size:15px;color:var(--ink);background:var(--white);border:1.5px solid var(--line-strong);border-radius:10px;padding:11px 13px;transition:.14s}
+  select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6472' stroke-width='2.2' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;cursor:pointer}
+  input:focus,select:focus{outline:0;border-color:var(--pink);box-shadow:0 0 0 3px var(--tint)}
+  input:disabled,select:disabled{background:#F5F2F7;color:#A9A2B1;cursor:not-allowed}
+  .money{position:relative;display:flex;align-items:center}
+  .money .sym{position:absolute;left:13px;font-size:15px;font-weight:600;color:var(--muted);pointer-events:none;z-index:1}
+  .money input{padding-left:27px;font-variant-numeric:tabular-nums;font-weight:600}
+  .money input.zero{color:#A9A2B1;font-weight:500}
+  .calcbtn{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:1.5px solid var(--line-strong);background:var(--white);color:var(--pink-dark);font-family:inherit;font-size:12px;font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.14s;z-index:1}
+  .calcbtn:hover{border-color:var(--pink);background:var(--tint-soft)}
+  .money.hascalc input{padding-right:96px}
+  .vehtoggle{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:1.5px dashed var(--line-strong);background:var(--tint-soft);color:var(--pink-dark);font-family:inherit;font-size:13.5px;font-weight:600;border-radius:10px;padding:11px;cursor:pointer;transition:.14s;margin-top:4px}
+  .vehtoggle:hover{border-color:var(--pink)}
+  .subtotal{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:#fff;border-radius:12px;padding:15px 18px;margin-top:2px}
+  .subtotal .lbl{font-size:13.5px;font-weight:600;opacity:.85}
+  .subtotal .val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+  .readout{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--tint-soft);border:1px solid #F6D3E6;border-radius:10px;padding:12px 14px}
+  .readout .lbl{font-size:13.5px;font-weight:600;color:var(--pink-dark)}
+  .readout .val{font-size:15px;font-weight:700}.readout .val.none{color:var(--muted);font-weight:500}
+  .stageseg{display:flex;gap:6px}
+  .stageopt{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;border:1.5px solid var(--line-strong);border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);background:var(--white)}
+  .stageopt.active{border-color:var(--pink);background:var(--tint-soft);color:var(--pink-dark)}
+  .stageopt .tick{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-strong);flex:none;display:flex;align-items:center;justify-content:center}
+  .stageopt.active .tick{background:var(--pink);border-color:var(--pink)}
+  .stageopt.active .tick svg{display:block}.stageopt .tick svg{display:none}
+  .errbox{background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13.5px;display:none}
+  .errbox.show{display:block}.errbox ul{margin:6px 0 0;padding-left:18px}.errbox li{margin:2px 0}
+  .footer{position:fixed;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--line);box-shadow:0 -6px 24px rgba(26,21,35,.06);z-index:20}
+  .footer-inner{max-width:760px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+  .totals{display:flex;gap:16px;flex:1;align-items:center}
+  .tot{text-align:left}.tot .k{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block}
+  .tot .v{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .tot.grand{margin-left:auto;text-align:right}.tot.grand .k{color:var(--pink-dark)}.tot.grand .v{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+  .btn{font-family:inherit;font-size:15px;font-weight:700;color:#fff;background:var(--pink);border:0;border-radius:11px;padding:13px 22px;cursor:pointer;transition:.15s;white-space:nowrap;box-shadow:0 4px 14px rgba(249,0,129,.28)}
+  .btn:hover{background:var(--pink-dark)}.btn:disabled{opacity:.6;cursor:default}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  @media(max-width:680px){.footer-inner{flex-wrap:wrap;gap:12px}.totals{width:100%;flex-wrap:wrap;justify-content:space-between}.tot.grand{margin-left:0}.btn{width:100%}}
+  .overlay{position:fixed;inset:0;background:rgba(26,21,35,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+  .overlay.show{display:flex}
+  .modal{background:var(--white);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:470px;max-height:90vh;overflow:auto}
+  .modal-head{padding:18px 22px 12px;border-bottom:1px solid var(--line)}
+  .modal-head h3{margin:0;font-size:17px;font-weight:700}
+  .modal-head p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+  .modal-body{padding:14px 22px}
+  .calcrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+  .calcrow:first-child{border-top:0}
+  .calcrow .op{width:16px;font-size:17px;font-weight:700;text-align:center;flex:none}
+  .calcrow .op.plus{color:var(--err)}.calcrow .op.minus{color:var(--good)}
+  .calcrow .rl{flex:1}
+  .calcrow .rl .nm{font-size:13.5px;font-weight:600}
+  .calcrow .rl .hint{font-size:11.5px;color:var(--muted)}
+  .calcrow .in{width:130px;flex:none}
+  .calcrow.disabled{opacity:.5}
+  .calc-total{display:flex;align-items:center;justify-content:space-between;background:var(--tint-soft);border:1px solid #F6D3E6;border-radius:10px;padding:13px 15px;margin-top:14px}
+  .calc-total .l{font-size:14px;font-weight:700;color:var(--pink-dark)}
+  .calc-total .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+  .modal-foot{padding:14px 22px 20px;display:flex;gap:10px;justify-content:flex-end}
+  .btn-ghost{font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);background:transparent;border:1.5px solid var(--line-strong);border-radius:10px;padding:10px 16px;cursor:pointer}
+  .btn-ghost:hover{border-color:#C9BFD2}
+  .btn-sm{font-family:inherit;font-size:14px;font-weight:700;color:#fff;background:var(--pink);border:0;border-radius:10px;padding:10px 18px;cursor:pointer}
+  .btn-sm:hover{background:var(--pink-dark)}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading"><div class="spinner"></div>Loading complaint&hellip;</div>
+
+<div class="shell" id="shell" hidden>
+  <svg class="logo" viewBox="0 0 470 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Carmoola" fill="#F90081"><text x="0" y="62" font-family="'DM Sans',sans-serif" font-size="72" font-weight="800" letter-spacing="-1">carmoola</text></svg>
+
+  <div class="head"><h1 id="formTitle">Complaint Closure Form</h1></div>
+
+  <div class="refsection">
+    <div class="refwrap"><span class="refk">Complaint</span><span class="refv" id="refKey">&mdash;</span></div>
+    <a class="returnbtn" id="returnBtn" href="#"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v3"/></svg>Return to Complaint</a>
+  </div>
+
+  <div class="infobox">
+    <div class="cell"><div class="k">Customer</div><div class="v" id="ibCustomer">&mdash;</div></div>
+    <div class="cell"><div class="k">Complaint Type</div><div class="v" id="ibType">&mdash;</div></div>
+    <div class="cell"><div class="k">Received</div><div class="v" id="ibReceived">&mdash;</div></div>
+  </div>
+
+  <div class="errbox" id="errbox"></div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-internal" role="tab" aria-selected="true" aria-controls="panel-internal">Investigation</button>
+    <button class="tab" id="tab-fos" role="tab" aria-selected="false" aria-controls="panel-fos"><span>Financial Ombudsman</span><span id="fosLock" hidden>&#128274;</span></button>
+  </div>
+
+  <section class="panel active" id="panel-internal" role="tabpanel">
+    <div class="card">
+      <div class="card-head"><span class="num">Outcome</span><h2>How The Complaint Ended</h2></div>
+      <div class="field">
+        <label for="outcome">Complaint Outcome <span class="req">*</span></label>
+        <select id="outcome"><option value="">Select&hellip;</option><option>Upheld</option><option>Not Upheld</option><option>Withdrawn</option></select>
+      </div>
+      <div class="field">
+        <label for="rejection">What Happened To The Vehicle? <span class="req">*</span> <span class="pill auto" id="rejAutoPill" hidden>Auto-detected</span></label>
+        <select id="rejection"><option value="">Select&hellip;</option><option>Rejected to Broker</option><option>Rejected to Dealership</option><option>Sold at Auction</option><option>No Vehicle Rejection</option></select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="num">Costs</span><h2>What It Cost Carmoola</h2></div>
+      <div class="field"><label for="c_direct">Direct Compensation <span class="req">*</span> <span class="pill jira jhint" data-for="c_direct" hidden>Saved</span></label><p class="help">Money paid to the customer as compensation. Don't include refunding customer payments in an undo scenario.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_direct" class="cost" value="0"></div></div>
+      <div class="field"><label for="c_di">Distress &amp; Inconvenience <span class="req">*</span> <span class="pill jira jhint" data-for="c_di" hidden>Saved</span></label><p class="help">Compensation for non-financial impacts &mdash; distress, inconvenience, or goodwill gestures.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_di" class="cost" value="0"></div></div>
+
+      <div class="field veh"><label for="c_repair">Vehicle Repair Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_repair" hidden>Saved</span></label><p class="help">Expenses Carmoola has incurred repairing the vehicle.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_repair" class="cost" value="0"></div></div>
+      <div class="field veh" id="rejLossField"><label for="c_rejloss">Vehicle Rejection Loss <span class="req">*</span> <span class="pill jira jhint" data-for="c_rejloss" hidden>Saved</span> <span class="pill auto" id="rejLossCalcPill" hidden>Calculated</span></label><p class="help">The exact loss (or gain) to Carmoola when a vehicle is returned to a dealership or sold at auction. Use the calculator to work it out.</p><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_rejloss" class="cost" value="0"><button type="button" class="calcbtn" id="rejLossCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculator</button></div></div>
+      <div class="field veh"><label for="c_insp">Inspection, Storage Or Recovery Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_insp" hidden>Saved</span> <span class="pill auto" id="inspCalcPill" hidden>Calculated</span></label><p class="help">Including DEKRA inspections at &pound;160 each. Use the calculator to break it down.</p><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_insp" class="cost" value="0"><button type="button" class="calcbtn" id="inspCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculator</button></div></div>
+      <div class="field veh"><label for="c_courtesy">Courtesy Car &amp; Travel Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_courtesy" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_courtesy" class="cost" value="0"></div></div>
+
+      <div class="field" id="vehToggleRow"><button type="button" class="vehtoggle" id="vehToggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>Show vehicle issue costs</button></div>
+
+      <div class="field"><label for="c_other">Other Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_other" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_other" class="cost" value="0"></div></div>
+    </div>
+    <div class="subtotal"><span class="lbl">Investigation Cost</span><span class="val" id="internalTotal">&pound;0.00</span></div>
+  </section>
+
+  <section class="panel" id="panel-fos" role="tabpanel">
+    <div id="fosContent">
+      <div class="card">
+        <div class="card-head"><span class="num">Outcome</span><h2>FOS Outcome</h2></div>
+        <div class="field"><span class="lab">Current Stage</span>
+          <div class="stageseg" style="margin-top:6px">
+            <div class="stageopt" id="stageInv"><span class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>FOS Investigator</div>
+            <div class="stageopt" id="stageOmb"><span class="tick"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Ombudsman</div>
+          </div>
+        </div>
+        <div class="field"><label for="fosInvestigator">FOS Investigator Outcome <span class="req">*</span></label><select id="fosInvestigator"><option value="">Select&hellip;</option><option>Upheld</option><option>Not Upheld</option><option>Withdrawn</option></select></div>
+        <div class="field"><label for="fosOmbudsman">FOS Ombudsman Outcome <span class="req" id="ombReq" hidden>*</span></label><select id="fosOmbudsman" disabled><option value="">Select&hellip;</option><option>Upheld</option><option>Not Upheld</option><option>Withdrawn</option></select></div>
+        <div class="field"><div class="readout"><span class="lbl">Overall FOS Outcome</span><span class="val none" id="overallFos">&mdash;</span></div></div>
+        <div class="field hiddenrow" id="fosVehField"><label for="fosRejection">What Happened To The Vehicle? <span class="req">*</span></label><p class="help">Shown because the FOS outcome is upheld and the agreement may be unwound.</p><select id="fosRejection"><option value="">Select&hellip;</option><option>Rejected to Broker</option><option>Rejected to Dealership</option><option>Sold at Auction</option><option>No Vehicle Rejection</option></select></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="num">Costs</span><h2>FOS Costs</h2></div>
+        <div class="field"><label for="f_fee">FOS Case Fee <span class="req">*</span> <span class="pill jira jhint" data-for="f_fee" hidden>Saved</span></label><p class="help">Set by the Financial Ombudsman Service &mdash; read only.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_fee" class="fcost" value="0" disabled></div></div>
+        <div class="field"><label for="f_direct">FOS Direct Compensation <span class="req">*</span> <span class="pill jira jhint" data-for="f_direct" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_direct" class="fcost" value="0"></div></div>
+        <div class="field"><label for="f_di">FOS Distress &amp; Inconvenience <span class="req">*</span> <span class="pill jira jhint" data-for="f_di" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_di" class="fcost" value="0"></div></div>
+
+      <div class="field fveh"><label for="f_repair">FOS Repair Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_repair" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_repair" class="fcost" value="0"></div></div>
+      <div class="field fveh"><label for="f_rejloss">FOS Rejection Loss <span class="req">*</span> <span class="pill jira jhint" data-for="f_rejloss" hidden>Saved</span> <span class="pill auto" id="fosRejCalcPill" hidden>Calculated</span></label><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_rejloss" class="fcost" value="0"><button type="button" class="calcbtn" id="fosRejCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculator</button></div></div>
+      <div class="field fveh"><label for="f_insp">FOS Inspection, Storage Or Recovery Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_insp" hidden>Saved</span> <span class="pill auto" id="fosInspCalcPill" hidden>Calculated</span></label><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_insp" class="fcost" value="0"><button type="button" class="calcbtn" id="fosInspCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculator</button></div></div>
+      <div class="field fveh"><label for="f_courtesy">FOS Courtesy Car &amp; Travel Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_courtesy" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_courtesy" class="fcost" value="0"></div></div>
+
+      <div class="field" id="fvehToggleRow"><button type="button" class="vehtoggle" id="fvehToggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>Show vehicle issue costs</button></div>
+
+        <div class="field"><label for="f_other">FOS Other Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_other" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_other" class="fcost" value="0"></div></div>
+      </div>
+      <div class="subtotal"><span class="lbl">Total FOS Cost</span><span class="val" id="fosTotal">&pound;0.00</span></div>
+    </div>
+    <div class="disabled-note" id="fosDisabled" hidden>
+      <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A8391" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+      <h3>This complaint didn't go to the Ombudsman</h3><p>The Financial Ombudsman field is empty on this complaint, so there's nothing to record here.</p>
+    </div>
+  </section>
+</div>
+
+<div class="footer" id="footer" hidden><div class="footer-inner">
+  <div class="totals">
+    <div class="tot"><span class="k">Investigation</span><span class="v" id="ftInternal">&pound;0.00</span></div>
+    <div class="tot"><span class="k">FOS</span><span class="v" id="ftFos">&pound;0.00</span></div>
+    <div class="tot"><span class="k">Solicitor</span><span class="v" id="ftSol">&pound;0.00</span></div>
+    <div class="tot grand"><span class="k">Total Overall Cost</span><span class="v" id="ftOverall">&pound;0.00</span></div>
+  </div>
+  <button class="btn" id="saveBtn">Save Closure Details</button>
+</div></div>
+
+<!-- Rejection Loss calculators (shared markup, two instances via id prefix) -->
+<div class="overlay" id="rejOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head"><h3 id="rejCalcTitle">Vehicle Rejection Loss</h3><p>Work out the net loss (or gain) to Carmoola.</p></div>
+    <div class="modal-body">
+      <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Credit Amount</div><div class="hint">Purchase price &minus; deposit &minus; part exchange</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_credit" value="0"></div></div>
+      <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Money we kept. Must account for any interest we paid on returned payments.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0"></div></div>
+      <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Vehicle Proceeds Received</div><div class="hint">From auction / dealership</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_proceeds" value="0"></div></div>
+      <div class="calcrow" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Deposit refunded to the customer</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0"></div></div>
+      <div class="calc-total"><span class="l">Vehicle Rejection Loss</span><span class="v" id="rl_total">&pound;0.00</span></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="inspOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head"><h3 id="inspCalcTitle">Inspection, Storage or Recovery Costs</h3><p>Break down the costs. DEKRA inspections are &pound;160 each.</p></div>
+    <div class="modal-body">
+      <div class="calcrow"><span class="op" style="color:var(--muted)">#</span><div class="rl"><div class="nm">DEKRA Inspections</div><div class="hint">How many inspections were carried out</div></div><div class="in"><input type="text" inputmode="numeric" id="ik_dekra" value="0"></div></div>
+      <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Inspection Costs</div><div class="hint">Auto: DEKRA count &times; &pound;160</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="ik_insp" value="0" disabled></div></div>
+      <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Storage Costs</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="ik_storage" value="0"></div></div>
+      <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Recovery Costs</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="ik_recovery" value="0"></div></div>
+      <div class="calc-total"><span class="l">Inspection, Storage or Recovery</span><span class="v" id="ik_total">&pound;0.00</span></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" id="inspCancel">Cancel</button><button class="btn-sm" id="inspSave">Save</button></div>
+  </div>
+</div>
+
+<script>
+var API = "https://dpbwnmjqcbaebszwqgea.supabase.co/functions/v1/complaint-closure-form";
+var PREFILL = null;
+var gbp = new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'});
+var rejBreakdown={used:false}, dekraBreakdown={used:false}, fosRejBreakdown={used:false}, fosDekraBreakdown={used:false};
+var calcTarget = null; // which field a shared modal is editing
+
+function $(s){return document.querySelector(s)}
+function num(v){var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n}
+function getKey(){return new URLSearchParams(window.location.search).get('key')||''}
+function markZero(el){el.classList.toggle('zero',num(el.value)===0)}
+function attachMoney(el){markZero(el);el.addEventListener('input',function(){markZero(el);recompute()});el.addEventListener('blur',function(){el.value=String(num(el.value));markZero(el)})}
+function sumClass(c){var t=0;var els=document.querySelectorAll('.'+c);for(var i=0;i<els.length;i++)t+=num(els[i].value);return t}
+
+function recompute(){
+  var internal=sumClass('cost');
+  var fos=PREFILL.fosApplicable?sumClass('fcost'):0;
+  var sol=PREFILL.solicitor||0;
+  $('#internalTotal').textContent=gbp.format(internal);
+  $('#fosTotal').textContent=gbp.format(fos);
+  $('#ftInternal').textContent=gbp.format(internal);
+  $('#ftFos').textContent=gbp.format(fos);
+  $('#ftSol').textContent=gbp.format(sol);
+  $('#ftOverall').textContent=gbp.format(internal+fos+sol);
+}
+
+/* vehicle-cost visibility by complaint type */
+function initVehicleVisibility(){
+  var isVehicle = (PREFILL.complaintType||'').toLowerCase()==='vehicle issues';
+  function apply(sel,toggleRow,shown){
+    var rows=document.querySelectorAll(sel);
+    for(var i=0;i<rows.length;i++)rows[i].classList.toggle('hiddenrow',!shown);
+    if(toggleRow)toggleRow.classList.toggle('hiddenrow',shown||isVehicle?true:false);
+  }
+  if(isVehicle){
+    // always show, no toggle
+    apply('.veh',null,true);apply('.fveh',null,true);
+    $('#vehToggleRow').classList.add('hiddenrow');$('#fvehToggleRow').classList.add('hiddenrow');
+  } else {
+    // hidden by default, toggle present
+    apply('.veh',null,false);apply('.fveh',null,false);
+    $('#vehToggleRow').classList.remove('hiddenrow');$('#fvehToggleRow').classList.remove('hiddenrow');
+    function makeToggle(btn,cls,toggleRow){
+      var shown=false;
+      btn.addEventListener('click',function(){
+        shown=!shown;
+        var rows=document.querySelectorAll('.'+cls);
+        for(var i=0;i<rows.length;i++)rows[i].classList.toggle('hiddenrow',!shown);
+        btn.childNodes[btn.childNodes.length-1].nodeValue=shown?'Hide vehicle issue costs':'Show vehicle issue costs';
+        recompute();
+      });
+    }
+    makeToggle($('#vehToggle'),'veh');
+    makeToggle($('#fvehToggle'),'fveh');
+  }
+}
+
+function initRejection(){
+  var sel=$('#rejection'),rejLossField=$('#rejLossField'),loss=$('#c_rejloss'),btn=$('#rejLossCalcBtn');
+  function sync(){
+    var v=sel.value;var isReject=(v==='Rejected to Broker'||v==='Rejected to Dealership'||v==='Sold at Auction');
+    loss.disabled=!isReject;btn.disabled=!isReject;rejLossField.style.opacity=isReject?'1':'.55';
+    if(!isReject){loss.value='0';markZero(loss);rejBreakdown={used:false};$('#rejLossCalcPill').hidden=true;}
+    recompute();
+  }
+  sel.addEventListener('change',sync);return sync;
+}
+function initFos(){
+  var omb=$('#fosOmbudsman'),inv=$('#fosInvestigator'),overall=$('#overallFos');
+  var ombStage=PREFILL.fosStage==='ombudsman';
+  $('#stageInv').classList.toggle('active',!ombStage);
+  $('#stageOmb').classList.toggle('active',ombStage);
+  omb.disabled=!ombStage;$('#ombReq').hidden=!ombStage;
+  function sync(){
+    var result=(ombStage&&omb.value)?omb.value:inv.value;
+    overall.textContent=result||'\u2014';overall.classList.toggle('none',!result);
+    // FOS vehicle question only when overall FOS outcome is Upheld
+    var upheld=(result==='Upheld');
+    $('#fosVehField').classList.toggle('hiddenrow',!upheld);
+    if(!upheld)$('#fosRejection').value='';
+  }
+  omb.addEventListener('change',sync);inv.addEventListener('change',sync);return sync;
+}
+function gateFos(){
+  var tab=$('#tab-fos');
+  if(PREFILL.fosApplicable){$('#fosContent').hidden=false;$('#fosDisabled').hidden=true;$('#fosLock').hidden=true;tab.disabled=false;}
+  else{$('#fosContent').hidden=true;$('#fosDisabled').hidden=false;$('#fosLock').hidden=false;tab.disabled=true;}
+}
+function selectTab(id){
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var target=document.getElementById(id);
+  for(var j=0;j<tabs.length;j++)tabs[j].setAttribute('aria-selected',tabs[j]===target);
+  var panels=document.querySelectorAll('.panel');
+  for(var k=0;k<panels.length;k++)panels[k].classList.toggle('active',panels[k].id===target.getAttribute('aria-controls'));
+}
+function initTabs(){
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  for(var i=0;i<tabs.length;i++){(function(t){t.addEventListener('click',function(){if(t.disabled)return;selectTab(t.id);})})(tabs[i]);}
+}
+function setMoney(id,val){var el=document.getElementById(id);if(el){el.value=String(val||0);markZero(el);}}
+function jiraTag(id){var p=document.querySelector('.jhint[data-for="'+id+'"]');if(p)p.hidden=false;}
+
+/* ---- shared rejection-loss calculator (target: investigation or fos) ---- */
+function openRejCalc(which){
+  calcTarget=which;
+  var overlay=$('#rejOverlay');
+  var bd = which==='fos'?fosRejBreakdown:rejBreakdown;
+  var seededCredit=Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0));
+  $('#rl_credit').value=String(bd.used?bd.creditAmount:seededCredit);
+  $('#rl_retained').value=String(bd.used?bd.retainedPayments:0);
+  $('#rl_proceeds').value=String(bd.used?bd.vehicleProceeds:(PREFILL.suspenseTotal||0));
+  var dep=$('#rl_deposit'),depRow=$('#rl_depositRow');
+  if(PREFILL.deposit===0){depRow.classList.add('disabled');dep.disabled=true;dep.value='0';$('#rl_depositHint').textContent='Deposit was £0 on the loan';}
+  else{depRow.classList.remove('disabled');dep.disabled=false;dep.value=String(bd.used?bd.depositPaidOut:0);$('#rl_depositHint').textContent='Deposit refunded to the customer';}
+  $('#rejCalcTitle').textContent=which==='fos'?'FOS Rejection Loss':'Vehicle Rejection Loss';
+  rejCalcCompute();overlay.classList.add('show');
+}
+function rejCalcCompute(){
+  var t=num($('#rl_credit').value)-num($('#rl_retained').value)-num($('#rl_proceeds').value)+num($('#rl_deposit').value);
+  $('#rl_total').textContent=gbp.format(t);return t;
+}
+function initRejCalc(){
+  ['rl_credit','rl_retained','rl_proceeds','rl_deposit'].forEach(function(id){document.getElementById(id).addEventListener('input',rejCalcCompute)});
+  $('#rejLossCalcBtn').addEventListener('click',function(){openRejCalc('inv')});
+  $('#fosRejCalcBtn').addEventListener('click',function(){openRejCalc('fos')});
+  $('#rejCancel').addEventListener('click',function(){$('#rejOverlay').classList.remove('show')});
+  $('#rejOverlay').addEventListener('click',function(e){if(e.target===$('#rejOverlay'))$('#rejOverlay').classList.remove('show')});
+  $('#rejSave').addEventListener('click',function(){
+    var t=rejCalcCompute();
+    var bd={used:true,creditAmount:num($('#rl_credit').value),retainedPayments:num($('#rl_retained').value),vehicleProceeds:num($('#rl_proceeds').value),depositPaidOut:num($('#rl_deposit').value),total:t};
+    if(calcTarget==='fos'){fosRejBreakdown=bd;setMoney('f_rejloss',t);$('#fosRejCalcPill').hidden=false;}
+    else{rejBreakdown=bd;setMoney('c_rejloss',t);$('#rejLossCalcPill').hidden=false;}
+    $('#rejOverlay').classList.remove('show');recompute();
+  });
+}
+
+/* ---- shared DEKRA calculator ---- */
+function openInspCalc(which){
+  calcTarget=which;
+  var bd = which==='fos'?fosDekraBreakdown:dekraBreakdown;
+  $('#ik_dekra').value=String(bd.used?bd.dekraCount:(PREFILL.dekraDefault||0));
+  $('#ik_storage').value=String(bd.used?bd.storageCosts:0);
+  $('#ik_recovery').value=String(bd.used?bd.recoveryCosts:0);
+  $('#inspCalcTitle').textContent=which==='fos'?'FOS Inspection, Storage or Recovery Costs':'Inspection, Storage or Recovery Costs';
+  inspCalcCompute();$('#inspOverlay').classList.add('show');
+}
+function inspCalcCompute(){
+  var n=Math.max(0,Math.floor(num($('#ik_dekra').value)));
+  var inspCost=n*160;$('#ik_insp').value=String(inspCost);markZero($('#ik_insp'));
+  var t=inspCost+num($('#ik_storage').value)+num($('#ik_recovery').value);
+  $('#ik_total').textContent=gbp.format(t);return {t:t,n:n,inspCost:inspCost};
+}
+function initInspCalc(){
+  ['ik_dekra','ik_storage','ik_recovery'].forEach(function(id){document.getElementById(id).addEventListener('input',inspCalcCompute)});
+  $('#inspCalcBtn').addEventListener('click',function(){openInspCalc('inv')});
+  $('#fosInspCalcBtn').addEventListener('click',function(){openInspCalc('fos')});
+  $('#inspCancel').addEventListener('click',function(){$('#inspOverlay').classList.remove('show')});
+  $('#inspOverlay').addEventListener('click',function(e){if(e.target===$('#inspOverlay'))$('#inspOverlay').classList.remove('show')});
+  $('#inspSave').addEventListener('click',function(){
+    var r=inspCalcCompute();
+    var bd={used:true,dekraCount:r.n,inspectionCosts:r.inspCost,storageCosts:num($('#ik_storage').value),recoveryCosts:num($('#ik_recovery').value),total:r.t};
+    if(calcTarget==='fos'){fosDekraBreakdown=bd;setMoney('f_insp',r.t);$('#fosInspCalcPill').hidden=false;}
+    else{dekraBreakdown=bd;setMoney('c_insp',r.t);$('#inspCalcPill').hidden=false;}
+    $('#inspOverlay').classList.remove('show');recompute();
+  });
+}
+
+function applyPrefill(){
+  $('#formTitle').textContent='Complaint Closure Form';
+  document.title=PREFILL.issueKey+' — Complaint Closure Form';
+  $('#refKey').textContent=PREFILL.issueKey;
+  $('#returnBtn').href=PREFILL.jiraUrl;
+  $('#ibCustomer').textContent=PREFILL.customerName;
+  $('#ibType').textContent=PREFILL.complaintType;
+  $('#ibReceived').textContent=PREFILL.receivedDate||'\u2014';
+  if(PREFILL.outcome)$('#outcome').value=PREFILL.outcome;
+
+  var im=PREFILL.internal;
+  var map={c_direct:'customfield_10164',c_di:'customfield_10165',c_repair:'customfield_10281',c_rejloss:'customfield_10282',c_insp:'customfield_10283',c_courtesy:'customfield_11192',c_other:'customfield_10284'};
+  for(var id in map){if(im[map[id]]){setMoney(id,im[map[id]]);jiraTag(id);}}
+
+  var rej=PREFILL.rejectionOutcome||[];
+  if(rej.length){$('#rejection').value=rej[0];}
+  else if(PREFILL.detectedAuction){$('#rejection').value='Sold at Auction';$('#rejAutoPill').hidden=false;}
+
+  if(PREFILL.fosApplicable){
+    var fm=PREFILL.fos;
+    if(fm.investigator)$('#fosInvestigator').value=fm.investigator;
+    if(fm.ombudsman)$('#fosOmbudsman').value=fm.ombudsman;
+    var fmap={f_fee:'customfield_10289',f_direct:'customfield_11555',f_di:'customfield_11556',f_repair:'customfield_11557',f_rejloss:'customfield_11558',f_insp:'customfield_11559',f_courtesy:'customfield_11560',f_other:'customfield_11561'};
+    for(var fid in fmap){if(fm.costs[fmap[fid]]){setMoney(fid,fm.costs[fmap[fid]]);jiraTag(fid);}}
+  }
+}
+
+function collectAndValidate(){
+  var errors=[];
+  var outcome=$('#outcome').value;
+  if(!outcome)errors.push('Complaint outcome is required.');
+  var rejection=$('#rejection').value;
+  if(!rejection)errors.push('Select what happened to the vehicle.');
+  function costVal(id,label){var el=document.getElementById(id);if(el.disabled)return num(el.value);if(el.value===''){errors.push(label+' is required (enter 0 if none).');return 0;}return num(el.value);}
+  var internal={
+    customfield_10164:costVal('c_direct','Direct compensation'),customfield_10165:costVal('c_di','Distress & inconvenience'),
+    customfield_10281:costVal('c_repair','Vehicle repair costs'),customfield_10282:costVal('c_rejloss','Vehicle rejection loss'),
+    customfield_10283:costVal('c_insp','Inspection, storage or recovery'),customfield_11192:costVal('c_courtesy','Courtesy car & travel'),
+    customfield_10284:costVal('c_other','Other costs')
+  };
+  var payload={issueKey:PREFILL.issueKey,outcome:outcome,rejectionOutcome:rejection,internal:internal,solicitor:PREFILL.solicitor||0,fosApplicable:PREFILL.fosApplicable,fosStage:PREFILL.fosStage,rejectionLossBreakdown:rejBreakdown,dekraBreakdown:dekraBreakdown,fosRejectionLossBreakdown:fosRejBreakdown,fosDekraBreakdown:fosDekraBreakdown};
+  if(PREFILL.fosApplicable){
+    var inv=$('#fosInvestigator').value,omb=$('#fosOmbudsman').value;
+    if(!inv)errors.push('FOS investigator outcome is required.');
+    if(PREFILL.fosStage==='ombudsman'&&!omb)errors.push('FOS ombudsman outcome is required.');
+    var fcosts={
+      customfield_10289:costVal('f_fee','FOS case fee'),customfield_11555:costVal('f_direct','FOS direct compensation'),
+      customfield_11556:costVal('f_di','FOS distress & inconvenience'),customfield_11557:costVal('f_repair','FOS repair costs'),
+      customfield_11558:costVal('f_rejloss','FOS rejection loss'),customfield_11559:costVal('f_insp','FOS inspection, storage or recovery'),
+      customfield_11560:costVal('f_courtesy','FOS courtesy car & travel'),customfield_11561:costVal('f_other','FOS other costs')
+    };
+    payload.fos={investigator:inv,ombudsman:omb,costs:fcosts};
+    // FOS vehicle question when upheld
+    var overall=$('#overallFos').textContent;
+    if(overall==='Upheld'){var fv=$('#fosRejection').value;if(!fv)errors.push('FOS: select what happened to the vehicle.');payload.fosVehicleOutcome=fv;}
+  }
+  return {payload:payload,errors:errors};
+}
+function showErrors(list){
+  var box=$('#errbox');
+  if(!list.length){box.classList.remove('show');box.innerHTML='';return;}
+  var html='<b>Please fix the following:</b><ul>';for(var i=0;i<list.length;i++)html+='<li>'+list[i]+'</li>';html+='</ul>';
+  box.innerHTML=html;box.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});
+}
+function initSubmit(){
+  $('#saveBtn').addEventListener('click',function(){
+    var res=collectAndValidate();
+    if(res.errors.length){showErrors(res.errors);return;}
+    showErrors([]);
+    var btn=$('#saveBtn');btn.disabled=true;btn.textContent='Saving\u2026';
+    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)})
+      .then(function(r){return r.json()})
+      .then(function(d){
+        if(d.ok){btn.textContent='Saved \u2713';window.location.href=d.redirect;}
+        else{showErrors(d.errors||['Something went wrong saving. Please try again.']);btn.disabled=false;btn.textContent='Save Closure Details';}
+      })
+      .catch(function(){showErrors(['Network error saving. Please try again.']);btn.disabled=false;btn.textContent='Save Closure Details';});
+  });
+}
+
+function boot(){
+  var key=getKey();
+  if(!key){$('#loading').textContent='No complaint key in the link.';return;}
+  fetch(API+'?key='+encodeURIComponent(key))
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(!d.ok){$('#loading').textContent=(d.errors&&d.errors[0])||'Could not load this complaint.';return;}
+      PREFILL=d.prefill;
+      $('#loading').hidden=true;$('#shell').hidden=false;$('#footer').hidden=false;
+      var moneyEls=document.querySelectorAll('.cost,.fcost,.in input');for(var mi=0;mi<moneyEls.length;mi++)attachMoney(moneyEls[mi]);
+      gateFos();initTabs();initVehicleVisibility();
+      var syncRej=initRejection();var syncFos=initFos();
+      initRejCalc();initInspCalc();
+      applyPrefill();syncRej();syncFos();recompute();initSubmit();
+      // default to FOS tab when applicable
+      if(PREFILL.fosApplicable)selectTab('tab-fos');
+    })
+    .catch(function(){$('#loading').textContent='Network error loading the complaint.';});
+}
+boot();
+</script>
+</body>
+</html>
