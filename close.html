@@ -119,6 +119,20 @@
   .stepper button:active{background:#F6C9E0}
   .stepper .val{flex:1;text-align:center;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);user-select:none}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* Running Costs editor + contextual breakdowns */
+  .rc-headrow{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .rc-summary{display:flex;align-items:baseline;gap:8px}.rc-summary .k{font-size:12px;color:var(--muted);font-weight:600}.rc-summary .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+  .rc-action{display:inline-flex;align-items:center;gap:7px;border:0;background:var(--pink);color:#fff;font-family:inherit;font-size:13.5px;font-weight:700;border-radius:9px;padding:9px 14px;cursor:pointer;box-shadow:0 3px 10px rgba(249,0,129,.18)}
+  .rc-action:hover{background:var(--pink-dark)}
+  .rc-list{margin-top:12px;border:1px solid var(--line);border-radius:10px;overflow:hidden}.rc-list table{width:100%;border-collapse:collapse;font-size:13px}.rc-list th{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left;background:var(--tint-soft);padding:8px 10px}.rc-list td{padding:9px 10px;border-top:1px solid var(--line)}.rc-list th:last-child,.rc-list td:last-child{text-align:right}.rc-type{font-size:11px;font-weight:700;color:var(--pink-dark);background:var(--tint);padding:2px 6px;border-radius:5px;white-space:nowrap}.rc-type.uncat{color:var(--muted);background:#F1EDF4}
+  .rc-empty{font-size:13px;color:var(--muted);padding:12px 0 2px}
+  details.rcmini{margin-top:8px;border:1px solid var(--line);border-radius:8px;background:var(--tint-soft);overflow:hidden}details.rcmini summary{list-style:none;cursor:pointer;padding:7px 10px;font-size:11.5px;font-weight:700;color:var(--pink-dark);display:flex;align-items:center;justify-content:space-between;gap:8px}details.rcmini summary::-webkit-details-marker{display:none}details.rcmini summary:after{content:'▾';font-size:11px;color:var(--muted)}details.rcmini[open] summary:after{content:'▴'}
+  .rcmini-body{border-top:1px solid #F6D3E6;padding:6px 9px 8px}.rcmini table{width:100%;border-collapse:collapse;font-size:11.5px}.rcmini td{padding:5px 3px;border-top:1px solid var(--line)}.rcmini tr:first-child td{border-top:0}.rcmini td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}.rcmini-total{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #F6D3E6;margin-top:4px;padding:7px 3px 1px;font-size:11.5px;font-weight:700}
+  .rc-editor-head{display:grid;grid-template-columns:minmax(0,1.5fr) 120px minmax(150px,1fr) 32px;gap:8px;padding:0 0 6px;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.rc-edit-row{display:grid;grid-template-columns:minmax(0,1.5fr) 120px minmax(150px,1fr) 32px;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}.rc-edit-row input,.rc-edit-row select{font-size:13px;padding:9px 10px}.rc-edit-row .money input{padding-left:25px}.rc-del{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;border-radius:6px}.rc-del:hover{background:#F5F1F6;color:var(--err)}
+  .rc-editor-error{display:none;background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:8px;padding:9px 11px;font-size:12.5px;margin-bottom:10px}.rc-editor-error.show{display:block}
+  .warnbox{background:#FFF3D6;border:1px solid #F0D48A;color:#6F5100;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.5}.warnbox strong{color:#5B4100}
+  @media(max-width:620px){.rc-editor-head{display:none}.rc-edit-row{grid-template-columns:1fr 105px 32px}.rc-edit-row select{grid-column:1 / span 2}.rc-edit-row .rc-del{grid-column:3;grid-row:1 / span 2}.rc-list .typecol{display:none}}
 </style>
 </head>
 <body>
@@ -172,14 +186,19 @@
         <div id="mainMismatch" style="display:none;background:#FFF3D6;border:1px solid #F0D48A;color:#7A5A00;border-radius:10px;padding:10px 12px;margin-top:9px;font-size:12.5px;font-weight:600"></div>
       </div>
     </div>
+    <div class="card" id="runningCostsCard">
+      <div class="card-head"><span class="num">Running</span><h2>Running Costs</h2></div>
+      <div class="field">
+        <p class="help">Track running costs against this complaint. These are for reference only and do not change the closure cost fields below.</p>
+        <div class="rc-headrow">
+          <div class="rc-summary"><span class="k">Current total</span><span class="v" id="runningTotal">&pound;0.00</span></div>
+          <button type="button" class="rc-action" id="runningEditBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span id="runningEditLabel">Add Running Cost</span></button>
+        </div>
+        <div id="runningList"></div>
+      </div>
+    </div>
     <div class="card">
       <div class="card-head"><span class="num">Costs</span><h2>What It Cost Carmoola</h2></div>
-      <div class="field">
-        <button type="button" class="vehtoggle" id="runningBtn" style="margin-top:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 11h6M9 15h4"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg><span id="runningBtnLabel">Show Running Costs</span></button>
-        <div id="runningPanel" style="display:none;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden">
-          <table id="runningTable" style="width:100%;border-collapse:collapse;font-size:13.5px"></table>
-        </div>
-      </div>
       <div class="field"><label for="c_direct">Direct Compensation <span class="req">*</span> <span class="pill jira jhint" data-for="c_direct" hidden>Saved</span></label><p class="help">Money paid to the customer as compensation. Don't include refunding customer payments in an undo scenario.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_direct" class="cost" value="0"></div></div>
       <div class="field"><label for="c_di">Distress &amp; Inconvenience <span class="req">*</span> <span class="pill jira jhint" data-for="c_di" hidden>Saved</span></label><p class="help">Compensation for non-financial impacts such as distress, inconvenience, or goodwill gestures.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_di" class="cost" value="0"></div></div>
 
@@ -287,12 +306,39 @@
   </div>
 </div>
 
+<div class="overlay" id="runningOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="runningModalTitle" style="max-width:720px">
+    <div class="modal-head"><h3 id="runningModalTitle">Running Costs</h3><p>Add, remove or categorise running costs. Uncategorized legacy items can be left as they are or assigned a type.</p></div>
+    <div class="modal-body">
+      <div class="rc-editor-error" id="rcEditorError"></div>
+      <div class="rc-editor-head"><span>Description</span><span>Amount</span><span>Cost type</span><span></span></div>
+      <div id="rc_rows"></div>
+      <button type="button" class="vehtoggle" id="rc_add" style="margin-top:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Running Cost</button>
+      <div class="calc-total"><span class="l">Running Costs Total</span><span class="v" id="rc_total">&pound;0.00</span></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" id="runningCancel">Cancel</button><button class="btn-sm" id="runningSave">Save Changes</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="runningOnlyOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="runningOnlyTitle">
+    <div class="modal-head"><h3 id="runningOnlyTitle">Closure details are incomplete</h3><p>Your Running Costs have changed, but the closure form still has required fields to complete.</p></div>
+    <div class="modal-body">
+      <div class="warnbox"><strong>Save Running Costs only?</strong><br>Only the Running Costs field will be updated in Jira. No other values from this form will be saved, even if you have filled them in. After saving, you will leave this form and any other unsaved work will be lost.</div>
+      <div class="rc-editor-error" id="runningOnlyError" style="margin-top:10px"></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" id="runningOnlyReturn">Return to Form</button><button class="btn-sm" id="runningOnlySave">Save Running Costs Only</button></div>
+  </div>
+</div>
+
 <script>
 var API = "https://dpbwnmjqcbaebszwqgea.supabase.co/functions/v1/complaint-closure-form";
 var PREFILL = null;
 var gbp = new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'});
 var rejBreakdown={used:false}, dekraBreakdown={used:false}, fosRejBreakdown={used:false}, fosDekraBreakdown={used:false};
 var otherBreakdown={used:false,rows:[]}, fosOtherBreakdown={used:false,rows:[]};
+var RUNNING_TYPES=['Direct Compensation','Distress & Inconvenience','Vehicle Repair Costs','Vehicle Rejection Loss','DEKRA','Other Inspection Costs','Storage Costs','Recovery Costs','Courtesy Car & Travel Costs','Other Costs'];
+var runningCostsRows=[], runningCostsInitial='[]', runningCostsDirty=false, pendingValidationErrors=[];
 
 // After a calculator writes a value, unlock the field for manual override and
 // flag it with the "Manually overridden" pill if the user then edits it by hand.
@@ -665,40 +711,106 @@ function restoreSavedBreakdowns(){
   }
 }
 
-function initRunningCosts(){
-  var btn=$('#runningBtn'),label=$('#runningBtnLabel'),panel=$('#runningPanel'),table=$('#runningTable');
-  var raw=(PREFILL.runningCosts||'').trim();
-  if(!raw){
-    // empty state: greyed, non-clickable, clear message
-    btn.disabled=true;
-    btn.style.opacity='.55';btn.style.cursor='not-allowed';
-    label.textContent='No Running Costs recorded';
-    return;
-  }
-  // parse lines into {label, amount, isTotal}
-  var lines=raw.split('\n').map(function(l){return l.trim()}).filter(Boolean);
-  var rowsHtml='';
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function parseRunningCosts(raw){
+  var out=[];var lines=String(raw||'').split('\n').map(function(l){return l.trim()}).filter(Boolean);
   lines.forEach(function(ln){
-    var isTotal=/^total\b/i.test(ln);
-    // split "Label - 200.0" or "Total: 360" -> [label, amount]
-    var m=ln.match(/^(.*?)[\s]*[-:][\s]*£?\s*([\d,]+(?:\.\d+)?)\s*$/);
-    var lbl, amt;
-    if(m){ lbl=m[1].trim(); amt=num(m[2]); }
-    else { lbl=ln; amt=null; }
-    var amtCell = amt!=null ? gbp.format(amt) : '';
-    var weight = isTotal?'700':'500';
-    var bg = isTotal?'background:var(--tint-soft);':'';
-    rowsHtml += '<tr style="border-top:1px solid var(--line);'+bg+'">'
-      + '<td style="padding:9px 13px;font-weight:'+weight+'">'+lbl.replace(/</g,'&lt;')+'</td>'
-      + '<td style="padding:9px 13px;text-align:right;font-variant-numeric:tabular-nums;font-weight:'+weight+'">'+amtCell+'</td>'
-      + '</tr>';
+    if(/^running costs$/i.test(ln)||/^total\b/i.test(ln))return;
+    var m=ln.match(/^(.*?)\s*[-:]\s*£?\s*(-?[\d,]+(?:\.\d+)?)\s*$/);
+    if(!m)return;
+    var label=m[1].trim(),type='Uncategorised';
+    var tm=label.match(/^(.*?)\s*\[([^\]]+)\]\s*$/)||label.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+    if(tm){
+      var candidate=tm[2].trim();
+      if(RUNNING_TYPES.indexOf(candidate)!==-1){label=tm[1].trim();type=candidate;}
+    }
+    out.push({desc:label||'Item',amount:num(m[2]),type:type});
   });
-  table.innerHTML=rowsHtml;
-  var open=false;
-  btn.addEventListener('click',function(){
-    open=!open;
-    panel.style.display=open?'block':'none';
-    label.textContent=open?'Hide Running Costs':'Show Running Costs';
+  return out;
+}
+function normaliseRunningRows(rows){
+  return (rows||[]).map(function(r){return {desc:String(r.desc||'').trim(),amount:num(r.amount),type:RUNNING_TYPES.indexOf(r.type)!==-1?r.type:'Uncategorised'};}).filter(function(r){return r.desc!==''||r.amount!==0;});
+}
+function runningRowsKey(rows){return JSON.stringify(normaliseRunningRows(rows));}
+function runningTotal(rows){return normaliseRunningRows(rows).reduce(function(a,r){return a+num(r.amount)},0);}
+function rcTypeBadge(type){var u=type==='Uncategorised';return '<span class="rc-type'+(u?' uncat':'')+'">'+esc(type)+'</span>';}
+function renderRunningMain(){
+  var rows=normaliseRunningRows(runningCostsRows),total=runningTotal(rows);
+  $('#runningTotal').textContent=gbp.format(total);
+  $('#runningEditLabel').textContent=rows.length?'Edit Running Costs':'Add Running Cost';
+  var box=$('#runningList');
+  if(!rows.length){box.className='rc-empty';box.innerHTML='No running costs recorded.';return;}
+  box.className='rc-list';
+  var h='<table><thead><tr><th>Description</th><th class="typecol">Cost type</th><th>Amount</th></tr></thead><tbody>';
+  rows.forEach(function(r){h+='<tr><td>'+esc(r.desc)+'</td><td class="typecol">'+rcTypeBadge(r.type)+'</td><td>'+gbp.format(r.amount)+'</td></tr>';});
+  h+='</tbody></table>';box.innerHTML=h;
+}
+function renderRunningMini(){
+  var map={
+    c_direct:['Direct Compensation'],
+    c_di:['Distress & Inconvenience'],
+    c_repair:['Vehicle Repair Costs'],
+    c_rejloss:['Vehicle Rejection Loss'],
+    c_insp:['DEKRA','Other Inspection Costs','Storage Costs','Recovery Costs'],
+    c_courtesy:['Courtesy Car & Travel Costs'],
+    c_other:['Other Costs']
+  };
+  Object.keys(map).forEach(function(id){
+    var input=document.getElementById(id);if(!input)return;var field=input.closest('.field');if(!field)return;
+    var old=field.querySelector('details.rcmini');if(old)old.parentNode.removeChild(old);
+    var types=map[id],rows=normaliseRunningRows(runningCostsRows).filter(function(r){return types.indexOf(r.type)!==-1;});
+    if(!rows.length)return;
+    var total=runningTotal(rows);var d=document.createElement('details');d.className='rcmini';
+    var summary=document.createElement('summary');summary.innerHTML='<span>Running costs ('+rows.length+')</span><span>'+gbp.format(total)+'</span>';d.appendChild(summary);
+    var body=document.createElement('div');body.className='rcmini-body';var h='<table>';
+    rows.forEach(function(r){h+='<tr><td>'+esc(r.desc)+(id==='c_insp'?' <span style="color:var(--muted)">· '+esc(r.type)+'</span>':'')+'</td><td>'+gbp.format(r.amount)+'</td></tr>';});
+    h+='</table><div class="rcmini-total"><span>Total running costs</span><span>'+gbp.format(total)+'</span></div>';body.innerHTML=h;d.appendChild(body);field.appendChild(d);
+  });
+}
+function rcOptions(selected){
+  var opts=['Uncategorised'].concat(RUNNING_TYPES),h='';
+  opts.forEach(function(v){h+='<option value="'+esc(v)+'"'+(v===selected?' selected':'')+'>'+esc(v)+'</option>';});return h;
+}
+function rcEditorCompute(){
+  var t=0;document.querySelectorAll('#rc_rows .rc-edit-row').forEach(function(row){t+=num(row.querySelector('.rc_amt').value)});$('#rc_total').textContent=gbp.format(t);return t;
+}
+function rcEditorRow(r){
+  r=r||{desc:'',amount:0,type:'Uncategorised'};var wrap=document.createElement('div');wrap.className='rc-edit-row';
+  wrap.innerHTML='<input type="text" class="rc_desc" placeholder="Description" value="'+esc(r.desc)+'">'
+    +'<div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" class="rc_amt" value="'+esc(r.amount!=null?r.amount:0)+'"></div>'
+    +'<select class="rc_type">'+rcOptions(r.type||'Uncategorised')+'</select>'
+    +'<button type="button" class="rc-del" aria-label="Remove running cost">&times;</button>';
+  wrap.querySelector('.rc_amt').addEventListener('input',rcEditorCompute);
+  wrap.querySelector('.rc-del').addEventListener('click',function(){wrap.parentNode.removeChild(wrap);rcEditorCompute();});
+  return wrap;
+}
+function openRunningEditor(){
+  var box=$('#rc_rows');box.innerHTML='';var rows=normaliseRunningRows(runningCostsRows);if(!rows.length)rows=[{desc:'',amount:0,type:'Uncategorised'}];
+  rows.forEach(function(r){box.appendChild(rcEditorRow(r))});$('#rcEditorError').classList.remove('show');$('#rcEditorError').textContent='';rcEditorCompute();$('#runningOverlay').classList.add('show');
+}
+function collectRunningEditor(){
+  var rows=[],error='';document.querySelectorAll('#rc_rows .rc-edit-row').forEach(function(row){
+    var d=row.querySelector('.rc_desc').value.trim(),raw=row.querySelector('.rc_amt').value.trim(),a=num(raw),type=row.querySelector('.rc_type').value||'Uncategorised';
+    if(!d&&(!raw||a===0))return;if(!d){error='Each running cost with an amount needs a description.';return;}if(raw===''){error='Each running cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a,type:type});
+  });return {rows:rows,error:error};
+}
+function initRunningCosts(){
+  runningCostsRows=parseRunningCosts(PREFILL.runningCosts||'');runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;renderRunningMain();renderRunningMini();
+  $('#runningEditBtn').addEventListener('click',openRunningEditor);
+  $('#rc_add').addEventListener('click',function(){$('#rc_rows').appendChild(rcEditorRow({desc:'',amount:0,type:'Uncategorised'}));rcEditorCompute();});
+  $('#runningCancel').addEventListener('click',function(){$('#runningOverlay').classList.remove('show')});
+  $('#runningOverlay').addEventListener('click',function(e){if(e.target===$('#runningOverlay'))$('#runningOverlay').classList.remove('show')});
+  $('#runningSave').addEventListener('click',function(){var got=collectRunningEditor();var er=$('#rcEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}runningCostsRows=normaliseRunningRows(got.rows);runningCostsDirty=runningRowsKey(runningCostsRows)!==runningCostsInitial;renderRunningMain();renderRunningMini();$('#runningOverlay').classList.remove('show');});
+}
+function showRunningOnlyWarning(errors){pendingValidationErrors=errors||[];$('#runningOnlyError').classList.remove('show');$('#runningOnlyError').textContent='';$('#runningOnlySave').disabled=false;$('#runningOnlySave').textContent='Save Running Costs Only';$('#runningOnlyOverlay').classList.add('show');}
+function initRunningOnlySave(){
+  $('#runningOnlyReturn').addEventListener('click',function(){$('#runningOnlyOverlay').classList.remove('show');showErrors(pendingValidationErrors);});
+  $('#runningOnlyOverlay').addEventListener('click',function(e){if(e.target===$('#runningOnlyOverlay')){$('#runningOnlyOverlay').classList.remove('show');showErrors(pendingValidationErrors);}});
+  $('#runningOnlySave').addEventListener('click',function(){
+    var b=$('#runningOnlySave'),er=$('#runningOnlyError');b.disabled=true;b.textContent='Saving…';er.classList.remove('show');
+    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),saveRunningCostsOnly:true,runningCostsRows:normaliseRunningRows(runningCostsRows)})})
+      .then(function(r){return r.json()}).then(function(d){if(d.ok){b.textContent='Saved ✓';window.location.href=d.redirect;}else{er.textContent=(d.errors&&d.errors[0])||'Could not save running costs.';er.classList.add('show');b.disabled=false;b.textContent='Save Running Costs Only';}})
+      .catch(function(){er.textContent='Network error saving running costs. Please try again.';er.classList.add('show');b.disabled=false;b.textContent='Save Running Costs Only';});
   });
 }
 
@@ -752,7 +864,7 @@ function collectAndValidate(){
     customfield_10283:costVal('c_insp','Inspection, storage or recovery'),customfield_11192:costVal('c_courtesy','Courtesy car & travel'),
     customfield_10284:costVal('c_other','Other costs')
   };
-  var payload={token:getToken(),outcome:outcome,rejectionOutcome:rejection,internal:internal,solicitor:PREFILL.solicitor||0,fosApplicable:PREFILL.fosApplicable,fosStage:PREFILL.fosStage,rejectionLossBreakdown:rejBreakdown,dekraBreakdown:dekraBreakdown,fosRejectionLossBreakdown:fosRejBreakdown,fosDekraBreakdown:fosDekraBreakdown,otherCostsBreakdown:otherBreakdown,fosOtherCostsBreakdown:fosOtherBreakdown};
+  var payload={token:getToken(),outcome:outcome,rejectionOutcome:rejection,internal:internal,solicitor:PREFILL.solicitor||0,fosApplicable:PREFILL.fosApplicable,fosStage:PREFILL.fosStage,rejectionLossBreakdown:rejBreakdown,dekraBreakdown:dekraBreakdown,fosRejectionLossBreakdown:fosRejBreakdown,fosDekraBreakdown:fosDekraBreakdown,otherCostsBreakdown:otherBreakdown,fosOtherCostsBreakdown:fosOtherBreakdown,runningCostsChanged:runningCostsDirty,runningCostsRows:normaliseRunningRows(runningCostsRows)};
   if(PREFILL.fosApplicable){
     var inv=$('#fosInvestigator').value,omb=$('#fosOmbudsman').value;
     if(!inv)errors.push('FOS investigator outcome is required.');
@@ -779,7 +891,7 @@ function showErrors(list){
 function initSubmit(){
   $('#saveBtn').addEventListener('click',function(){
     var res=collectAndValidate();
-    if(res.errors.length){showErrors(res.errors);return;}
+    if(res.errors.length){if(runningCostsDirty){showRunningOnlyWarning(res.errors);return;}showErrors(res.errors);return;}
     showErrors([]);
     var btn=$('#saveBtn');btn.disabled=true;btn.textContent='Saving\u2026';
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)})
@@ -805,7 +917,7 @@ function boot(){
       gateFos();initTabs();initVehicleVisibility();
       var syncRej=initRejection();var syncFos=initFos();window.__syncRej=syncRej;
       initRejCalc();initInspCalc();initOtherCalc();
-      applyPrefill();syncRej();syncFos();recompute();initSubmit();initRunningCosts();restoreSavedBreakdowns();initClosedLock();
+      applyPrefill();syncRej();syncFos();recompute();initRunningCosts();initRunningOnlySave();initSubmit();restoreSavedBreakdowns();initClosedLock();
       // default to FOS tab when applicable
       if(PREFILL.fosApplicable)selectTab('tab-fos');
     })
