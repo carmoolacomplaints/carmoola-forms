@@ -133,6 +133,20 @@
   .rc-editor-error{display:none;background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:8px;padding:9px 11px;font-size:12.5px;margin-bottom:10px}.rc-editor-error.show{display:block}
   .warnbox{background:#FFF3D6;border:1px solid #F0D48A;color:#6F5100;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.5}.warnbox strong{color:#5B4100}
   @media(max-width:620px){.rc-editor-head{display:none}.rc-edit-row{grid-template-columns:1fr 105px 32px}.rc-edit-row select{grid-column:1 / span 2}.rc-edit-row .rc-del{grid-column:3;grid-row:1 / span 2}.rc-list .typecol{display:none}}
+
+  /* Calculator-controlled costs, compact running costs and management actions */
+  .running-strip{background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin:0 0 16px;overflow:hidden}
+  .running-strip>summary{list-style:none;cursor:pointer;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;color:var(--ink)}
+  .running-strip>summary::-webkit-details-marker{display:none}.running-strip>summary:after{content:'▾';margin-left:2px;color:var(--muted);font-size:11px}.running-strip[open]>summary:after{content:'▴'}
+  .running-strip .rs-label{color:var(--pink-dark)}.running-strip .rs-total{margin-left:auto;font-variant-numeric:tabular-nums;font-size:14px}.running-strip .rs-hint{font-size:11px;color:var(--muted);font-weight:600}
+  .running-strip-body{border-top:1px solid var(--line);padding:10px 14px 12px}.running-strip-body .rc-headrow{justify-content:flex-end}.running-strip-body .rc-summary{display:none}
+  .cost-record{position:relative}.cost-record input[readonly]{background:#F9F7FA;cursor:default;padding-right:110px}.record-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:1.5px solid var(--line-strong);background:var(--white);color:var(--pink-dark);font-family:inherit;font-size:12px;font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;z-index:1}.record-btn:hover{border-color:var(--pink);background:var(--tint-soft)}
+  .transfer-btn,.transfer-all{border:1px solid #B8DEC9;background:#EDF8F2;color:#0F6B49;font-family:inherit;font-size:10.5px;font-weight:800;border-radius:7px;padding:4px 8px;cursor:pointer;white-space:nowrap}.transfer-btn:hover,.transfer-all:hover{background:#DFF3E8}.transfer-btn.added{background:#DDF3E7;color:#0B7148;border-color:#9FD1B6;cursor:default}.transfer-all{margin-left:auto}
+  .rcmini td.rc-addcell{width:58px;text-align:right}.rcmini-actions{display:flex;align-items:center;gap:8px;padding:6px 3px 1px;border-top:1px solid #F6D3E6}
+  .manage-btn{width:40px;height:40px;border:1.5px solid var(--line-strong);border-radius:10px;background:var(--white);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}.manage-btn:hover{border-color:var(--pink);color:var(--pink-dark);background:var(--tint-soft)}
+  .management-option{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--tint-soft)}.management-option h4{margin:0 0 4px;font-size:14px}.management-option p{margin:0;font-size:12.5px;color:var(--muted)}
+  .passcode-wrap{margin-top:12px}.passcode-wrap label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}.passcode-wrap input{width:100%;font-family:inherit;font-size:15px;border:1.5px solid var(--line-strong);border-radius:10px;padding:10px 12px}
+
 </style>
 </head>
 <body>
@@ -168,6 +182,15 @@
     </div>
   </div>
 
+
+  <details class="running-strip" id="runningCostsCard">
+    <summary><span class="rs-label">Running Costs</span><span class="rs-hint">reference only</span><span class="rs-total" id="runningTotal">&pound;0.00</span></summary>
+    <div class="running-strip-body">
+      <div class="rc-headrow"><button type="button" class="rc-action" id="runningEditBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span id="runningEditLabel">Add Running Cost</span></button></div>
+      <div id="runningList"></div>
+    </div>
+  </details>
+
   <div class="tabs" role="tablist">
     <button class="tab" id="tab-internal" role="tab" aria-selected="true" aria-controls="panel-internal">Investigation</button>
     <button class="tab" id="tab-fos" role="tab" aria-selected="false" aria-controls="panel-fos"><span>Financial Ombudsman</span><span id="fosLock" hidden>&#128274;</span></button>
@@ -186,30 +209,20 @@
         <div id="mainMismatch" style="display:none;background:#FFF3D6;border:1px solid #F0D48A;color:#7A5A00;border-radius:10px;padding:10px 12px;margin-top:9px;font-size:12.5px;font-weight:600"></div>
       </div>
     </div>
-    <div class="card" id="runningCostsCard">
-      <div class="card-head"><span class="num">Running</span><h2>Running Costs</h2></div>
-      <div class="field">
-        <p class="help">Track running costs against this complaint. These are for reference only and do not change the closure cost fields below.</p>
-        <div class="rc-headrow">
-          <div class="rc-summary"><span class="k">Current total</span><span class="v" id="runningTotal">&pound;0.00</span></div>
-          <button type="button" class="rc-action" id="runningEditBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span id="runningEditLabel">Add Running Cost</span></button>
-        </div>
-        <div id="runningList"></div>
-      </div>
-    </div>
+
     <div class="card">
       <div class="card-head"><span class="num">Costs</span><h2>What It Cost Carmoola</h2></div>
-      <div class="field"><label for="c_direct">Direct Compensation <span class="req">*</span> <span class="pill jira jhint" data-for="c_direct" hidden>Saved</span></label><p class="help">Money paid to the customer as compensation. Don't include refunding customer payments in an undo scenario.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_direct" class="cost" value="0"></div></div>
-      <div class="field"><label for="c_di">Distress &amp; Inconvenience <span class="req">*</span> <span class="pill jira jhint" data-for="c_di" hidden>Saved</span></label><p class="help">Compensation for non-financial impacts such as distress, inconvenience, or goodwill gestures.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_di" class="cost" value="0"></div></div>
+      <div class="field"><label for="c_direct">Direct Compensation <span class="req">*</span> <span class="pill jira jhint" data-for="c_direct" hidden>Saved</span> <span class="pill auto" id="c_direct_recorded" hidden>Recorded</span></label><p class="help">Money paid to the customer as compensation. Don't include refunding customer payments in an undo scenario.</p><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_direct" class="cost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="c_direct"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
+      <div class="field"><label for="c_di">Distress &amp; Inconvenience <span class="req">*</span> <span class="pill jira jhint" data-for="c_di" hidden>Saved</span> <span class="pill auto" id="c_di_recorded" hidden>Recorded</span></label><p class="help">Compensation for non-financial impacts such as distress, inconvenience, or goodwill gestures.</p><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_di" class="cost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="c_di"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
 
-      <div class="field veh"><label for="c_repair">Vehicle Repair Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_repair" hidden>Saved</span></label><p class="help">Expenses Carmoola has incurred repairing the vehicle.</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_repair" class="cost" value="0"></div></div>
-      <div class="field veh" id="rejLossField"><label for="c_rejloss">Vehicle Rejection Loss <span class="req">*</span> <span class="pill jira jhint" data-for="c_rejloss" hidden>Saved</span> <span class="pill auto" id="rejLossCalcPill" hidden>Calculated</span> <span class="pill over" id="rejLossOverPill" hidden>Manually overridden</span></label><p class="help">The exact loss (or gain) to Carmoola when a vehicle is returned to a dealership or sold at auction. Use the calculator to work it out.</p><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_rejloss" class="cost" value="0" readonly><button type="button" class="calcbtn" id="rejLossCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Rejection Loss</button></div></div>
-      <div class="field veh"><label for="c_insp">Inspection, Storage Or Recovery Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_insp" hidden>Saved</span> <span class="pill auto" id="inspCalcPill" hidden>Calculated</span> <span class="pill over" id="inspOverPill" hidden>Manually overridden</span></label><p class="help">Including DEKRA inspections at &pound;160 each. Use the calculator to break it down.</p><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_insp" class="cost" value="0" readonly><button type="button" class="calcbtn" id="inspCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Inspection Costs</button></div></div>
-      <div class="field veh"><label for="c_courtesy">Courtesy Car &amp; Travel Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_courtesy" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_courtesy" class="cost" value="0"></div></div>
+      <div class="field veh"><label for="c_repair">Vehicle Repair Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_repair" hidden>Saved</span> <span class="pill auto" id="c_repair_recorded" hidden>Recorded</span></label><p class="help">Expenses Carmoola has incurred repairing the vehicle.</p><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_repair" class="cost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="c_repair"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
+      <div class="field veh" id="rejLossField"><label for="c_rejloss">Vehicle Rejection Loss <span class="req">*</span> <span class="pill jira jhint" data-for="c_rejloss" hidden>Saved</span> <span class="pill auto" id="rejLossCalcPill" hidden>Calculated</span></label><p class="help">The exact loss (or gain) to Carmoola when a vehicle is returned to a dealership or sold at auction. Use the calculator to work it out.</p><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_rejloss" class="cost" value="0" readonly><button type="button" class="calcbtn" id="rejLossCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Rejection Loss</button></div></div>
+      <div class="field veh"><label for="c_insp">Inspection, Storage Or Recovery Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_insp" hidden>Saved</span> <span class="pill auto" id="c_insp_recorded" hidden>Recorded</span></label><p class="help">Record each inspection, storage or recovery item.</p><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_insp" class="cost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="c_insp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
+      <div class="field veh"><label for="c_courtesy">Courtesy Car &amp; Travel Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_courtesy" hidden>Saved</span> <span class="pill auto" id="c_courtesy_recorded" hidden>Recorded</span></label><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_courtesy" class="cost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="c_courtesy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
 
       <div class="field" id="vehToggleRow"><button type="button" class="vehtoggle" id="vehToggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>Show Vehicle Issue Costs</button></div>
 
-      <div class="field"><label for="c_other">Other Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_other" hidden>Saved</span> <span class="pill auto" id="otherCalcPill" hidden>Calculated</span> <span class="pill over" id="otherOverPill" hidden>Manually overridden</span></label><p class="help">Any other costs to Carmoola. Use the calculator to itemise them.</p><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_other" class="cost" value="0" readonly><button type="button" class="calcbtn" id="otherCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Other Costs</button></div></div>
+      <div class="field"><label for="c_other">Other Costs <span class="req">*</span> <span class="pill jira jhint" data-for="c_other" hidden>Saved</span> <span class="pill auto" id="c_other_recorded" hidden>Recorded</span></label><p class="help">Record each other cost as a separate line item.</p><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="c_other" class="cost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="c_other"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
     </div>
     <div class="subtotal"><span class="lbl">Investigation Cost</span><span class="val" id="internalTotal">&pound;0.00</span></div>
   </section>
@@ -232,17 +245,17 @@
       <div class="card">
         <div class="card-head"><span class="num">Costs</span><h2>FOS Costs</h2></div>
         <div class="field"><label for="f_fee">FOS Case Fee <span class="req">*</span> <span class="pill jira jhint" data-for="f_fee" hidden>Saved</span></label><p class="help">Set by the Financial Ombudsman Service (read only).</p><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_fee" class="fcost" value="0" disabled></div></div>
-        <div class="field"><label for="f_direct">FOS Direct Compensation <span class="req">*</span> <span class="pill jira jhint" data-for="f_direct" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_direct" class="fcost" value="0"></div></div>
-        <div class="field"><label for="f_di">FOS Distress &amp; Inconvenience <span class="req">*</span> <span class="pill jira jhint" data-for="f_di" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_di" class="fcost" value="0"></div></div>
+        <div class="field"><label for="f_direct">FOS Direct Compensation <span class="req">*</span> <span class="pill jira jhint" data-for="f_direct" hidden>Saved</span> <span class="pill auto" id="f_direct_recorded" hidden>Recorded</span></label><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_direct" class="fcost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="f_direct"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
+        <div class="field"><label for="f_di">FOS Distress &amp; Inconvenience <span class="req">*</span> <span class="pill jira jhint" data-for="f_di" hidden>Saved</span> <span class="pill auto" id="f_di_recorded" hidden>Recorded</span></label><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_di" class="fcost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="f_di"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
 
-      <div class="field fveh"><label for="f_repair">FOS Repair Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_repair" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_repair" class="fcost" value="0"></div></div>
-      <div class="field fveh"><label for="f_rejloss">FOS Rejection Loss <span class="req">*</span> <span class="pill jira jhint" data-for="f_rejloss" hidden>Saved</span> <span class="pill auto" id="fosRejCalcPill" hidden>Calculated</span> <span class="pill over" id="fosRejOverPill" hidden>Manually overridden</span></label><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_rejloss" class="fcost" value="0" readonly><button type="button" class="calcbtn" id="fosRejCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Rejection Loss</button></div></div>
-      <div class="field fveh"><label for="f_insp">FOS Inspection, Storage Or Recovery Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_insp" hidden>Saved</span> <span class="pill auto" id="fosInspCalcPill" hidden>Calculated</span> <span class="pill over" id="fosInspOverPill" hidden>Manually overridden</span></label><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_insp" class="fcost" value="0" readonly><button type="button" class="calcbtn" id="fosInspCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Inspection Costs</button></div></div>
-      <div class="field fveh"><label for="f_courtesy">FOS Courtesy Car &amp; Travel Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_courtesy" hidden>Saved</span></label><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_courtesy" class="fcost" value="0"></div></div>
+      <div class="field fveh"><label for="f_repair">FOS Repair Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_repair" hidden>Saved</span> <span class="pill auto" id="f_repair_recorded" hidden>Recorded</span></label><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_repair" class="fcost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="f_repair"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
+      <div class="field fveh"><label for="f_rejloss">FOS Rejection Loss <span class="req">*</span> <span class="pill jira jhint" data-for="f_rejloss" hidden>Saved</span> <span class="pill auto" id="fosRejCalcPill" hidden>Calculated</span></label><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_rejloss" class="fcost" value="0" readonly><button type="button" class="calcbtn" id="fosRejCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Rejection Loss</button></div></div>
+      <div class="field fveh"><label for="f_insp">FOS Inspection, Storage Or Recovery Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_insp" hidden>Saved</span> <span class="pill auto" id="f_insp_recorded" hidden>Recorded</span></label><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_insp" class="fcost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="f_insp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
+      <div class="field fveh"><label for="f_courtesy">FOS Courtesy Car &amp; Travel Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_courtesy" hidden>Saved</span> <span class="pill auto" id="f_courtesy_recorded" hidden>Recorded</span></label><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_courtesy" class="fcost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="f_courtesy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
 
       <div class="field" id="fvehToggleRow"><button type="button" class="vehtoggle" id="fvehToggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>Show Vehicle Issue Costs</button></div>
 
-        <div class="field"><label for="f_other">FOS Other Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_other" hidden>Saved</span> <span class="pill auto" id="fosOtherCalcPill" hidden>Calculated</span> <span class="pill over" id="fosOtherOverPill" hidden>Manually overridden</span></label><div class="money hascalc"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_other" class="fcost" value="0" readonly><button type="button" class="calcbtn" id="fosOtherCalcBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Calculate Other Costs</button></div></div>
+        <div class="field"><label for="f_other">FOS Other Costs <span class="req">*</span> <span class="pill jira jhint" data-for="f_other" hidden>Saved</span> <span class="pill auto" id="f_other_recorded" hidden>Recorded</span></label><div class="money cost-record"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="f_other" class="fcost" value="0" readonly data-calc-controlled="1"><button type="button" class="record-btn" data-cost-target="f_other"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>Record Cost</button></div></div>
       </div>
       <div class="subtotal"><span class="lbl">Total FOS Cost</span><span class="val" id="fosTotal">&pound;0.00</span></div>
     </div>
@@ -260,6 +273,7 @@
     <div class="tot"><span class="k">Solicitor</span><span class="v" id="ftSol">&pound;0.00</span></div>
     <div class="tot grand"><span class="k">Total Overall Cost</span><span class="v" id="ftOverall">&pound;0.00</span></div>
   </div>
+  <button class="manage-btn" id="manageBtn" type="button" aria-label="Management actions" title="Management actions"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.1A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.1A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.17.36.27.75.29 1.15H21v4h-1.31c-.02.4-.12.79-.29 1.15Z"/></svg></button>
   <button class="btn" id="saveBtn">Save Closure Details</button>
 </div></div>
 
@@ -306,9 +320,23 @@
   </div>
 </div>
 
+
+<div class="overlay" id="costOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="costModalTitle">
+    <div class="modal-head"><h3 id="costModalTitle">Record Cost</h3><p>Add a line for each cost. The total will be written to the cost field.</p></div>
+    <div class="modal-body">
+      <div class="rc-editor-error" id="costEditorError"></div>
+      <div id="cost_rows"></div>
+      <button type="button" class="vehtoggle" id="cost_add" style="margin-top:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Row</button>
+      <div class="calc-total"><span class="l">Recorded Cost Total</span><span class="v" id="cost_total">&pound;0.00</span></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" id="costCancel">Cancel</button><button class="btn-sm" id="costSave">Save Cost</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="runningOverlay">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="runningModalTitle" style="max-width:720px">
-    <div class="modal-head"><h3 id="runningModalTitle">Running Costs</h3><p>Add, remove or categorise running costs. Uncategorized legacy items can be left as they are or assigned a type.</p></div>
+    <div class="modal-head"><h3 id="runningModalTitle">Running Costs</h3><p>Add, remove or categorise running costs.</p></div>
     <div class="modal-body">
       <div class="rc-editor-error" id="rcEditorError"></div>
       <div class="rc-editor-head"><span>Description</span><span>Amount</span><span>Cost type</span><span></span></div>
@@ -331,29 +359,35 @@
   </div>
 </div>
 
+
+<div class="overlay" id="managementOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="managementTitle">
+    <div class="modal-head"><h3 id="managementTitle">Management Actions</h3><p>Restricted actions for exceptional cases.</p></div>
+    <div class="modal-body">
+      <div class="management-option">
+        <h4>Force submit</h4>
+        <p>Bypass closure-form validation and submit the values currently on the form. Jira's own field validation still applies.</p>
+        <div class="passcode-wrap"><label for="overridePasscode">Management passcode</label><input type="password" id="overridePasscode" autocomplete="off" placeholder="Enter passcode"></div>
+      </div>
+      <div class="warnbox" style="margin-top:12px"><strong>Use with care.</strong> Force submit may save an incomplete closure. Empty monetary values are treated as &pound;0 and invalid or missing outcome fields are left unchanged.</div>
+      <div class="rc-editor-error" id="managementError" style="margin-top:10px"></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" id="managementCancel">Return to Form</button><button class="btn-sm" id="forceSubmitBtn">Force Submit</button></div>
+  </div>
+</div>
+
 <script>
 var API = "https://dpbwnmjqcbaebszwqgea.supabase.co/functions/v1/complaint-closure-form";
 var PREFILL = null;
 var gbp = new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'});
 var rejBreakdown={used:false}, dekraBreakdown={used:false}, fosRejBreakdown={used:false}, fosDekraBreakdown={used:false};
 var otherBreakdown={used:false,rows:[]}, fosOtherBreakdown={used:false,rows:[]};
-var RUNNING_TYPES=['Direct Compensation','Distress & Inconvenience','Vehicle Repair Costs','Vehicle Rejection Loss','DEKRA','Other Inspection Costs','Storage Costs','Recovery Costs','Courtesy Car & Travel Costs','Other Costs'];
+var RUNNING_TYPES=['Direct Compensation','Distress & Inconvenience','Vehicle Repair Costs','DEKRA','Other Inspection Costs','Storage Costs','Recovery Costs','Courtesy Car & Travel Costs','Other Costs'];
 var runningCostsRows=[], runningCostsInitial='[]', runningCostsDirty=false, pendingValidationErrors=[];
+var costBreakdowns={}, costCalcTarget=null;
 
-// After a calculator writes a value, unlock the field for manual override and
-// flag it with the "Manually overridden" pill if the user then edits it by hand.
-function unlockAfterCalc(fieldId, overPillId){
-  var el=document.getElementById(fieldId);
-  if(!el) return;
-  el.removeAttribute('readonly');
-  if(!el.dataset.overrideWired){
-    el.dataset.overrideWired='1';
-    el.addEventListener('input',function(){
-      var p=document.getElementById(overPillId);
-      if(p) p.hidden=false;
-    });
-  }
-}
+// Calculator-controlled fields remain read-only; values can only be changed through their form calculators.
+function unlockAfterCalc(fieldId, overPillId){ var el=document.getElementById(fieldId); if(el) el.setAttribute('readonly','readonly'); }
 var calcTarget = null; // which field a shared modal is editing
 
 function $(s){return document.querySelector(s)}
@@ -722,7 +756,8 @@ function parseRunningCosts(raw){
     var tm=label.match(/^(.*?)\s*\[([^\]]+)\]\s*$/)||label.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
     if(tm){
       var candidate=tm[2].trim();
-      if(RUNNING_TYPES.indexOf(candidate)!==-1){label=tm[1].trim();type=candidate;}
+      label=tm[1].trim();
+      type=RUNNING_TYPES.indexOf(candidate)!==-1?candidate:'Uncategorised';
     }
     out.push({desc:label||'Item',amount:num(m[2]),type:type});
   });
@@ -745,12 +780,16 @@ function renderRunningMain(){
   rows.forEach(function(r){h+='<tr><td>'+esc(r.desc)+'</td><td class="typecol">'+rcTypeBadge(r.type)+'</td><td>'+gbp.format(r.amount)+'</td></tr>';});
   h+='</tbody></table>';box.innerHTML=h;
 }
+function costRowKey(r){return String(r.desc||'').trim().toLowerCase()+'|'+Number(num(r.amount)).toFixed(2);}
+function costBreakdownRows(id){var b=costBreakdowns[id]||{used:false,rows:[]};return Array.isArray(b.rows)?b.rows:[];}
+function runningOccurrenceAdded(target,row,occurrence){var k=costRowKey(row),count=0;costBreakdownRows(target).forEach(function(r){if(costRowKey(r)===k)count++;});return count>occurrence;}
+function addRunningToCost(target,row){var b=costBreakdowns[target]||{used:false,rows:[]};b.rows=(b.rows||[]).slice();b.rows.push({desc:String(row.desc||'Item'),amount:num(row.amount)});b.used=true;costBreakdowns[target]=b;syncCostFromBreakdown(target);renderRunningMini();}
+function addAllRunningToCost(target,rows){var seen={};rows.forEach(function(r){var k=costRowKey(r),occ=seen[k]||0;seen[k]=occ+1;if(!runningOccurrenceAdded(target,r,occ))addRunningToCost(target,r);});renderRunningMini();}
 function renderRunningMini(){
   var map={
     c_direct:['Direct Compensation'],
     c_di:['Distress & Inconvenience'],
     c_repair:['Vehicle Repair Costs'],
-    c_rejloss:['Vehicle Rejection Loss'],
     c_insp:['DEKRA','Other Inspection Costs','Storage Costs','Recovery Costs'],
     c_courtesy:['Courtesy Car & Travel Costs'],
     c_other:['Other Costs']
@@ -762,9 +801,11 @@ function renderRunningMini(){
     if(!rows.length)return;
     var total=runningTotal(rows);var d=document.createElement('details');d.className='rcmini';
     var summary=document.createElement('summary');summary.innerHTML='<span>Running costs ('+rows.length+')</span><span>'+gbp.format(total)+'</span>';d.appendChild(summary);
-    var body=document.createElement('div');body.className='rcmini-body';var h='<table>';
-    rows.forEach(function(r){h+='<tr><td>'+esc(r.desc)+(id==='c_insp'?' <span style="color:var(--muted)">· '+esc(r.type)+'</span>':'')+'</td><td>'+gbp.format(r.amount)+'</td></tr>';});
-    h+='</table><div class="rcmini-total"><span>Total running costs</span><span>'+gbp.format(total)+'</span></div>';body.innerHTML=h;d.appendChild(body);field.appendChild(d);
+    var body=document.createElement('div');body.className='rcmini-body';var h='<table>';var seen={};var allAdded=true;
+    rows.forEach(function(r,idx){var k=costRowKey(r),occ=seen[k]||0;seen[k]=occ+1;var added=runningOccurrenceAdded(id,r,occ);if(!added)allAdded=false;h+='<tr><td>'+esc(r.desc)+(id==='c_insp'?' <span style="color:var(--muted)">· '+esc(r.type)+'</span>':'')+'</td><td>'+gbp.format(r.amount)+'</td><td class="rc-addcell"><button type="button" class="transfer-btn'+(added?' added':'')+'" data-target="'+id+'" data-run-index="'+idx+'"'+(added?' disabled':'')+'>'+(added?'Added':'Add')+'</button></td></tr>';});
+    h+='</table><div class="rcmini-actions"><span style="font-size:11.5px;font-weight:700">Total running costs: '+gbp.format(total)+'</span>'+(rows.length>1?'<button type="button" class="transfer-all" data-target="'+id+'"'+(allAdded?' disabled':'')+'>'+(allAdded?'All Added':'Add All')+'</button>':'')+'</div>';body.innerHTML=h;d.appendChild(body);field.appendChild(d);
+    body.querySelectorAll('.transfer-btn:not(.added)').forEach(function(btn){btn.addEventListener('click',function(){addRunningToCost(id,rows[Number(btn.dataset.runIndex)]);});});
+    var all=body.querySelector('.transfer-all');if(all&&!all.disabled)all.addEventListener('click',function(){addAllRunningToCost(id,rows);});
   });
 }
 function rcOptions(selected){
@@ -814,6 +855,36 @@ function initRunningOnlySave(){
   });
 }
 
+
+var COST_META={
+  c_direct:{title:'Direct Compensation',saved:'invDirect',legacy:'customfield_10164'},
+  c_di:{title:'Distress & Inconvenience',saved:'invDi',legacy:'customfield_10165'},
+  c_repair:{title:'Vehicle Repair Costs',saved:'invRepair',legacy:'customfield_10281'},
+  c_insp:{title:'Inspection, Storage or Recovery Costs',saved:'invInsp',legacy:'customfield_10283'},
+  c_courtesy:{title:'Courtesy Car & Travel Costs',saved:'invCourtesy',legacy:'customfield_11192'},
+  c_other:{title:'Other Costs',saved:'invOther',legacy:'customfield_10284'},
+  f_direct:{title:'FOS Direct Compensation',saved:'fosDirect',legacy:'customfield_11555'},
+  f_di:{title:'FOS Distress & Inconvenience',saved:'fosDi',legacy:'customfield_11556'},
+  f_repair:{title:'FOS Repair Costs',saved:'fosRepair',legacy:'customfield_11557'},
+  f_insp:{title:'FOS Inspection, Storage or Recovery Costs',saved:'fosInsp',legacy:'customfield_11559'},
+  f_courtesy:{title:'FOS Courtesy Car & Travel Costs',saved:'fosCourtesy',legacy:'customfield_11560'},
+  f_other:{title:'FOS Other Costs',saved:'fosOther',legacy:'customfield_11561'}
+};
+function cleanCostRows(rows){return (rows||[]).map(function(r){return {desc:String(r.desc||'').trim(),amount:num(r.amount)};}).filter(function(r){return r.desc!==''||r.amount!==0;});}
+function costRowsTotal(rows){return cleanCostRows(rows).reduce(function(a,r){return a+num(r.amount)},0);}
+function syncCostFromBreakdown(id){var b=costBreakdowns[id]||{used:false,rows:[]};var t=costRowsTotal(b.rows);setMoney(id,t);var p=document.getElementById(id+'_recorded');if(p)p.hidden=!b.used;recompute();}
+function costEditorRow(r){r=r||{desc:'',amount:0};var wrap=document.createElement('div');wrap.className='calcrow';wrap.innerHTML='<div class="rl"><input type="text" class="cost_desc" placeholder="Description" value="'+esc(r.desc||'')+'"></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" class="cost_amt" value="'+esc(r.amount!=null?r.amount:0)+'"></div><button type="button" class="oc_del" aria-label="Remove" style="flex:none;border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px">&times;</button>';wrap.querySelector('.cost_amt').addEventListener('input',costEditorCompute);wrap.querySelector('.oc_del').addEventListener('click',function(){wrap.parentNode.removeChild(wrap);costEditorCompute();});return wrap;}
+function costEditorCompute(){var t=0;document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){t+=num(row.querySelector('.cost_amt').value)});$('#cost_total').textContent=gbp.format(t);return t;}
+function openCostEditor(id){costCalcTarget=id;var meta=COST_META[id];if(!meta)return;$('#costModalTitle').textContent=meta.title;var box=$('#cost_rows');box.innerHTML='';var b=costBreakdowns[id]||{used:false,rows:[]};var rows=cleanCostRows(b.rows);if(!rows.length)rows=[{desc:'',amount:0}];rows.forEach(function(r){box.appendChild(costEditorRow(r));});$('#costEditorError').classList.remove('show');$('#costEditorError').textContent='';costEditorCompute();$('#costOverlay').classList.add('show');}
+function collectCostEditor(){var rows=[],error='';document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim(),a=num(raw);if(!d&&(!raw||a===0))return;if(!d){error='Each cost with an amount needs a description.';return;}if(raw===''){error='Each cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a});});return {rows:rows,error:error};}
+function initCostEditors(){document.querySelectorAll('[data-cost-target]').forEach(function(btn){btn.addEventListener('click',function(){openCostEditor(btn.dataset.costTarget);});});$('#cost_add').addEventListener('click',function(){$('#cost_rows').appendChild(costEditorRow({desc:'',amount:0}));costEditorCompute();});$('#costCancel').addEventListener('click',function(){$('#costOverlay').classList.remove('show')});$('#costOverlay').addEventListener('click',function(e){if(e.target===$('#costOverlay'))$('#costOverlay').classList.remove('show')});$('#costSave').addEventListener('click',function(){var got=collectCostEditor(),er=$('#costEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}costBreakdowns[costCalcTarget]={used:true,rows:cleanCostRows(got.rows)};syncCostFromBreakdown(costCalcTarget);renderRunningMini();$('#costOverlay').classList.remove('show');});}
+function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:has(s.rejProceeds)?s.rejProceeds:0,depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false;}else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false;}}}
+function restoreCostBreakdowns(){var saved=(PREFILL.saved&&PREFILL.saved.costBreakdowns)||{},present=(PREFILL.saved&&PREFILL.saved.costBreakdownPresent)||{};Object.keys(COST_META).forEach(function(id){var meta=COST_META[id],rows=Array.isArray(saved[meta.saved])?saved[meta.saved]:[];var existing=num(document.getElementById(id).value);if(present[meta.saved])costBreakdowns[id]={used:true,rows:cleanCostRows(rows)};else if(existing!==0)costBreakdowns[id]={used:true,rows:[{desc:'Existing saved amount',amount:existing}]};else costBreakdowns[id]={used:false,rows:[]};syncCostFromBreakdown(id);});}
+function costFieldNeedsRecord(id){var input=document.getElementById(id);if(!input||input.disabled)return false;var field=input.closest('.field');return !(field&&field.classList.contains('hiddenrow'));}
+function initManagementActions(){var ov=$('#managementOverlay'),pass=$('#overridePasscode'),er=$('#managementError'),btn=$('#forceSubmitBtn');$('#manageBtn').addEventListener('click',function(){er.classList.remove('show');er.textContent='';pass.value='';btn.disabled=false;btn.textContent='Force Submit';ov.classList.add('show');setTimeout(function(){pass.focus();},30);});$('#managementCancel').addEventListener('click',function(){ov.classList.remove('show');pass.value='';});ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('show');pass.value='';}});btn.addEventListener('click',function(){var code=pass.value;if(!code){er.textContent='Enter the management passcode.';er.classList.add('show');return;}var res=collectAndValidate();res.payload.forceSubmit=true;res.payload.overridePasscode=code;btn.disabled=true;btn.textContent='Submitting…';er.classList.remove('show');fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)}).then(function(r){return r.json()}).then(function(d){if(d.ok){btn.textContent='Submitted ✓';window.location.href=d.redirect;}else{er.textContent=(d.errors&&d.errors[0])||'Force submit failed.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';}}).catch(function(){er.textContent='Network error during force submit.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';});});}
+// Keep every calculator-controlled cost read-only, including rejection loss.
+function lockAll(lock){var controls=document.querySelectorAll('#panel-internal input, #panel-internal select, #panel-internal button, #panel-fos input, #panel-fos select, #panel-fos button, #runningCostsCard button, #saveBtn, #manageBtn');for(var i=0;i<controls.length;i++){var el=controls[i];if(lock){el.setAttribute('data-closedlock','1');if(el.tagName==='BUTTON'||el.tagName==='SELECT')el.disabled=true;else{el.setAttribute('readonly','readonly');el.classList.add('closedlocked');}el.style.opacity='.6';}else{el.removeAttribute('data-closedlock');el.style.opacity='';if(el.tagName==='BUTTON'||el.tagName==='SELECT')el.disabled=false;else{el.removeAttribute('readonly');el.classList.remove('closedlocked');}}}if(!lock){document.querySelectorAll('[data-calc-controlled],#c_rejloss,#f_rejloss').forEach(function(el){el.setAttribute('readonly','readonly');});var fee=document.getElementById('f_fee');if(fee)fee.disabled=true;if(typeof window.__syncRej==='function')window.__syncRej();var omb=document.getElementById('fosOmbudsman');if(omb&&PREFILL.fosStage!=='ombudsman')omb.disabled=true;$('#saveBtn').disabled=false;$('#manageBtn').disabled=false;}}
+
 function applyPrefill(){
   $('#formTitle').textContent='Complaint Closure Form';
   document.title=PREFILL.issueKey+' - Complaint Closure Form';
@@ -858,13 +929,15 @@ function collectAndValidate(){
   var rejection=$('#rejection').value;
   if(!rejection)errors.push('Select what happened to the vehicle.');
   function costVal(id,label){var el=document.getElementById(id);if(el.disabled)return num(el.value);if(el.value===''){errors.push(label+' is required (enter 0 if none).');return 0;}return num(el.value);}
+  Object.keys(COST_META).forEach(function(id){if(costFieldNeedsRecord(id)&&!(costBreakdowns[id]&&costBreakdowns[id].used))errors.push(COST_META[id].title+' must be recorded using the Record Cost button.');});
   var internal={
     customfield_10164:costVal('c_direct','Direct compensation'),customfield_10165:costVal('c_di','Distress & inconvenience'),
     customfield_10281:costVal('c_repair','Vehicle repair costs'),customfield_10282:costVal('c_rejloss','Vehicle rejection loss'),
     customfield_10283:costVal('c_insp','Inspection, storage or recovery'),customfield_11192:costVal('c_courtesy','Courtesy car & travel'),
     customfield_10284:costVal('c_other','Other costs')
   };
-  var payload={token:getToken(),outcome:outcome,rejectionOutcome:rejection,internal:internal,solicitor:PREFILL.solicitor||0,fosApplicable:PREFILL.fosApplicable,fosStage:PREFILL.fosStage,rejectionLossBreakdown:rejBreakdown,dekraBreakdown:dekraBreakdown,fosRejectionLossBreakdown:fosRejBreakdown,fosDekraBreakdown:fosDekraBreakdown,otherCostsBreakdown:otherBreakdown,fosOtherCostsBreakdown:fosOtherBreakdown,runningCostsChanged:runningCostsDirty,runningCostsRows:normaliseRunningRows(runningCostsRows)};
+  var bdPayload={};Object.keys(COST_META).forEach(function(id){var b=costBreakdowns[id]||{used:false,rows:[]};bdPayload[id]={used:!!b.used,rows:cleanCostRows(b.rows)};});
+  var payload={token:getToken(),outcome:outcome,rejectionOutcome:rejection,internal:internal,solicitor:PREFILL.solicitor||0,fosApplicable:PREFILL.fosApplicable,fosStage:PREFILL.fosStage,rejectionLossBreakdown:rejBreakdown,fosRejectionLossBreakdown:fosRejBreakdown,costBreakdowns:bdPayload,runningCostsChanged:runningCostsDirty,runningCostsRows:normaliseRunningRows(runningCostsRows)};
   if(PREFILL.fosApplicable){
     var inv=$('#fosInvestigator').value,omb=$('#fosOmbudsman').value;
     if(!inv)errors.push('FOS investigator outcome is required.');
@@ -876,7 +949,6 @@ function collectAndValidate(){
       customfield_11560:costVal('f_courtesy','FOS courtesy car & travel'),customfield_11561:costVal('f_other','FOS other costs')
     };
     payload.fos={investigator:inv,ombudsman:omb,costs:fcosts};
-    // FOS vehicle question when upheld
     var overall=$('#overallFos').textContent;
     if(overall==='Upheld'){var fv=$('#fosRejection').value;if(!fv)errors.push('FOS: select what happened to the vehicle.');payload.fosVehicleOutcome=fv;}
   }
@@ -916,8 +988,8 @@ function boot(){
       var moneyEls=document.querySelectorAll('.cost,.fcost,.in input');for(var mi=0;mi<moneyEls.length;mi++)attachMoney(moneyEls[mi]);
       gateFos();initTabs();initVehicleVisibility();
       var syncRej=initRejection();var syncFos=initFos();window.__syncRej=syncRej;
-      initRejCalc();initInspCalc();initOtherCalc();
-      applyPrefill();syncRej();syncFos();recompute();initRunningCosts();initRunningOnlySave();initSubmit();restoreSavedBreakdowns();initClosedLock();
+      initRejCalc();initCostEditors();
+      applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();syncRej();syncFos();recompute();initRunningCosts();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();
       // default to FOS tab when applicable
       if(PREFILL.fosApplicable)selectTab('tab-fos');
     })
