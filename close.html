@@ -66,8 +66,8 @@
   .vehtoggle{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:1.5px dashed var(--line-strong);background:var(--tint-soft);color:var(--pink-dark);font-family:inherit;font-size:13.5px;font-weight:600;border-radius:10px;padding:11px;cursor:pointer;transition:.14s;margin-top:4px}
   .vehtoggle:hover{border-color:var(--pink)}
   .subtotal{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--pink-dark),var(--pink));color:#fff;border-radius:12px;padding:15px 18px;margin-top:2px}
-  .subtotal .lbl{font-size:13.5px;font-weight:600;opacity:.85}
-  .subtotal .val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+  .subtotal .lbl{font-size:15.5px;font-weight:800;opacity:1;color:#fff;letter-spacing:-.01em}
+  .subtotal .val{font-size:21px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
   .readout{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--tint-soft);border:1px solid #F6D3E6;border-radius:10px;padding:12px 14px}
   .readout .lbl{font-size:13.5px;font-weight:600;color:var(--pink-dark)}
   .readout .val{font-size:15px;font-weight:700}.readout .val.none{color:var(--muted);font-weight:500}
@@ -146,7 +146,8 @@
   .cost-record{position:relative}.cost-record input[readonly],.money.hascalc input[readonly]{background:#F9F7FA;cursor:default}.cost-record input[readonly]{padding-right:110px}.record-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:1.5px solid var(--line-strong);background:var(--white);color:var(--pink-dark);font-family:inherit;font-size:12px;font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;z-index:1;display:inline-flex;align-items:center;gap:6px}.record-btn:hover{border-color:var(--pink);background:var(--tint-soft)}
   .transfer-btn,.transfer-all{border:1px solid #B8DEC9;background:#EDF8F2;color:#0F6B49;font-family:inherit;font-size:10.5px;font-weight:800;border-radius:7px;padding:4px 8px;cursor:pointer;white-space:nowrap}.transfer-btn:hover,.transfer-all:hover{background:#DFF3E8}.transfer-btn.added{background:#DDF3E7;color:#0B7148;border-color:#9FD1B6;cursor:default}.transfer-all{margin-left:auto}
   .rcmini td.rc-addcell{width:58px;text-align:right}.rcmini-actions{display:flex;align-items:center;gap:8px;padding:6px 3px 1px;border-top:1px solid #F6D3E6}
-  .manage-btn{width:40px;height:40px;border:1.5px solid var(--line-strong);border-radius:10px;background:var(--white);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}.manage-btn:hover{border-color:var(--pink);color:var(--pink-dark);background:var(--tint-soft)}
+  .manage-btn{position:fixed;right:16px;bottom:14px;z-index:22;width:40px;height:40px;border:1.5px solid var(--line-strong);border-radius:10px;background:var(--white);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none;box-shadow:0 3px 12px rgba(26,21,35,.12)}.manage-btn:hover{border-color:var(--pink);color:var(--pink-dark);background:var(--tint-soft)}
+  @media(max-width:680px){.footer-inner{padding-right:72px}.manage-btn{right:14px;bottom:14px}}
   .management-option{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--tint-soft)}.management-option h4{margin:0 0 4px;font-size:14px}.management-option p{margin:0;font-size:12.5px;color:var(--muted)}
   .passcode-wrap{margin-top:12px}.passcode-wrap label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}.passcode-wrap input{width:100%;font-family:inherit;font-size:15px;border:1.5px solid var(--line-strong);border-radius:10px;padding:10px 12px}
 
@@ -491,7 +492,7 @@ function initRejection(){
     var v=sel.value;var isReject=(v==='Rejected to Broker'||v==='Rejected to Dealership'||v==='Sold at Auction');
     loss.disabled=!isReject;btn.disabled=!isReject;rejLossField.style.opacity=isReject?'1':'.55';
     if(!isReject){loss.value='0';markZero(loss);rejBreakdown={used:false};$('#rejLossCalcPill').hidden=true;}
-    recompute();
+    recompute();if(typeof updateCostRequirements==='function')updateCostRequirements();
   }
   sel.addEventListener('change',sync);return sync;
 }
@@ -508,8 +509,9 @@ function initFos(){
     var upheld=(result==='Upheld');
     $('#fosVehField').classList.toggle('hiddenrow',!upheld);
     if(!upheld)$('#fosRejection').value='';
+    if(typeof updateCostRequirements==='function')updateCostRequirements();
   }
-  omb.addEventListener('change',sync);inv.addEventListener('change',sync);return sync;
+  omb.addEventListener('change',sync);inv.addEventListener('change',sync);$('#fosRejection').addEventListener('change',function(){if(typeof updateCostRequirements==='function')updateCostRequirements();});return sync;
 }
 function gateFos(){
   var tab=$('#tab-fos');
@@ -841,39 +843,41 @@ function renderRunningMini(){
   });
 }
 function rcOptions(selected){
-  var opts=['Uncategorised'].concat(RUNNING_TYPES),h='';
-  opts.forEach(function(v){h+='<option value="'+esc(v)+'"'+(v===selected?' selected':'')+'>'+esc(v)+'</option>';});return h;
+  selected=selected||'';
+  var h='<option value=""'+(!selected?' selected':'')+' disabled>Select cost type…</option>';
+  if(selected==='Uncategorised')h+='<option value="Uncategorised" selected disabled>Uncategorised — choose a cost type</option>';
+  RUNNING_TYPES.forEach(function(v){h+='<option value="'+esc(v)+'"'+(v===selected?' selected':'')+'>'+esc(v)+'</option>';});return h;
 }
 function rcEditorCompute(){
   var t=0;document.querySelectorAll('#rc_rows .rc-edit-row').forEach(function(row){t+=num(row.querySelector('.rc_amt').value)});$('#rc_total').textContent=gbp.format(t);return t;
 }
 function rcEditorRow(r){
-  r=r||{desc:'',amount:0,type:'Uncategorised'};var wrap=document.createElement('div');wrap.className='rc-edit-row';
+  r=r||{desc:'',amount:0,type:''};var wrap=document.createElement('div');wrap.className='rc-edit-row';
   wrap.innerHTML='<input type="text" class="rc_desc" placeholder="Description" value="'+esc(r.desc)+'">'
     +'<div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" class="rc_amt" value="'+esc(r.amount!=null?r.amount:0)+'"></div>'
-    +'<select class="rc_type">'+rcOptions(r.type||'Uncategorised')+'</select>'
+    +'<select class="rc_type">'+rcOptions(r.type==null?'':r.type)+'</select>'
     +'<button type="button" class="rc-del" aria-label="Remove running cost">&times;</button>';
   wrap.querySelector('.rc_amt').addEventListener('input',rcEditorCompute);
   wrap.querySelector('.rc-del').addEventListener('click',function(){wrap.parentNode.removeChild(wrap);rcEditorCompute();});
   return wrap;
 }
 function openRunningEditor(){
-  var box=$('#rc_rows');box.innerHTML='';var rows=normaliseRunningRows(runningCostsRows);if(!rows.length)rows=[{desc:'',amount:0,type:'Uncategorised'}];
+  var box=$('#rc_rows');box.innerHTML='';var rows=normaliseRunningRows(runningCostsRows);if(!rows.length)rows=[{desc:'',amount:0,type:''}];
   rows.forEach(function(r){box.appendChild(rcEditorRow(r))});$('#rcEditorError').classList.remove('show');$('#rcEditorError').textContent='';rcEditorCompute();$('#runningOverlay').classList.add('show');
 }
 function collectRunningEditor(){
   var rows=[],error='';document.querySelectorAll('#rc_rows .rc-edit-row').forEach(function(row){
-    var d=row.querySelector('.rc_desc').value.trim(),raw=row.querySelector('.rc_amt').value.trim(),a=num(raw),type=row.querySelector('.rc_type').value||'Uncategorised';
-    if(!d&&(!raw||a===0))return;if(!d){error='Each running cost with an amount needs a description.';return;}if(raw===''){error='Each running cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a,type:type});
+    var d=row.querySelector('.rc_desc').value.trim(),raw=row.querySelector('.rc_amt').value.trim(),a=num(raw),type=row.querySelector('.rc_type').value||'';
+    if(!d&&(!raw||a===0))return;if(!d){error='Each running cost with an amount needs a description.';return;}if(raw===''){error='Each running cost needs an amount (enter 0 if none).';return;}if(!type||type==='Uncategorised'){error='Every running cost must be categorised before Running Costs can be saved.';return;}rows.push({desc:d,amount:a,type:type});
   });return {rows:rows,error:error};
 }
 function initRunningCosts(){
-  runningCostsRows=parseRunningCosts(PREFILL.runningCosts||'');runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;renderRunningMain();renderRunningMini();
+  runningCostsRows=parseRunningCosts(PREFILL.runningCosts||'');runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;renderRunningMain();renderRunningMini();updateCostRequirements();
   $('#runningEditBtn').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();openRunningEditor();});
-  $('#rc_add').addEventListener('click',function(){$('#rc_rows').appendChild(rcEditorRow({desc:'',amount:0,type:'Uncategorised'}));rcEditorCompute();});
+  $('#rc_add').addEventListener('click',function(){$('#rc_rows').appendChild(rcEditorRow({desc:'',amount:0,type:''}));rcEditorCompute();});
   $('#runningCancel').addEventListener('click',function(){$('#runningOverlay').classList.remove('show')});
   $('#runningOverlay').addEventListener('click',function(e){if(e.target===$('#runningOverlay'))$('#runningOverlay').classList.remove('show')});
-  $('#runningSave').addEventListener('click',function(){var got=collectRunningEditor();var er=$('#rcEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}runningCostsRows=normaliseRunningRows(got.rows);runningCostsDirty=runningRowsKey(runningCostsRows)!==runningCostsInitial;renderRunningMain();renderRunningMini();$('#runningOverlay').classList.remove('show');});
+  $('#runningSave').addEventListener('click',function(){var got=collectRunningEditor();var er=$('#rcEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}runningCostsRows=normaliseRunningRows(got.rows);runningCostsDirty=runningRowsKey(runningCostsRows)!==runningCostsInitial;renderRunningMain();renderRunningMini();updateCostRequirements();$('#runningOverlay').classList.remove('show');});
 }
 function showRunningOnlyWarning(errors){pendingValidationErrors=errors||[];$('#runningOnlyError').classList.remove('show');$('#runningOnlyError').textContent='';$('#runningOnlySave').disabled=false;$('#runningOnlySave').textContent='Save Running Costs Only';$('#runningOnlyOverlay').classList.add('show');}
 function initRunningOnlySave(){
@@ -889,16 +893,16 @@ function initRunningOnlySave(){
 
 
 var COST_META={
-  c_direct:{title:'Direct Compensation',saved:'invDirect',legacy:'customfield_10164'},
-  c_di:{title:'Distress & Inconvenience',saved:'invDi',legacy:'customfield_10165'},
-  c_repair:{title:'Vehicle Repair Costs',saved:'invRepair',legacy:'customfield_10281'},
-  c_courtesy:{title:'Courtesy Car & Travel Costs',saved:'invCourtesy',legacy:'customfield_11192'},
-  c_other:{title:'Other Costs',saved:'invOther',legacy:'customfield_10284'},
-  f_direct:{title:'FOS Direct Compensation',saved:'fosDirect',legacy:'customfield_11555'},
-  f_di:{title:'FOS Distress & Inconvenience',saved:'fosDi',legacy:'customfield_11556'},
-  f_repair:{title:'FOS Repair Costs',saved:'fosRepair',legacy:'customfield_11557'},
-  f_courtesy:{title:'FOS Courtesy Car & Travel Costs',saved:'fosCourtesy',legacy:'customfield_11560'},
-  f_other:{title:'FOS Other Costs',saved:'fosOther',legacy:'customfield_11561'}
+  c_direct:{title:'Direct Compensation',saved:'invDirect',legacy:'customfield_10164',fallback:'Direct Compensation'},
+  c_di:{title:'Distress & Inconvenience',saved:'invDi',legacy:'customfield_10165',fallback:'Distress & Inconvenience'},
+  c_repair:{title:'Vehicle Repair Costs',saved:'invRepair',legacy:'customfield_10281',fallback:'Vehicle Repair Cost'},
+  c_courtesy:{title:'Courtesy Car & Travel Costs',saved:'invCourtesy',legacy:'customfield_11192',fallback:'Courtesy Car & Travel Cost'},
+  c_other:{title:'Other Costs',saved:'invOther',legacy:'customfield_10284',fallback:'Other Cost'},
+  f_direct:{title:'FOS Direct Compensation',saved:'fosDirect',legacy:'customfield_11555',fallback:'FOS Direct Compensation'},
+  f_di:{title:'FOS Distress & Inconvenience',saved:'fosDi',legacy:'customfield_11556',fallback:'FOS Distress & Inconvenience'},
+  f_repair:{title:'FOS Repair Costs',saved:'fosRepair',legacy:'customfield_11557',fallback:'FOS Repair Cost'},
+  f_courtesy:{title:'FOS Courtesy Car & Travel Costs',saved:'fosCourtesy',legacy:'customfield_11560',fallback:'FOS Courtesy Car & Travel Cost'},
+  f_other:{title:'FOS Other Costs',saved:'fosOther',legacy:'customfield_11561',fallback:'FOS Other Cost'}
 };
 function cleanCostRows(rows){return (rows||[]).map(function(r){return {desc:String(r.desc||'').trim(),amount:num(r.amount)};}).filter(function(r){return r.desc!==''||r.amount!==0;});}
 function costRowsTotal(rows){return cleanCostRows(rows).reduce(function(a,r){return a+num(r.amount)},0);}
@@ -909,9 +913,73 @@ function openCostEditor(id){costCalcTarget=id;var meta=COST_META[id];if(!meta)re
 function collectCostEditor(){var rows=[],error='';document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim(),a=num(raw);if(!d&&(!raw||a===0))return;if(!d){error='Each cost with an amount needs a description.';return;}if(raw===''){error='Each cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a});});return {rows:rows,error:error};}
 function initCostEditors(){document.querySelectorAll('[data-cost-target]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.costTarget;if(id==='c_insp'){openInspCalc('inv');return;}if(id==='f_insp'){openInspCalc('fos');return;}openCostEditor(id);});});$('#cost_add').addEventListener('click',function(){$('#cost_rows').appendChild(costEditorRow({desc:'',amount:0}));costEditorCompute();});$('#costCancel').addEventListener('click',function(){$('#costOverlay').classList.remove('show')});$('#costOverlay').addEventListener('click',function(e){if(e.target===$('#costOverlay'))$('#costOverlay').classList.remove('show')});$('#costSave').addEventListener('click',function(){var got=collectCostEditor(),er=$('#costEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}costBreakdowns[costCalcTarget]={used:true,rows:cleanCostRows(got.rows)};syncCostFromBreakdown(costCalcTarget);renderRunningMini();$('#costOverlay').classList.remove('show');});}
 function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:has(s.rejProceeds)?s.rejProceeds:0,depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false;}else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false;}}}
-function restoreCostBreakdowns(){var saved=(PREFILL.saved&&PREFILL.saved.costBreakdowns)||{},present=(PREFILL.saved&&PREFILL.saved.costBreakdownPresent)||{};Object.keys(COST_META).forEach(function(id){var meta=COST_META[id],rows=Array.isArray(saved[meta.saved])?saved[meta.saved]:[];var existing=num(document.getElementById(id).value);if(present[meta.saved])costBreakdowns[id]={used:true,rows:cleanCostRows(rows)};else if(existing!==0)costBreakdowns[id]={used:true,rows:[{desc:'Existing saved amount',amount:existing}]};else costBreakdowns[id]={used:false,rows:[]};syncCostFromBreakdown(id);});}
-function restoreInspectionBreakdowns(){var s=PREFILL.saved||{},saved=s.inspectionBreakdowns||{};['c_insp','f_insp'].forEach(function(id){var src=saved[id]||{},isFos=id==='f_insp';var legacyRows=Array.isArray(src.legacyRows)?cleanInspectionRows(src.legacyRows):[];var b={used:!!src.used,dekraCount:Number(src.dekraCount)||0,otherInspectionRows:cleanInspectionRows(src.otherInspectionRows),storageRows:cleanInspectionRows(src.storageRows),recoveryRows:cleanInspectionRows(src.recoveryRows)};if(!b.used){var dk=isFos?s.fosDekra:s.invDekra,oth=isFos?s.fosOtherInsp:s.invOtherInsp,st=isFos?s.fosStorage:s.invStorage,rc=isFos?s.fosRecovery:s.invRecovery;if(legacyRows.length){b.used=true;b.otherInspectionRows=legacyRows;}else if(dk!=null||oth!=null||st!=null||rc!=null){b.used=true;b.dekraCount=Number(dk)||0;if(Number(oth))b.otherInspectionRows=[{desc:'Existing other inspection costs',amount:Number(oth)}];if(Number(st))b.storageRows=[{desc:'Existing storage costs',amount:Number(st)}];if(Number(rc))b.recoveryRows=[{desc:'Existing recovery costs',amount:Number(rc)}];}}inspectionBreakdowns[id]=b;syncInspectionCost(id);});}
-function costFieldNeedsRecord(id){var input=document.getElementById(id);if(!input||input.disabled)return false;var field=input.closest('.field');return !(field&&field.classList.contains('hiddenrow'));}
+function rawJiraCost(id){
+  var meta=COST_META[id],obj;
+  if(!meta)return {present:false,value:0};
+  if(id.indexOf('f_')===0){if(!PREFILL.fosApplicable)return {present:false,value:0};obj=(PREFILL.fos&&PREFILL.fos.costs)||{};}
+  else obj=PREFILL.internal||{};
+  var v=obj[meta.legacy];return {present:v!==null&&v!==undefined&&v!=='',value:num(v)};
+}
+function rawInspectionCost(id){
+  var isFos=id==='f_insp',obj=isFos?((PREFILL.fos&&PREFILL.fos.costs)||{}):(PREFILL.internal||{}),key=isFos?'customfield_11559':'customfield_10283';
+  if(isFos&&!PREFILL.fosApplicable)return {present:false,value:0};
+  var v=obj[key];return {present:v!==null&&v!==undefined&&v!=='',value:num(v)};
+}
+function restoreCostBreakdowns(){
+  var saved=(PREFILL.saved&&PREFILL.saved.costBreakdowns)||{},present=(PREFILL.saved&&PREFILL.saved.costBreakdownPresent)||{};
+  Object.keys(COST_META).forEach(function(id){
+    var meta=COST_META[id],rows=Array.isArray(saved[meta.saved])?saved[meta.saved]:[],legacy=rawJiraCost(id);
+    if(present[meta.saved])costBreakdowns[id]={used:true,rows:cleanCostRows(rows)};
+    else if(legacy.present)costBreakdowns[id]={used:true,rows:[{desc:meta.fallback||meta.title,amount:legacy.value}]};
+    else costBreakdowns[id]={used:false,rows:[]};
+    syncCostFromBreakdown(id);
+  });
+}
+function restoreInspectionBreakdowns(){
+  var s=PREFILL.saved||{},saved=s.inspectionBreakdowns||{};
+  ['c_insp','f_insp'].forEach(function(id){
+    var src=saved[id]||{},isFos=id==='f_insp',main=rawInspectionCost(id),legacyRows=Array.isArray(src.legacyRows)?cleanInspectionRows(src.legacyRows):[];
+    var b={used:!!src.used,dekraCount:Number(src.dekraCount)||0,otherInspectionRows:cleanInspectionRows(src.otherInspectionRows),storageRows:cleanInspectionRows(src.storageRows),recoveryRows:cleanInspectionRows(src.recoveryRows)};
+    if(!b.used){
+      var dk=isFos?s.fosDekra:s.invDekra,oth=isFos?s.fosOtherInsp:s.invOtherInsp,st=isFos?s.fosStorage:s.invStorage,rc=isFos?s.fosRecovery:s.invRecovery;
+      if(legacyRows.length){b.used=true;b.otherInspectionRows=legacyRows;}
+      else if(dk!=null||oth!=null||st!=null||rc!=null){b.used=true;b.dekraCount=Number(dk)||0;if(Number(oth))b.otherInspectionRows=[{desc:'Other Inspection Cost',amount:Number(oth)}];if(Number(st))b.storageRows=[{desc:'Storage Cost',amount:Number(st)}];if(Number(rc))b.recoveryRows=[{desc:'Recovery Cost',amount:Number(rc)}];}
+      else if(main.present){
+        b.used=true;
+        if(main.value===160)b.dekraCount=1;
+        else if(main.value>160&&Number(PREFILL.dekraDefault)>0){b.dekraCount=1;b.otherInspectionRows=[{desc:'Inspection, Storage Or Recovery Cost',amount:main.value-160}];}
+        else if(main.value!==0)b.otherInspectionRows=[{desc:'Inspection, Storage Or Recovery Cost',amount:main.value}];
+      }
+    }
+    inspectionBreakdowns[id]=b;syncInspectionCost(id);
+  });
+}
+function costFieldNeedsRecord(id){
+  if(id.indexOf('f_')===0&&!PREFILL.fosApplicable)return false;
+  var input=document.getElementById(id);if(!input||input.disabled)return false;var field=input.closest('.field');return !(field&&field.classList.contains('hiddenrow'));
+}
+var RUNNING_REQUIREMENTS={
+  c_direct:['Direct Compensation'],c_di:['Distress & Inconvenience'],c_repair:['Vehicle Repair Costs'],
+  c_insp:['DEKRA','Other Inspection Costs','Storage Costs','Recovery Costs'],c_courtesy:['Courtesy Car & Travel Costs'],c_other:['Other Costs']
+};
+function runningRequires(id){var types=RUNNING_REQUIREMENTS[id]||[];return normaliseRunningRows(runningCostsRows).some(function(r){return types.indexOf(r.type)!==-1;});}
+function isRealRejection(v){return v==='Rejected to Broker'||v==='Rejected to Dealership'||v==='Sold at Auction';}
+function costIsRequired(id){
+  if(id.indexOf('f_')===0&&!PREFILL.fosApplicable)return false;
+  if(id==='c_rejloss')return isRealRejection($('#rejection').value);
+  if(id==='f_rejloss')return PREFILL.fosApplicable&&$('#overallFos').textContent==='Upheld'&&isRealRejection($('#fosRejection').value);
+  return runningRequires(id);
+}
+function updateCostRequirements(){
+  var ids=Object.keys(COST_META).concat(['c_rejloss','c_insp','f_rejloss','f_insp','f_fee']);
+  ids.forEach(function(id){var label=document.querySelector('label[for="'+id+'"]'),star=label&&label.querySelector('.req');if(star)star.hidden=(id==='f_fee'||!costIsRequired(id));});
+}
+function costRecordedOrLegacy(id){
+  if(id==='c_insp'||id==='f_insp'){var b=inspectionBreakdowns[id],legacy=rawInspectionCost(id);return !!(b&&b.used)||legacy.present;}
+  if(id==='c_rejloss'){var raw=(PREFILL.internal||{}).customfield_10282;return !!rejBreakdown.used||(raw!==null&&raw!==undefined&&raw!=='');}
+  if(id==='f_rejloss'){var raw=((PREFILL.fos&&PREFILL.fos.costs)||{}).customfield_11558;return !!fosRejBreakdown.used||(raw!==null&&raw!==undefined&&raw!=='');}
+  var b=costBreakdowns[id],legacy=rawJiraCost(id);return !!(b&&b.used)||legacy.present;
+}
 function initManagementActions(){var ov=$('#managementOverlay'),pass=$('#overridePasscode'),er=$('#managementError'),btn=$('#forceSubmitBtn');$('#manageBtn').addEventListener('click',function(){er.classList.remove('show');er.textContent='';pass.value='';btn.disabled=false;btn.textContent='Force Submit';ov.classList.add('show');setTimeout(function(){pass.focus();},30);});$('#managementCancel').addEventListener('click',function(){ov.classList.remove('show');pass.value='';});ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('show');pass.value='';}});btn.addEventListener('click',function(){var code=pass.value;if(!code){er.textContent='Enter the management passcode.';er.classList.add('show');return;}var res=collectAndValidate();res.payload.forceSubmit=true;res.payload.overridePasscode=code;btn.disabled=true;btn.textContent='Submitting…';er.classList.remove('show');fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)}).then(function(r){return r.json()}).then(function(d){if(d.ok){btn.textContent='Submitted ✓';window.location.href=d.redirect;}else{er.textContent=(d.errors&&d.errors[0])||'Force submit failed.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';}}).catch(function(){er.textContent='Network error during force submit.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';});});}
 // Keep every calculator-controlled cost read-only, including rejection loss.
 function lockAll(lock){var controls=document.querySelectorAll('#panel-internal input, #panel-internal select, #panel-internal button, #panel-fos input, #panel-fos select, #panel-fos button, #runningCostsCard button, #saveBtn, #manageBtn');for(var i=0;i<controls.length;i++){var el=controls[i];if(lock){el.setAttribute('data-closedlock','1');if(el.tagName==='BUTTON'||el.tagName==='SELECT')el.disabled=true;else{el.setAttribute('readonly','readonly');el.classList.add('closedlocked');}el.style.opacity='.6';}else{el.removeAttribute('data-closedlock');el.style.opacity='';if(el.tagName==='BUTTON'||el.tagName==='SELECT')el.disabled=false;else{el.removeAttribute('readonly');el.classList.remove('closedlocked');}}}if(!lock){document.querySelectorAll('[data-calc-controlled],#c_rejloss,#f_rejloss').forEach(function(el){el.setAttribute('readonly','readonly');});var fee=document.getElementById('f_fee');if(fee)fee.disabled=true;if(typeof window.__syncRej==='function')window.__syncRej();var omb=document.getElementById('fosOmbudsman');if(omb&&PREFILL.fosStage!=='ombudsman')omb.disabled=true;$('#saveBtn').disabled=false;$('#manageBtn').disabled=false;}}
@@ -928,7 +996,7 @@ function applyPrefill(){
 
   var im=PREFILL.internal;
   var map={c_direct:'customfield_10164',c_di:'customfield_10165',c_repair:'customfield_10281',c_rejloss:'customfield_10282',c_insp:'customfield_10283',c_courtesy:'customfield_11192',c_other:'customfield_10284'};
-  for(var id in map){if(im[map[id]]){setMoney(id,im[map[id]]);jiraTag(id);}}
+  for(var id in map){var iv=im[map[id]];if(iv!==null&&iv!==undefined&&iv!==''){setMoney(id,iv);jiraTag(id);}}
 
   var isVehicleComplaint = (PREFILL.complaintType||'').toLowerCase()==='vehicle issues';
   var rej=PREFILL.rejectionOutcome||[];
@@ -949,7 +1017,7 @@ function applyPrefill(){
     if(fm.investigator)$('#fosInvestigator').value=fm.investigator;
     if(fm.ombudsman)$('#fosOmbudsman').value=fm.ombudsman;
     var fmap={f_fee:'customfield_10289',f_direct:'customfield_11555',f_di:'customfield_11556',f_repair:'customfield_11557',f_rejloss:'customfield_11558',f_insp:'customfield_11559',f_courtesy:'customfield_11560',f_other:'customfield_11561'};
-    for(var fid in fmap){if(fm.costs[fmap[fid]]){setMoney(fid,fm.costs[fmap[fid]]);jiraTag(fid);}}
+    for(var fid in fmap){var fv0=fm.costs[fmap[fid]];if(fv0!==null&&fv0!==undefined&&fv0!==''){setMoney(fid,fv0);jiraTag(fid);}}
   }
 }
 
@@ -960,9 +1028,11 @@ function collectAndValidate(){
   var rejection=$('#rejection').value;
   if(!rejection)errors.push('Select what happened to the vehicle.');
   function costVal(id,label){var el=document.getElementById(id);if(el.disabled)return num(el.value);if(el.value===''){errors.push(label+' is required (enter 0 if none).');return 0;}return num(el.value);}
-  Object.keys(COST_META).forEach(function(id){if(costFieldNeedsRecord(id)&&!(costBreakdowns[id]&&costBreakdowns[id].used))errors.push(COST_META[id].title+' must be recorded using the Record Cost button.');});
-  if(costFieldNeedsRecord('c_insp')&&!(inspectionBreakdowns.c_insp&&inspectionBreakdowns.c_insp.used))errors.push('Inspection, Storage or Recovery Costs must be recorded using the Record Cost button.');
-  if(PREFILL.fosApplicable&&costFieldNeedsRecord('f_insp')&&!(inspectionBreakdowns.f_insp&&inspectionBreakdowns.f_insp.used))errors.push('FOS Inspection, Storage or Recovery Costs must be recorded using the Record Cost button.');
+  Object.keys(COST_META).forEach(function(id){if(costIsRequired(id)&&costFieldNeedsRecord(id)&&!costRecordedOrLegacy(id))errors.push(COST_META[id].title+' must be recorded using the Record Cost button.');});
+  if(costIsRequired('c_insp')&&costFieldNeedsRecord('c_insp')&&!costRecordedOrLegacy('c_insp'))errors.push('Inspection, Storage or Recovery Costs must be recorded using the Record Cost button.');
+  if(costIsRequired('c_rejloss')&&costFieldNeedsRecord('c_rejloss')&&!costRecordedOrLegacy('c_rejloss'))errors.push('Vehicle Rejection Loss must be completed using the rejection loss calculator.');
+  if(PREFILL.fosApplicable&&costIsRequired('f_insp')&&costFieldNeedsRecord('f_insp')&&!costRecordedOrLegacy('f_insp'))errors.push('FOS Inspection, Storage or Recovery Costs must be recorded using the Record Cost button.');
+  if(PREFILL.fosApplicable&&costIsRequired('f_rejloss')&&costFieldNeedsRecord('f_rejloss')&&!costRecordedOrLegacy('f_rejloss'))errors.push('FOS Rejection Loss must be completed using the rejection loss calculator.');
   var internal={
     customfield_10164:costVal('c_direct','Direct compensation'),customfield_10165:costVal('c_di','Distress & inconvenience'),
     customfield_10281:costVal('c_repair','Vehicle repair costs'),customfield_10282:costVal('c_rejloss','Vehicle rejection loss'),
@@ -1023,7 +1093,7 @@ function boot(){
       gateFos();initTabs();initVehicleVisibility();
       var syncRej=initRejection();var syncFos=initFos();window.__syncRej=syncRej;
       initRejCalc();initInspCalc();initCostEditors();
-      applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();
+      applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();
       // default to FOS tab when applicable
       if(PREFILL.fosApplicable)selectTab('tab-fos');
     })
