@@ -276,6 +276,7 @@
   <div class="totals">
     <div class="tot"><span class="k">Investigation</span><span class="v" id="ftInternal">&pound;0.00</span></div>
     <div class="tot"><span class="k">FOS</span><span class="v" id="ftFos">&pound;0.00</span></div>
+    <div class="tot"><span class="k">FOS Fee</span><span class="v" id="ftFosFee">&pound;0.00</span></div>
     <div class="tot"><span class="k">Solicitor</span><span class="v" id="ftSol">&pound;0.00</span></div>
     <div class="tot grand"><span class="k">Total Overall Cost</span><span class="v" id="ftOverall">&pound;0.00</span></div>
   </div>
@@ -418,14 +419,16 @@ function sumClass(c){var t=0;var els=document.querySelectorAll('.'+c);for(var i=
 
 function recompute(){
   var internal=sumClass('cost');
-  var fos=PREFILL.fosApplicable?sumClass('fcost'):0;
+  var fosFee=PREFILL.fosApplicable?num($('#f_fee').value):0;
+  var fos=PREFILL.fosApplicable?(sumClass('fcost')-fosFee):0;
   var sol=PREFILL.solicitor||0;
   $('#internalTotal').textContent=gbp.format(internal);
   $('#fosTotal').textContent=gbp.format(fos);
   $('#ftInternal').textContent=gbp.format(internal);
   $('#ftFos').textContent=gbp.format(fos);
+  $('#ftFosFee').textContent=gbp.format(fosFee);
   $('#ftSol').textContent=gbp.format(sol);
-  $('#ftOverall').textContent=gbp.format(internal+fos+sol);
+  $('#ftOverall').textContent=gbp.format(internal+fos+fosFee+sol);
 }
 
 /* vehicle-cost visibility by complaint type */
