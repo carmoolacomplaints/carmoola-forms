@@ -489,6 +489,7 @@ function sumClass(c){var t=0;var els=document.querySelectorAll('.'+c);for(var i=
 
 var REVIEW_MODE=false, REVIEW_DOCS={}, REVIEW_SELECTED='';
 function fmtReviewDate(v){if(!v)return '';var d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
+function fmtReviewOutcome(v){var s=String(v||'').trim();if(!s)return '';var map={upheld:'Upheld',not_upheld:'Not Upheld',partially_upheld:'Partially Upheld',withdrawn:'Withdrawn',unclear:'Unclear'};var k=s.toLowerCase().replace(/[\s-]+/g,'_');if(map[k])return map[k];return s.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
 function reviewDocObject(kind){return (PREFILL&&PREFILL.fosReview&&PREFILL.fosReview.documents&&PREFILL.fosReview.documents[kind])||null;}
 function reviewSetMode(on){
   if(!PREFILL||!PREFILL.fosReview||!PREFILL.fosReview.allowed)return;
@@ -506,7 +507,7 @@ function reviewSelectDoc(kind){
   REVIEW_SELECTED=kind;
   document.querySelectorAll('[data-review-doc]').forEach(function(b){b.classList.toggle('active',b.dataset.reviewDoc===kind);});
   $('#rvReaderTitle').textContent=doc.title||'Review document';
-  var meta=[];if(doc.outcome)meta.push(doc.outcome);if(doc.date)meta.push(fmtReviewDate(doc.date));if(doc.author)meta.push(doc.author);if(doc.wordCount)meta.push(doc.wordCount+' words');
+  var meta=[];if(doc.outcome)meta.push(fmtReviewOutcome(doc.outcome));if(doc.date)meta.push(fmtReviewDate(doc.date));if(doc.author)meta.push(doc.author);if(doc.wordCount)meta.push(doc.wordCount+' words');
   $('#rvReaderMeta').textContent=meta.join(' · ')||'Stored document';
   $('#rvReaderBody').textContent=doc.text||'No text was stored for this document.';
   var link=$('#rvReaderLink');if(doc.url){link.href=doc.url;link.hidden=false;}else{link.hidden=true;link.removeAttribute('href');}
@@ -517,12 +518,12 @@ function renderReview(){
   var resp=r.documents.response||{},inv=r.documents.investigator||{},omb=r.documents.ombudsman||{};
   $('#rvResponseLabel').textContent=resp.title||'Carmoola Response';
   $('#rvResponseMeta').textContent=resp.available?((resp.documentType||'Stored response')+(resp.wordCount?' · '+resp.wordCount+' words':'')):'Not available';
-  $('#rvInvestigatorMeta').textContent=inv.available?((inv.outcome||'Decision')+(inv.date?' · '+fmtReviewDate(inv.date):'')):'Not available';
-  $('#rvOmbudsmanMeta').textContent=omb.available?((omb.outcome||'Decision')+(omb.date?' · '+fmtReviewDate(omb.date):'')):'Not reached';
+  $('#rvInvestigatorMeta').textContent=inv.available?((fmtReviewOutcome(inv.outcome)||'Decision')+(inv.date?' · '+fmtReviewDate(inv.date):'')):'Not available';
+  $('#rvOmbudsmanMeta').textContent=omb.available?((fmtReviewOutcome(omb.outcome)||'Decision')+(omb.date?' · '+fmtReviewDate(omb.date):'')):'Not reached';
   document.querySelectorAll('[data-review-doc]').forEach(function(btn){var d=reviewDocObject(btn.dataset.reviewDoc);btn.disabled=!(d&&d.available);});
   $('#rvStageResponse').classList.toggle('done',!!resp.available);$('#rvStageResponseText').textContent=resp.available?'Response available':'Not available';
-  $('#rvStageInvestigator').classList.toggle('done',!!inv.available);$('#rvStageInvestigator').classList.toggle('current',r.latestStage==='investigator');$('#rvStageInvestigatorText').textContent=inv.available?(inv.outcome||'Received'):'Not available';
-  $('#rvStageOmbudsman').classList.toggle('done',!!omb.available);$('#rvStageOmbudsman').classList.toggle('current',r.latestStage==='ombudsman');$('#rvStageOmbudsmanText').textContent=omb.available?(omb.outcome||'Received'):'Not reached';
+  $('#rvStageInvestigator').classList.toggle('done',!!inv.available);$('#rvStageInvestigator').classList.toggle('current',r.latestStage==='investigator');$('#rvStageInvestigatorText').textContent=inv.available?(fmtReviewOutcome(inv.outcome)||'Received'):'Not available';
+  $('#rvStageOmbudsman').classList.toggle('done',!!omb.available);$('#rvStageOmbudsman').classList.toggle('current',r.latestStage==='ombudsman');$('#rvStageOmbudsmanText').textContent=omb.available?(fmtReviewOutcome(omb.outcome)||'Received'):'Not reached';
   var buttons=$('#rvActionButtons');buttons.innerHTML='';
   if(r.latestStage==='investigator'){
     $('#rvActionTitle').innerHTML='Investigator view received <span class="review-badge">Decision required</span>';
