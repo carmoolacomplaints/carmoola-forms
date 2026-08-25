@@ -557,7 +557,14 @@ function submitReviewAction(action){
 }
 function initReview(){
   if(!PREFILL.fosReview||!PREFILL.fosReview.allowed)return;
-  renderReview();$('#reviewViewToggle').addEventListener('click',function(){reviewSetMode(!REVIEW_MODE);});
+  renderReview();
+  document.querySelectorAll('[data-review-doc]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(this.disabled)return;
+      reviewSelectDoc(this.dataset.reviewDoc);
+    });
+  });
+  $('#reviewViewToggle').addEventListener('click',function(){reviewSetMode(!REVIEW_MODE);});
   $('#reviewConfirmCancel').addEventListener('click',function(){$('#reviewConfirmOverlay').classList.remove('show');});$('#reviewConfirmOverlay').addEventListener('click',function(e){if(e.target===$('#reviewConfirmOverlay'))e.currentTarget.classList.remove('show');});$('#reviewConfirmGo').addEventListener('click',function(){submitReviewAction(this.dataset.action);});
   reviewSetMode(true);
 }
