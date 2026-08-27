@@ -165,6 +165,13 @@
   .review-grid{display:grid;grid-template-columns:230px minmax(0,1fr);gap:14px;align-items:start}.review-nav{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:8px;position:sticky;top:14px}.review-nav-title{padding:9px 10px 6px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.docbtn{width:100%;border:0;background:transparent;text-align:left;padding:11px;border-radius:10px;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;gap:9px;align-items:flex-start;margin:2px 0}.docbtn:hover{background:var(--tint-soft)}.docbtn.active{background:var(--tint);color:var(--pink-dark)}.docbtn:disabled{opacity:.42;cursor:not-allowed}.docico{width:30px;height:30px;border-radius:8px;background:#F3EDF4;display:flex;align-items:center;justify-content:center;flex:none;font-size:14px}.docbtn.active .docico{background:#fff}.docmeta{min-width:0}.docmeta strong{display:block;font-size:13px}.docmeta span{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.docbtn.active .docmeta span{color:#8E3A68}
   .review-reader{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.reader-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.reader-title{min-width:0}.reader-title h3{margin:0;font-size:16px}.reader-title p{margin:3px 0 0;font-size:11.5px;color:var(--muted)}.reader-link{font-size:12px;font-weight:700;color:var(--pink-dark);text-decoration:none;border:1px solid #F4C5DC;background:var(--tint-soft);padding:7px 10px;border-radius:8px;white-space:nowrap}.reader-link:hover{background:var(--tint)}.reader-body{padding:20px;min-height:360px;max-height:580px;overflow:auto;white-space:pre-wrap;font-family:'DM Sans',sans-serif;font-size:13.5px;line-height:1.7;color:#322B38}.reader-empty{color:var(--muted);text-align:center;padding:80px 20px}.review-actions{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px;margin-top:14px}.review-actions h3{margin:0 0 4px;font-size:15px}.review-actions p{margin:0;color:var(--muted);font-size:12.5px}.review-action-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.review-accept,.review-escalate,.review-continue{font-family:inherit;font-size:13.5px;font-weight:800;border-radius:10px;padding:11px 15px;cursor:pointer}.review-accept,.review-continue{border:0;background:var(--pink);color:#fff;box-shadow:0 4px 14px rgba(249,0,129,.22)}.review-accept:hover,.review-continue:hover{background:var(--pink-dark)}.review-escalate{border:1.5px solid #6E5A77;background:#fff;color:#3B2A43}.review-escalate:hover{border-color:var(--pink-dark);color:var(--pink-dark);background:var(--tint-soft)}.review-badge{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:var(--good-tint);color:var(--good);border-radius:6px;padding:4px 7px;margin-left:7px}.review-badge.final{background:#F0E9F4;color:#5D3C6B}
   .confirm-copy{font-size:13.5px;color:var(--ink);line-height:1.6}.confirm-copy strong{color:var(--pink-dark)}.confirm-note{margin-top:12px;padding:11px 12px;background:var(--tint-soft);border:1px solid #F6D3E6;border-radius:9px;font-size:12px;color:#69445A}.btn-dangersoft{font-family:inherit;font-size:14px;font-weight:800;color:#fff;background:#5A365F;border:0;border-radius:10px;padding:10px 18px;cursor:pointer}.btn-dangersoft:hover{background:#432647}
+
+  /* AI summaries and FOS required actions */
+  .reader-content{min-height:360px;max-height:580px;overflow:auto;padding:20px}.reader-content .reader-empty{padding:60px 20px}
+  .ai-summary{background:linear-gradient(180deg,#FFF7FB 0%,#FFF 100%);border:1px solid #F2CFE1;border-radius:12px;padding:15px 16px;margin-bottom:14px}.ai-summary-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.ai-summary-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--pink-dark)}.ai-pill{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:var(--tint);color:var(--pink-dark);border-radius:5px;padding:3px 6px}.ai-summary ul{margin:0;padding-left:19px}.ai-summary li{font-size:12.75px;line-height:1.55;color:#433647;margin:5px 0}
+  details.fos-required-read{border:1px solid #ECDDE6;border-radius:11px;background:#FCFAFC;margin-bottom:15px;overflow:hidden}details.fos-required-read>summary{list-style:none;cursor:pointer;padding:11px 13px;display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:800;color:#4B354A}details.fos-required-read>summary::-webkit-details-marker{display:none}details.fos-required-read>summary:after{content:'▾';margin-left:auto;color:var(--muted)}details.fos-required-read[open]>summary:after{content:'▴'}.fos-action-count{display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:#F2E8EE;color:#76566B;font-size:10px}.fos-required-read-body{border-top:1px solid #ECDDE6;padding:5px 13px 10px}.fos-required-read ol{margin:4px 0 0;padding-left:21px}.fos-required-read li{font-size:12.5px;line-height:1.55;color:#433A46;padding:5px 0}
+  .full-decision-label{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:4px 0 8px}.reader-decision-text{white-space:pre-wrap;font-family:'DM Sans',sans-serif;font-size:13.5px;line-height:1.7;color:#322B38}
+  .fos-task-card{background:var(--white);border:1px solid #CDE7D9;border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 20px 16px;margin-bottom:16px}.fos-task-card.hidden{display:none}.fos-task-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:15px 0 10px}.fos-task-head h2{margin:0;font-size:15px}.fos-task-head p{margin:3px 0 0;font-size:12px;color:var(--muted)}.fos-task-progress{flex:none;background:var(--good-tint);color:var(--good);border-radius:999px;padding:5px 9px;font-size:10.5px;font-weight:800;white-space:nowrap}.fos-task-list{border-top:1px solid var(--line)}.fos-task{display:flex;gap:11px;align-items:flex-start;padding:12px 2px;border-top:1px solid var(--line);cursor:pointer;transition:.14s}.fos-task:first-child{border-top:0}.fos-task:hover{background:#FCFAFC}.fos-task input{position:absolute;opacity:0;pointer-events:none}.fos-task-check{width:20px;height:20px;flex:none;margin-top:1px;border:1.7px solid #BFB6C5;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;transition:.14s}.fos-task-check svg{display:none}.fos-task-text{font-size:13px;line-height:1.5;color:#352D39;transition:.14s}.fos-task.done{background:#F2FAF6}.fos-task.done .fos-task-check{background:var(--good);border-color:var(--good)}.fos-task.done .fos-task-check svg{display:block}.fos-task.done .fos-task-text{color:#4D725F;text-decoration:line-through;text-decoration-thickness:1.5px}.fos-task.saving{opacity:.62}.fos-task-error{display:none;margin:8px 0 0;background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:8px;padding:8px 10px;font-size:11.5px}.fos-task-error.show{display:block}
   @media(max-width:720px){.review-grid{grid-template-columns:1fr}.review-nav{position:static;display:flex;overflow:auto}.review-nav-title{display:none}.docbtn{min-width:180px}.review-stagebar{grid-template-columns:1fr}.reader-body{max-height:500px}.view-switch{align-items:flex-start;flex-direction:column}}
 
 </style>
@@ -234,7 +241,7 @@
             <div class="reader-title"><h3 id="rvReaderTitle">Review document</h3><p id="rvReaderMeta">Select a source to review.</p></div>
             <a class="reader-link" id="rvReaderLink" href="#" target="_blank" rel="noopener" hidden>View original</a>
           </div>
-          <div class="reader-body" id="rvReaderBody"><div class="reader-empty">Loading decision material…</div></div>
+          <div class="reader-content" id="rvReaderBody"><div class="reader-empty">Loading decision material…</div></div>
         </article>
 
         <div class="review-actions" id="rvActions">
@@ -295,6 +302,18 @@
 
   <section class="panel" id="panel-fos" role="tabpanel">
     <div id="fosContent">
+      <div class="fos-task-card hidden" id="fosRequiredCard">
+        <div class="fos-task-head">
+          <div>
+            <h2>FOS Required Actions</h2>
+            <p id="fosRequiredSource">Complete each action required by FOS.</p>
+          </div>
+          <div class="fos-task-progress" id="fosRequiredProgress">0 of 0 completed</div>
+        </div>
+        <div class="fos-task-list" id="fosRequiredList"></div>
+        <div class="fos-task-error" id="fosRequiredError"></div>
+      </div>
+
       <div class="card">
         <div class="card-head"><span class="num">Outcome</span><h2>FOS Outcome</h2></div>
         <div class="field"><span class="lab">Current Stage</span>
@@ -488,6 +507,7 @@ function sumClass(c){var t=0;var els=document.querySelectorAll('.'+c);for(var i=
 
 
 var REVIEW_MODE=false, REVIEW_DOCS={}, REVIEW_SELECTED='';
+var FOS_REQUIRED_STAGE='', FOS_REQUIRED_ACTIONS=[], FOS_COMPLETED_ACTIONS=[];
 function fmtReviewDate(v){if(!v)return '';var d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
 function fmtReviewOutcome(v){var s=String(v||'').trim();if(!s)return '';var map={upheld:'Upheld',not_upheld:'Not Upheld',partially_upheld:'Partially Upheld',withdrawn:'Withdrawn',unclear:'Unclear'};var k=s.toLowerCase().replace(/[\s-]+/g,'_');if(map[k])return map[k];return s.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
 function reviewDocObject(kind){return (PREFILL&&PREFILL.fosReview&&PREFILL.fosReview.documents&&PREFILL.fosReview.documents[kind])||null;}
@@ -502,6 +522,28 @@ function reviewSetMode(on){
   document.title=PREFILL.issueKey+' - '+(REVIEW_MODE?'FOS Decision Review':'Complaint Closure Form');
   window.scrollTo({top:0,behavior:'smooth'});
 }
+function reviewArray(v){
+  if(Array.isArray(v))return v.map(function(x){return String(x||'').trim();}).filter(Boolean);
+  if(v==null||v==='')return [];
+  if(typeof v==='string'){
+    try{var p=JSON.parse(v);if(Array.isArray(p))return reviewArray(p);}catch(e){}
+  }
+  return [];
+}
+function appendReviewSummary(box,items){
+  items=reviewArray(items);if(!items.length)return;
+  var wrap=document.createElement('div');wrap.className='ai-summary';
+  var head=document.createElement('div');head.className='ai-summary-head';
+  var title=document.createElement('div');title.className='ai-summary-title';title.textContent='AI Summary';
+  var pill=document.createElement('span');pill.className='ai-pill';pill.textContent='AI generated';title.appendChild(pill);head.appendChild(title);wrap.appendChild(head);
+  var ul=document.createElement('ul');items.forEach(function(item){var li=document.createElement('li');li.textContent=item;ul.appendChild(li);});wrap.appendChild(ul);box.appendChild(wrap);
+}
+function appendReviewRequiredActions(box,items){
+  items=reviewArray(items);if(!items.length)return;
+  var d=document.createElement('details');d.className='fos-required-read';
+  var s=document.createElement('summary');var label=document.createElement('span');label.textContent='Required actions';s.appendChild(label);var count=document.createElement('span');count.className='fos-action-count';count.textContent=String(items.length);s.appendChild(count);d.appendChild(s);
+  var body=document.createElement('div');body.className='fos-required-read-body';var ol=document.createElement('ol');items.forEach(function(item){var li=document.createElement('li');li.textContent=item;ol.appendChild(li);});body.appendChild(ol);d.appendChild(body);box.appendChild(d);
+}
 function reviewSelectDoc(kind){
   var doc=reviewDocObject(kind);if(!doc||!doc.available)return;
   REVIEW_SELECTED=kind;
@@ -509,9 +551,16 @@ function reviewSelectDoc(kind){
   $('#rvReaderTitle').textContent=doc.title||'Review document';
   var meta=[];if(doc.outcome)meta.push(fmtReviewOutcome(doc.outcome));if(doc.date)meta.push(fmtReviewDate(doc.date));if(doc.author)meta.push(doc.author);if(doc.wordCount)meta.push(doc.wordCount+' words');
   $('#rvReaderMeta').textContent=meta.join(' · ')||'Stored document';
-  $('#rvReaderBody').textContent=doc.text||'No text was stored for this document.';
+  var box=$('#rvReaderBody');box.innerHTML='';
+  if(kind==='investigator'||kind==='ombudsman'){
+    appendReviewSummary(box,doc.aiSummary);
+    appendReviewRequiredActions(box,doc.requiredActions);
+    var lbl=document.createElement('div');lbl.className='full-decision-label';lbl.textContent='Full decision';box.appendChild(lbl);
+  }
+  var text=document.createElement('div');text.className='reader-decision-text';text.textContent=doc.text||'No text was stored for this document.';box.appendChild(text);
   var link=$('#rvReaderLink');if(doc.url){link.href=doc.url;link.hidden=false;}else{link.hidden=true;link.removeAttribute('href');}
 }
+
 function renderReview(){
   var r=PREFILL.fosReview;if(!r||!r.allowed)return;
   $('#reviewViewSwitch').hidden=false;
@@ -567,6 +616,50 @@ function initReview(){
   $('#reviewViewToggle').addEventListener('click',function(){reviewSetMode(!REVIEW_MODE);});
   $('#reviewConfirmCancel').addEventListener('click',function(){$('#reviewConfirmOverlay').classList.remove('show');});$('#reviewConfirmOverlay').addEventListener('click',function(e){if(e.target===$('#reviewConfirmOverlay'))e.currentTarget.classList.remove('show');});$('#reviewConfirmGo').addEventListener('click',function(){submitReviewAction(this.dataset.action);});
   reviewSetMode(true);
+}
+
+
+function latestRequiredActionSet(){
+  var r=PREFILL&&PREFILL.fosReview;if(!r||!r.documents)return null;
+  var omb=r.documents.ombudsman||{},inv=r.documents.investigator||{};
+  var ombActions=reviewArray(omb.requiredActions),invActions=reviewArray(inv.requiredActions);
+  if(omb.available&&ombActions.length)return {stage:'ombudsman',label:'Final Ombudsman decision',actions:ombActions,completed:reviewArray(omb.completedRequiredActions)};
+  if(inv.available&&invActions.length)return {stage:'investigator',label:'Investigator view',actions:invActions,completed:reviewArray(inv.completedRequiredActions)};
+  return null;
+}
+function renderFosRequiredActions(){
+  var card=$('#fosRequiredCard');if(!card)return;
+  var set=latestRequiredActionSet();
+  if(!set){card.classList.add('hidden');FOS_REQUIRED_STAGE='';FOS_REQUIRED_ACTIONS=[];FOS_COMPLETED_ACTIONS=[];return;}
+  card.classList.remove('hidden');FOS_REQUIRED_STAGE=set.stage;FOS_REQUIRED_ACTIONS=set.actions.slice();FOS_COMPLETED_ACTIONS=set.completed.filter(function(x){return FOS_REQUIRED_ACTIONS.indexOf(x)!==-1;});
+  $('#fosRequiredSource').textContent='From the '+set.label+'. Tick each item once it has been completed.';
+  $('#fosRequiredError').classList.remove('show');$('#fosRequiredError').textContent='';
+  var box=$('#fosRequiredList');box.innerHTML='';
+  FOS_REQUIRED_ACTIONS.forEach(function(action,index){
+    var done=FOS_COMPLETED_ACTIONS.indexOf(action)!==-1;
+    var label=document.createElement('label');label.className='fos-task'+(done?' done':'');label.dataset.index=String(index);
+    var input=document.createElement('input');input.type='checkbox';input.checked=done;input.setAttribute('aria-label','Mark FOS action complete');
+    var check=document.createElement('span');check.className='fos-task-check';check.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+    var text=document.createElement('span');text.className='fos-task-text';text.textContent=action;
+    label.appendChild(input);label.appendChild(check);label.appendChild(text);box.appendChild(label);
+    input.addEventListener('change',function(){saveFosRequiredAction(index,input.checked,label,input);});
+  });
+  updateFosRequiredProgress();
+}
+function updateFosRequiredProgress(){
+  var done=FOS_COMPLETED_ACTIONS.filter(function(x){return FOS_REQUIRED_ACTIONS.indexOf(x)!==-1;}).length;
+  $('#fosRequiredProgress').textContent=done+' of '+FOS_REQUIRED_ACTIONS.length+' completed';
+}
+function saveFosRequiredAction(index,checked,row,input){
+  var action=FOS_REQUIRED_ACTIONS[index];if(!action||!FOS_REQUIRED_STAGE)return;
+  var before=FOS_COMPLETED_ACTIONS.slice();
+  if(checked){if(FOS_COMPLETED_ACTIONS.indexOf(action)===-1)FOS_COMPLETED_ACTIONS.push(action);}else{FOS_COMPLETED_ACTIONS=FOS_COMPLETED_ACTIONS.filter(function(x){return x!==action;});}
+  row.classList.toggle('done',checked);row.classList.add('saving');input.disabled=true;updateFosRequiredProgress();
+  var er=$('#fosRequiredError');er.classList.remove('show');er.textContent='';
+  fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'fos_required_action_status',stage:FOS_REQUIRED_STAGE,completedActions:FOS_COMPLETED_ACTIONS})})
+    .then(function(r){return r.json();})
+    .then(function(d){if(!d.ok)throw new Error((d.errors&&d.errors[0])||'Could not save the FOS action.');row.classList.remove('saving');input.disabled=false;var doc=reviewDocObject(FOS_REQUIRED_STAGE);if(doc)doc.completedRequiredActions=FOS_COMPLETED_ACTIONS.slice();})
+    .catch(function(e){FOS_COMPLETED_ACTIONS=before;input.checked=!checked;row.classList.toggle('done',!checked);row.classList.remove('saving');input.disabled=false;updateFosRequiredProgress();er.textContent=e.message||'Could not save the FOS action.';er.classList.add('show');});
 }
 
 function recompute(){
@@ -1137,7 +1230,7 @@ function costRecordedOrLegacy(id){
 }
 function initManagementActions(){var ov=$('#managementOverlay'),pass=$('#overridePasscode'),er=$('#managementError'),btn=$('#forceSubmitBtn');$('#manageBtn').addEventListener('click',function(){er.classList.remove('show');er.textContent='';pass.value='';btn.disabled=false;btn.textContent='Force Submit';ov.classList.add('show');setTimeout(function(){pass.focus();},30);});$('#managementCancel').addEventListener('click',function(){ov.classList.remove('show');pass.value='';});ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('show');pass.value='';}});btn.addEventListener('click',function(){var code=pass.value;if(!code){er.textContent='Enter the management passcode.';er.classList.add('show');return;}var res=collectAndValidate();res.payload.forceSubmit=true;res.payload.overridePasscode=code;btn.disabled=true;btn.textContent='Submitting…';er.classList.remove('show');fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)}).then(function(r){return r.json()}).then(function(d){if(d.ok){btn.textContent='Submitted ✓';window.location.href=d.redirect;}else{er.textContent=(d.errors&&d.errors[0])||'Force submit failed.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';}}).catch(function(){er.textContent='Network error during force submit.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';});});}
 // Keep every calculator-controlled cost read-only, including rejection loss.
-function lockAll(lock){var controls=document.querySelectorAll('#panel-internal input, #panel-internal select, #panel-internal button, #panel-fos input, #panel-fos select, #panel-fos button, #runningCostsCard button, #saveBtn, #manageBtn');for(var i=0;i<controls.length;i++){var el=controls[i];if(lock){el.setAttribute('data-closedlock','1');if(el.tagName==='BUTTON'||el.tagName==='SELECT')el.disabled=true;else{el.setAttribute('readonly','readonly');el.classList.add('closedlocked');}el.style.opacity='.6';}else{el.removeAttribute('data-closedlock');el.style.opacity='';if(el.tagName==='BUTTON'||el.tagName==='SELECT')el.disabled=false;else{el.removeAttribute('readonly');el.classList.remove('closedlocked');}}}if(!lock){document.querySelectorAll('[data-calc-controlled],#c_rejloss,#f_rejloss').forEach(function(el){el.setAttribute('readonly','readonly');});var fee=document.getElementById('f_fee');if(fee)fee.disabled=true;if(typeof window.__syncRej==='function')window.__syncRej();var omb=document.getElementById('fosOmbudsman');if(omb&&PREFILL.fosStage!=='ombudsman')omb.disabled=true;$('#saveBtn').disabled=false;$('#manageBtn').disabled=false;}}
+function lockAll(lock){var controls=document.querySelectorAll('#panel-internal input, #panel-internal select, #panel-internal button, #panel-fos input, #panel-fos select, #panel-fos button, #runningCostsCard button, #saveBtn, #manageBtn');for(var i=0;i<controls.length;i++){var el=controls[i];if(lock){el.setAttribute('data-closedlock','1');if(el.tagName==='BUTTON'||el.tagName==='SELECT'||(el.tagName==='INPUT'&&el.type==='checkbox'))el.disabled=true;else{el.setAttribute('readonly','readonly');el.classList.add('closedlocked');}el.style.opacity='.6';}else{el.removeAttribute('data-closedlock');el.style.opacity='';if(el.tagName==='BUTTON'||el.tagName==='SELECT'||(el.tagName==='INPUT'&&el.type==='checkbox'))el.disabled=false;else{el.removeAttribute('readonly');el.classList.remove('closedlocked');}}}if(!lock){document.querySelectorAll('[data-calc-controlled],#c_rejloss,#f_rejloss').forEach(function(el){el.setAttribute('readonly','readonly');});var fee=document.getElementById('f_fee');if(fee)fee.disabled=true;if(typeof window.__syncRej==='function')window.__syncRej();var omb=document.getElementById('fosOmbudsman');if(omb&&PREFILL.fosStage!=='ombudsman')omb.disabled=true;$('#saveBtn').disabled=false;$('#manageBtn').disabled=false;}}
 
 function applyPrefill(){
   $('#formTitle').textContent='Complaint Closure Form';
@@ -1248,7 +1341,7 @@ function boot(){
       gateFos();initTabs();initVehicleVisibility();
       var syncRej=initRejection();var syncFos=initFos();window.__syncRej=syncRej;
       initRejCalc();initInspCalc();initCostEditors();
-      applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
+      applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
       // Outside FOS Decision Review, keep the existing default-to-FOS behaviour.
       if(PREFILL.fosApplicable && !(PREFILL.fosReview&&PREFILL.fosReview.allowed))selectTab('tab-fos');
     })
