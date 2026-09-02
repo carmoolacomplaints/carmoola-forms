@@ -495,6 +495,7 @@ var otherBreakdown={used:false,rows:[]}, fosOtherBreakdown={used:false,rows:[]};
 var RUNNING_TYPES=['Direct Compensation','Distress & Inconvenience','Vehicle Repair Costs','DEKRA','Other Inspection Costs','Storage Costs','Recovery Costs','Courtesy Car & Travel Costs','Other Costs'];
 var runningCostsRows=[], runningCostsInitial='[]', runningCostsDirty=false, pendingValidationErrors=[];
 var costBreakdowns={}, costCalcTarget=null;
+var savedCostRows={}, savedInspectionStates={}, savedRejectionBreakdowns={};
 var inspectionBreakdowns={c_insp:{used:false,dekraCount:0,otherInspectionRows:[],storageRows:[],recoveryRows:[]},f_insp:{used:false,dekraCount:0,otherInspectionRows:[],storageRows:[],recoveryRows:[]}};
 
 // Calculator-controlled fields remain read-only; values can only be changed through their form calculators.
@@ -517,10 +518,11 @@ function fosReviewIsAvailable(){
   if(stage!=='investigator'&&stage!=='ombudsman')return false;
   var docs=r.documents||{},stageDoc=docs[stage]||{};
   if(!stageDoc.available)return false;
-  // If the API exposes Jira status, require the complaint to actually be in FOS Decision Review.
-  var rawStatus=PREFILL.statusName||PREFILL.status||PREFILL.issueStatus||PREFILL.jiraStatus||'';
-  if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||rawStatus.value||'';
-  if(String(rawStatus||'').trim()&&String(rawStatus).trim().toLowerCase()!=='fos decision review')return false;
+  // FOS Decision Review must be explicitly confirmed by Jira status.
+  // If status is missing, unknown or anything else, do not expose the review workspace.
+  var rawStatus=PREFILL.statusName||PREFILL.status||PREFILL.issueStatus||PREFILL.jiraStatus||(r&&r.statusName)||(r&&r.status)||(r&&r.issueStatus)||(r&&r.jiraStatus)||'';
+  if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||rawStatus.value||rawStatus.status||'';
+  if(String(rawStatus||'').trim().toLowerCase()!=='fos decision review')return false;
   return true;
 }
 function fmtReviewDate(v){if(!v)return '';var d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
@@ -793,7 +795,25 @@ function initTabs(){
   for(var i=0;i<tabs.length;i++){(function(t){t.addEventListener('click',function(){if(t.disabled)return;selectTab(t.id);})})(tabs[i]);}
 }
 function setMoney(id,val){var el=document.getElementById(id);if(el){el.value=String(val||0);markZero(el);}}
-function jiraTag(id){var p=document.querySelector('.jhint[data-for="'+id+'"]');if(p)p.hidden=false;}
+function jiraTag(id){
+  // Calculator-controlled costs manage their Saved/Recorded state from their actual breakdown, not from a numeric field alone.
+  if(id!=='f_fee')return;
+  var p=document.querySelector('.jhint[data-for="'+id+'"]');if(p&&num(document.getElementById(id).value)!==0)p.hidden=false;
+}
+function setCostTagState(id,state){
+  var saved=document.querySelector('.jhint[data-for="'+id+'"]');
+  var recorded=document.getElementById(id+'_recorded');
+  if(saved)saved.hidden=state!=='saved';
+  if(recorded)recorded.hidden=state!=='recorded';
+}
+function rowsKey(rows){return JSON.stringify(cleanCostRows(rows).map(function(r){return {desc:r.desc,amount:num(r.amount)};}));}
+function inspectionKey(b){b=b||{};return JSON.stringify({dekraCount:Number(b.dekraCount)||0,otherInspectionRows:cleanInspectionRows(b.otherInspectionRows),storageRows:cleanInspectionRows(b.storageRows),recoveryRows:cleanInspectionRows(b.recoveryRows)});}
+function rejectionKey(b){b=b||{};return JSON.stringify({creditAmount:num(b.creditAmount),retainedPayments:num(b.retainedPayments),vehicleProceeds:num(b.vehicleProceeds),depositPaidOut:num(b.depositPaidOut),total:num(b.total)});}
+function initTagHelp(){
+  document.querySelectorAll('.jhint').forEach(function(el){el.title='Saved in Complaints Hub — this exact value and breakdown match what is currently stored in the Complaints Hub.';el.setAttribute('aria-label',el.textContent+'. '+el.title);});
+  document.querySelectorAll('[id$="_recorded"]').forEach(function(el){el.title='Recorded here — this cost has been entered or changed in this form but has not yet been saved to the Complaints Hub.';el.setAttribute('aria-label',el.textContent+'. '+el.title);});
+  ['rejLossCalcPill','fosRejCalcPill'].forEach(function(id){var el=document.getElementById(id);if(el){el.title='Calculated here — this rejection loss has been calculated or changed in this form but has not yet been saved to the Complaints Hub.';el.setAttribute('aria-label',el.textContent+'. '+el.title);}});
+}
 
 /* ---- shared rejection-loss calculator (target: investigation or fos) ---- */
 function openRejCalc(which){
@@ -849,8 +869,8 @@ function initRejCalc(){
   $('#rejSave').addEventListener('click',function(){
     var t=rejCalcCompute();
     var bd={used:true,creditAmount:num($('#rl_credit').value),retainedPayments:num($('#rl_retained').value),vehicleProceeds:num($('#rl_proceeds').value),depositPaidOut:num($('#rl_deposit').value),total:t};
-    if(calcTarget==='fos'){fosRejBreakdown=bd;setMoney('f_rejloss',t);$('#fosRejCalcPill').hidden=false}
-    else{rejBreakdown=bd;setMoney('c_rejloss',t);$('#rejLossCalcPill').hidden=false}
+    if(calcTarget==='fos'){fosRejBreakdown=bd;setMoney('f_rejloss',t);var same=Object.prototype.hasOwnProperty.call(savedRejectionBreakdowns,'f_rejloss')&&rejectionKey(bd)===savedRejectionBreakdowns.f_rejloss;setCostTagState('f_rejloss',same?'saved':'none');$('#fosRejCalcPill').hidden=same;}
+    else{rejBreakdown=bd;setMoney('c_rejloss',t);var same=Object.prototype.hasOwnProperty.call(savedRejectionBreakdowns,'c_rejloss')&&rejectionKey(bd)===savedRejectionBreakdowns.c_rejloss;setCostTagState('c_rejloss',same?'saved':'none');$('#rejLossCalcPill').hidden=same;}
     $('#rejOverlay').classList.remove('show');recompute();
   });
 }
@@ -876,7 +896,7 @@ function inspCalcCompute(){
   $('#ik_inspection_total').textContent=gbp.format(inspection);$('#ik_storage_total').textContent=gbp.format(storage);$('#ik_recovery_total').textContent=gbp.format(recovery);$('#ik_total').textContent=gbp.format(total);
   return {total:total,dekraCount:ikDekraCount,dekraCost:dekraCost,otherInspection:other,storageCosts:storage,recoveryCosts:recovery};
 }
-function syncInspectionCost(id){var bd=inspectionBreakdowns[id]||{};var t=(Number(bd.dekraCount)||0)*160+costRowsTotal(bd.otherInspectionRows)+costRowsTotal(bd.storageRows)+costRowsTotal(bd.recoveryRows);setMoney(id,t);var pill=document.getElementById(id+'_recorded');if(pill)pill.hidden=!bd.used;recompute();}
+function syncInspectionCost(id){var bd=inspectionBreakdowns[id]||{};var t=(Number(bd.dekraCount)||0)*160+costRowsTotal(bd.otherInspectionRows)+costRowsTotal(bd.storageRows)+costRowsTotal(bd.recoveryRows);setMoney(id,t);var hasDetail=(Number(bd.dekraCount)||0)>0||cleanInspectionRows(bd.otherInspectionRows).length>0||cleanInspectionRows(bd.storageRows).length>0||cleanInspectionRows(bd.recoveryRows).length>0;var isSaved=hasDetail&&Object.prototype.hasOwnProperty.call(savedInspectionStates,id)&&inspectionKey(bd)===savedInspectionStates[id];setCostTagState(id,isSaved?'saved':(bd.used&&hasDetail?'recorded':'none'));recompute();}
 function initInspCalc(){
   $('#ik_dekra_up').addEventListener('click',function(){setDekraCount(ikDekraCount+1)});$('#ik_dekra_dn').addEventListener('click',function(){setDekraCount(ikDekraCount-1)});
   $('#ik_other_add').addEventListener('click',function(){$('#ik_other_rows').appendChild(inspectionRow({desc:'',amount:0},inspCalcCompute));inspCalcCompute();});
@@ -1169,14 +1189,14 @@ var COST_META={
 };
 function cleanCostRows(rows){return (rows||[]).map(function(r){return {desc:String(r.desc||'').trim(),amount:num(r.amount)};}).filter(function(r){return r.desc!==''||r.amount!==0;});}
 function costRowsTotal(rows){return cleanCostRows(rows).reduce(function(a,r){return a+num(r.amount)},0);}
-function syncCostFromBreakdown(id){var b=costBreakdowns[id]||{used:false,rows:[]};var t=costRowsTotal(b.rows);setMoney(id,t);var p=document.getElementById(id+'_recorded');if(p)p.hidden=!b.used;recompute();}
+function syncCostFromBreakdown(id){var b=costBreakdowns[id]||{used:false,rows:[]};var rows=cleanCostRows(b.rows),t=costRowsTotal(rows);setMoney(id,t);var hasRows=rows.length>0,isSaved=hasRows&&Object.prototype.hasOwnProperty.call(savedCostRows,id)&&rowsKey(rows)===rowsKey(savedCostRows[id]);setCostTagState(id,isSaved?'saved':(b.used&&hasRows?'recorded':'none'));recompute();}
 function costEditorRow(r){r=r||{desc:'',amount:0};var wrap=document.createElement('div');wrap.className='calcrow';wrap.innerHTML='<div class="rl"><input type="text" class="cost_desc" placeholder="Describe this specific cost" value="'+esc(r.desc||'')+'"></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" class="cost_amt" value="'+esc(r.amount!=null?r.amount:0)+'"></div><button type="button" class="oc_del" aria-label="Remove" style="flex:none;border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px">&times;</button>';wrap.querySelector('.cost_desc').addEventListener('input',costEditorCompute);wrap.querySelector('.cost_amt').addEventListener('input',costEditorCompute);wrap.querySelector('.oc_del').addEventListener('click',function(){wrap.parentNode.removeChild(wrap);costEditorCompute();});return wrap;}
 function updateCostBreakdownWarning(){var count=0;document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim();if(d||num(raw)!==0)count++;});var w=$('#costBreakdownWarning');if(w)w.classList.toggle('show',count<=1);}
 function costEditorCompute(){var t=0;document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){t+=num(row.querySelector('.cost_amt').value)});$('#cost_total').textContent=gbp.format(t);updateCostBreakdownWarning();return t;}
 function openCostEditor(id){costCalcTarget=id;var meta=COST_META[id];if(!meta)return;$('#costModalTitle').textContent=meta.title;var box=$('#cost_rows');box.innerHTML='';var b=costBreakdowns[id]||{used:false,rows:[]};var rows=cleanCostRows(b.rows);if(!rows.length)rows=[{desc:'',amount:0}];rows.forEach(function(r){box.appendChild(costEditorRow(r));});$('#costEditorError').classList.remove('show');$('#costEditorError').textContent='';costEditorCompute();$('#costOverlay').classList.add('show');}
 function collectCostEditor(){var rows=[],error='';document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim(),a=num(raw);if(!d&&(!raw||a===0))return;if(!d){error='Each cost with an amount needs a description.';return;}if(raw===''){error='Each cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a});});return {rows:rows,error:error};}
 function initCostEditors(){document.querySelectorAll('[data-cost-target]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.costTarget;if(id==='c_insp'){openInspCalc('inv');return;}if(id==='f_insp'){openInspCalc('fos');return;}openCostEditor(id);});});$('#cost_add').addEventListener('click',function(){$('#cost_rows').appendChild(costEditorRow({desc:'',amount:0}));costEditorCompute();});$('#costCancel').addEventListener('click',function(){$('#costOverlay').classList.remove('show')});$('#costOverlay').addEventListener('click',function(e){if(e.target===$('#costOverlay'))$('#costOverlay').classList.remove('show')});$('#costSave').addEventListener('click',function(){var got=collectCostEditor(),er=$('#costEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}costBreakdowns[costCalcTarget]={used:true,rows:cleanCostRows(got.rows)};syncCostFromBreakdown(costCalcTarget);renderRunningMini();$('#costOverlay').classList.remove('show');});}
-function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:has(s.rejProceeds)?s.rejProceeds:0,depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false;}else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false;}}}
+function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:has(s.rejProceeds)?s.rejProceeds:0,depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;savedRejectionBreakdowns.c_rejloss=rejectionKey(bd);setCostTagState('c_rejloss','saved');$('#rejLossCalcPill').hidden=true;}else{fosRejBreakdown=bd;savedRejectionBreakdowns.f_rejloss=rejectionKey(bd);setCostTagState('f_rejloss','saved');$('#fosRejCalcPill').hidden=true;}}}
 function rawJiraCost(id){
   var meta=COST_META[id],obj;
   if(!meta)return {present:false,value:0};
@@ -1192,9 +1212,10 @@ function rawInspectionCost(id){
 function restoreCostBreakdowns(){
   var saved=(PREFILL.saved&&PREFILL.saved.costBreakdowns)||{},present=(PREFILL.saved&&PREFILL.saved.costBreakdownPresent)||{};
   Object.keys(COST_META).forEach(function(id){
-    var meta=COST_META[id],rows=Array.isArray(saved[meta.saved])?saved[meta.saved]:[],legacy=rawJiraCost(id);
-    if(present[meta.saved])costBreakdowns[id]={used:true,rows:cleanCostRows(rows)};
-    else if(legacy.present)costBreakdowns[id]={used:true,rows:[{desc:'',amount:legacy.value}]};
+    var meta=COST_META[id],rows=Array.isArray(saved[meta.saved])?cleanCostRows(saved[meta.saved]):[],legacy=rawJiraCost(id);
+    delete savedCostRows[id];
+    if(present[meta.saved]&&rows.length){savedCostRows[id]=rows.slice();costBreakdowns[id]={used:true,rows:rows};}
+    else if(legacy.present&&legacy.value!==0)costBreakdowns[id]={used:false,rows:[{desc:'',amount:legacy.value}]};
     else costBreakdowns[id]={used:false,rows:[]};
     syncCostFromBreakdown(id);
   });
@@ -1204,15 +1225,19 @@ function restoreInspectionBreakdowns(){
   ['c_insp','f_insp'].forEach(function(id){
     var src=saved[id]||{},isFos=id==='f_insp',main=rawInspectionCost(id),legacyRows=Array.isArray(src.legacyRows)?cleanInspectionRows(src.legacyRows):[];
     var b={used:!!src.used,dekraCount:Number(src.dekraCount)||0,otherInspectionRows:cleanInspectionRows(src.otherInspectionRows),storageRows:cleanInspectionRows(src.storageRows),recoveryRows:cleanInspectionRows(src.recoveryRows)};
-    if(!b.used){
+    delete savedInspectionStates[id];
+    if(b.used){
+      var hasDetail=(Number(b.dekraCount)||0)>0||b.otherInspectionRows.length||b.storageRows.length||b.recoveryRows.length;
+      if(hasDetail)savedInspectionStates[id]=inspectionKey(b);
+    } else {
       var dk=isFos?s.fosDekra:s.invDekra,oth=isFos?s.fosOtherInsp:s.invOtherInsp,st=isFos?s.fosStorage:s.invStorage,rc=isFos?s.fosRecovery:s.invRecovery;
-      if(legacyRows.length){b.used=true;b.otherInspectionRows=legacyRows;}
-      else if(dk!=null||oth!=null||st!=null||rc!=null){b.used=true;b.dekraCount=Number(dk)||0;if(Number(oth))b.otherInspectionRows=[{desc:'',amount:Number(oth)}];if(Number(st))b.storageRows=[{desc:'',amount:Number(st)}];if(Number(rc))b.recoveryRows=[{desc:'',amount:Number(rc)}];}
-      else if(main.present){
-        b.used=true;
+      if(legacyRows.length){b.used=false;b.otherInspectionRows=legacyRows;}
+      else if(dk!=null||oth!=null||st!=null||rc!=null){b.used=false;b.dekraCount=Number(dk)||0;if(Number(oth))b.otherInspectionRows=[{desc:'',amount:Number(oth)}];if(Number(st))b.storageRows=[{desc:'',amount:Number(st)}];if(Number(rc))b.recoveryRows=[{desc:'',amount:Number(rc)}];}
+      else if(main.present&&main.value!==0){
+        b.used=false;
         if(main.value===160)b.dekraCount=1;
         else if(main.value>160&&Number(PREFILL.dekraDefault)>0){b.dekraCount=1;b.otherInspectionRows=[{desc:'',amount:main.value-160}];}
-        else if(main.value!==0)b.otherInspectionRows=[{desc:'',amount:main.value}];
+        else b.otherInspectionRows=[{desc:'',amount:main.value}];
       }
     }
     inspectionBreakdowns[id]=b;syncInspectionCost(id);
@@ -1239,10 +1264,10 @@ function updateCostRequirements(){
   ids.forEach(function(id){var label=document.querySelector('label[for="'+id+'"]'),star=label&&label.querySelector('.req');if(star)star.hidden=(id==='f_fee'||!costIsRequired(id));});
 }
 function costRecordedOrLegacy(id){
-  if(id==='c_insp'||id==='f_insp'){var b=inspectionBreakdowns[id],legacy=rawInspectionCost(id);return !!(b&&b.used)||legacy.present;}
+  if(id==='c_insp'||id==='f_insp'){var b=inspectionBreakdowns[id];return !!(b&&b.used);}
   if(id==='c_rejloss'){var raw=(PREFILL.internal||{}).customfield_10282;return !!rejBreakdown.used||num(raw)!==0;}
   if(id==='f_rejloss'){var raw=((PREFILL.fos&&PREFILL.fos.costs)||{}).customfield_11558;return !!fosRejBreakdown.used||num(raw)!==0;}
-  var b=costBreakdowns[id],legacy=rawJiraCost(id);return !!(b&&b.used)||legacy.present;
+  var b=costBreakdowns[id];return !!(b&&b.used);
 }
 function initManagementActions(){var ov=$('#managementOverlay'),pass=$('#overridePasscode'),er=$('#managementError'),btn=$('#forceSubmitBtn');$('#manageBtn').addEventListener('click',function(){er.classList.remove('show');er.textContent='';pass.value='';btn.disabled=false;btn.textContent='Force Submit';ov.classList.add('show');setTimeout(function(){pass.focus();},30);});$('#managementCancel').addEventListener('click',function(){ov.classList.remove('show');pass.value='';});ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('show');pass.value='';}});btn.addEventListener('click',function(){var code=pass.value;if(!code){er.textContent='Enter the management passcode.';er.classList.add('show');return;}var res=collectAndValidate();res.payload.forceSubmit=true;res.payload.overridePasscode=code;btn.disabled=true;btn.textContent='Submitting…';er.classList.remove('show');fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)}).then(function(r){return r.json()}).then(function(d){if(d.ok){btn.textContent='Submitted ✓';window.location.href=d.redirect;}else{er.textContent=(d.errors&&d.errors[0])||'Force submit failed.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';}}).catch(function(){er.textContent='Network error during force submit.';er.classList.add('show');btn.disabled=false;btn.textContent='Force Submit';pass.value='';});});}
 // Keep every calculator-controlled cost read-only, including rejection loss.
@@ -1354,7 +1379,7 @@ function boot(){
       PREFILL=d.prefill;
       $('#loading').hidden=true;$('#shell').hidden=false;$('#footer').hidden=false;
       var moneyEls=document.querySelectorAll('.cost,.fcost,.in input');for(var mi=0;mi<moneyEls.length;mi++)attachMoney(moneyEls[mi]);
-      gateFos();initTabs();initVehicleVisibility();
+      initTagHelp();gateFos();initTabs();initVehicleVisibility();
       var syncRej=initRejection();var syncFos=initFos();window.__syncRej=syncRej;
       initRejCalc();initInspCalc();initCostEditors();
       applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
