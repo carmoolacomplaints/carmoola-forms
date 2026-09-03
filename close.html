@@ -109,6 +109,10 @@
   .calc-total .l{font-size:14px;font-weight:700;color:var(--pink-dark)}
   .calc-total .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
   .modal-foot{padding:14px 22px 20px;display:flex;gap:10px;justify-content:flex-end}
+  .modal-foot .foot-info{margin-right:auto;display:none;align-items:center;gap:7px;align-self:center;padding:5px 9px;border:1px solid #F2D2E2;background:#FFF8FC;border-radius:8px;color:var(--muted);font-size:11.5px;line-height:1.2;white-space:nowrap}
+  .modal-foot .foot-info.show{display:inline-flex}
+  .modal-foot .foot-info .k{font-weight:600}
+  .modal-foot .foot-info .v{font-weight:800;color:var(--pink-dark);font-variant-numeric:tabular-nums}
   /* Rejection-loss nested calculators */
   /* Keep the main rejection-loss calculator centred. Side calculators open to its right. */
   .rej-workspace{position:relative;width:min(470px,100%);max-height:90vh}
@@ -410,7 +414,7 @@
         <div class="calcrow with-action" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Calculated from the customer deposit and deposit deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_depositCalcBtn">Calculate</button></div></div>
         <div class="calc-total"><span class="l">Vehicle Rejection Loss</span><span class="v" id="rl_total">&pound;0.00</span></div>
       </div>
-      <div class="modal-foot"><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
+      <div class="modal-foot"><div class="foot-info" id="rejRefundInfo" aria-live="polite"><span class="k">Customer refund</span><span class="v" id="rejRefundInfoValue">&pound;0.00</span></div><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
     </div>
 
     <aside class="rej-side" id="retainedSide" aria-label="Retained Customer Payments calculator">
@@ -941,7 +945,15 @@ function openRejCalc(which){
     $('#rl_depositHint').textContent='Calculated from the customer deposit and deposit deduction';
   }
   $('#rejCalcTitle').textContent=which==='fos'?'FOS Rejection Loss':'Vehicle Rejection Loss';
+  updateRejRefundInfo();
   rejCalcCompute();overlay.classList.add('show');
+}
+function updateRejRefundInfo(){
+  var box=$('#rejRefundInfo'),val=$('#rejRefundInfoValue');
+  if(!box||!val)return;
+  var refund=rejWork&&rejHas(rejWork.customerRefundAmount)?Math.max(0,num(rejWork.customerRefundAmount)):null;
+  if(refund!==null&&refund>0){val.textContent=gbp.format(refund);box.classList.add('show');}
+  else{val.textContent=gbp.format(0);box.classList.remove('show');}
 }
 function rejCalcCompute(){
   var t=num($('#rl_credit').value)-num($('#rl_retained').value)-num($('#rl_proceeds').value)+num($('#rl_deposit').value);
@@ -1051,7 +1063,7 @@ function initRejCalc(){
     rejWork.repaymentsDeduction=r.deduction;
     rejWork.retainedPayments=r.retained;
     rejWork.customerRefundAmount=r.refund;
-    $('#rl_retained').value=String(r.retained);rejCalcCompute();closeRejSides();
+    $('#rl_retained').value=String(r.retained);updateRejRefundInfo();rejCalcCompute();closeRejSides();
   });
   $('#dpSave').addEventListener('click',function(){
     var r=dpCompute();if(!r||r.error)return;
