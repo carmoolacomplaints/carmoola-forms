@@ -109,6 +109,31 @@
   .calc-total .l{font-size:14px;font-weight:700;color:var(--pink-dark)}
   .calc-total .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
   .modal-foot{padding:14px 22px 20px;display:flex;gap:10px;justify-content:flex-end}
+  /* Rejection-loss nested calculators */
+  .rej-workspace{display:flex;align-items:flex-start;gap:14px;width:min(960px,100%);max-height:90vh}
+  .rej-workspace>.modal{flex:0 0 470px;max-width:470px}
+  .rej-side{display:none;flex:1;min-width:0;background:var(--white);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
+  .rej-side.show{display:block}
+  .deduction-box{background:#FFF7FB;border:1px solid #F2CFE1;border-radius:11px;padding:13px 14px;margin-bottom:12px}
+  .deduction-box label{display:block;font-size:13.5px;font-weight:800;color:var(--pink-dark);margin-bottom:4px}
+  .deduction-box .hint{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+  .calcrow.with-action .in{width:196px}
+  .calc-readonly{position:relative;display:flex;align-items:center;gap:6px}
+  .calc-readonly .money{flex:1;min-width:0}
+  .calc-readonly input[readonly]{background:#F9F7FA}
+  .subcalc-btn{flex:none;border:1.5px solid var(--line-strong);background:var(--white);color:var(--pink-dark);font-family:inherit;font-size:11px;font-weight:800;border-radius:8px;padding:7px 9px;cursor:pointer;white-space:nowrap}
+  .subcalc-btn:hover{border-color:var(--pink);background:var(--tint-soft)}
+  .allocation-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0 2px}
+  .allocation-cell{background:#F8F5F9;border:1px solid var(--line);border-radius:9px;padding:8px 9px}
+  .allocation-cell .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:800}
+  .allocation-cell .v{font-size:13.5px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+  .subcalc-error{display:none;background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:9px;padding:9px 11px;font-size:12px;margin-top:10px}
+  .subcalc-error.show{display:block}
+  .calc-output{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--tint-soft);border:1px solid #F6D3E6;border-radius:10px;padding:12px 14px;margin-top:10px}
+  .calc-output .l{font-size:13px;font-weight:700;color:var(--pink-dark)}
+  .calc-output .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+  @media(max-width:900px){.rej-workspace{display:block;max-height:92vh;overflow:auto}.rej-workspace>.modal{max-width:100%;width:100%}.rej-side{margin-top:12px;max-height:none}.overlay{align-items:flex-start}.calcrow.with-action .in{width:190px}}
+  @media(max-width:520px){.calcrow.with-action{align-items:flex-start;flex-wrap:wrap}.calcrow.with-action .in{width:100%}.allocation-strip{grid-template-columns:1fr}.rej-workspace{width:100%}}
   .btn-ghost{font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);background:transparent;border:1.5px solid var(--line-strong);border-radius:10px;padding:10px 16px;cursor:pointer}
   .btn-ghost:hover{border-color:#C9BFD2}
   .btn-sm{font-family:inherit;font-size:14px;font-weight:700;color:#fff;background:var(--pink);border:0;border-radius:10px;padding:10px 18px;cursor:pointer}
@@ -368,17 +393,50 @@
 
 <!-- Rejection Loss calculators (shared markup, two instances via id prefix) -->
 <div class="overlay" id="rejOverlay">
-  <div class="modal" role="dialog" aria-modal="true">
-    <div class="modal-head"><h3 id="rejCalcTitle">Vehicle Rejection Loss</h3><p>Work out the net loss (or gain) to Carmoola.</p></div>
-    <div class="modal-body">
-      <div id="rl_mismatch" style="display:none;background:#FFF3D6;border:1px solid #F0D48A;color:#7A5A00;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;font-weight:600"></div>
-      <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Credit Amount</div><div class="hint" id="rl_creditHint">Purchase price &minus; deposit &minus; part exchange</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_credit" value="0"></div></div>
-      <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Money we kept. Must account for any interest we paid on returned payments.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0"></div></div>
-      <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm" id="rl_proceedsLabel">Vehicle Proceeds Received</div><div class="hint" id="rl_proceedsHint">From auction / dealership</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_proceeds" value="0"></div></div>
-      <div class="calcrow" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Deposit refunded to the customer</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0"></div></div>
-      <div class="calc-total"><span class="l">Vehicle Rejection Loss</span><span class="v" id="rl_total">&pound;0.00</span></div>
+  <div class="rej-workspace">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head"><h3 id="rejCalcTitle">Vehicle Rejection Loss</h3><p>Work out the net loss (or gain) to Carmoola.</p></div>
+      <div class="modal-body">
+        <div id="rl_mismatch" style="display:none;background:#FFF3D6;border:1px solid #F0D48A;color:#7A5A00;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;font-weight:600"></div>
+        <div class="deduction-box">
+          <label for="rl_customer_deduction">Customer Deduction Amount</label>
+          <div class="hint">The total amount Carmoola is deducting from the customer's repayments and/or deposit. Repayments Deduction + Deposit Deduction cannot exceed this amount.</div>
+          <div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_customer_deduction" placeholder="0.00"></div>
+        </div>
+        <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Credit Amount</div><div class="hint" id="rl_creditHint">Purchase price &minus; deposit &minus; part exchange</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_credit" value="0"></div></div>
+        <div class="calcrow with-action"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Calculated from the customer's repayments and the repayments deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_retainedCalcBtn">Calculate</button></div></div>
+        <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm" id="rl_proceedsLabel">Vehicle Proceeds Received</div><div class="hint" id="rl_proceedsHint">From auction / dealership</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_proceeds" value="0"></div></div>
+        <div class="calcrow with-action" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Calculated from the customer deposit and deposit deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_depositCalcBtn">Calculate</button></div></div>
+        <div class="calc-total"><span class="l">Vehicle Rejection Loss</span><span class="v" id="rl_total">&pound;0.00</span></div>
+      </div>
+      <div class="modal-foot"><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
     </div>
-    <div class="modal-foot"><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
+
+    <aside class="rej-side" id="retainedSide" aria-label="Retained Customer Payments calculator">
+      <div class="modal-head"><h3>Retained Customer Payments</h3><p>Work out how much of the customer's repayments Carmoola retains.</p></div>
+      <div class="modal-body">
+        <div class="warnbox"><strong>Repayments only.</strong> Repayments Made By Customer must include all other payments made by the customer, but must <strong>not</strong> include the customer deposit or any part-exchange contribution.</div>
+        <div class="calcrow"><div class="rl"><div class="nm">Repayments Made By Customer</div><div class="hint">All customer payments other than the deposit and part exchange.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rp_made" value="0"></div></div>
+        <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Repayments Deduction</div><div class="hint" id="rp_deductionHint">Cannot exceed repayments made or the remaining Customer Deduction Amount.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rp_deduction" value="0"></div></div>
+        <div class="allocation-strip"><div class="allocation-cell"><div class="k">Customer deduction</div><div class="v" id="rp_alloc_total">&pound;0.00</div></div><div class="allocation-cell"><div class="k">Allocated</div><div class="v" id="rp_alloc_used">&pound;0.00</div></div><div class="allocation-cell"><div class="k">Remaining</div><div class="v" id="rp_alloc_remaining">&pound;0.00</div></div></div>
+        <div class="subcalc-error" id="rp_error"></div>
+        <div class="calc-output"><span class="l">Retained Customer Payments</span><span class="v" id="rp_retained">&pound;0.00</span></div>
+        <div class="calc-output"><span class="l">Customer Refund Amount</span><span class="v" id="rp_refund">&pound;0.00</span></div>
+      </div>
+      <div class="modal-foot"><button class="btn-ghost" id="rpCancel">Cancel</button><button class="btn-sm" id="rpSave">Use Amount</button></div>
+    </aside>
+
+    <aside class="rej-side" id="depositSide" aria-label="Deposit Paid Out calculator">
+      <div class="modal-head"><h3>Deposit Paid Out</h3><p>Work out the actual deposit returned to the customer.</p></div>
+      <div class="modal-body">
+        <div class="calcrow"><div class="rl"><div class="nm">Customer Deposit</div><div class="hint">Defaults to the full customer deposit held in Jira when first opened.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="dp_customer_deposit" value="0"></div></div>
+        <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Deposit Deduction</div><div class="hint" id="dp_deductionHint">Cannot exceed the customer deposit or the remaining Customer Deduction Amount.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="dp_deduction" value="0"></div></div>
+        <div class="allocation-strip"><div class="allocation-cell"><div class="k">Customer deduction</div><div class="v" id="dp_alloc_total">&pound;0.00</div></div><div class="allocation-cell"><div class="k">Allocated</div><div class="v" id="dp_alloc_used">&pound;0.00</div></div><div class="allocation-cell"><div class="k">Remaining</div><div class="v" id="dp_alloc_remaining">&pound;0.00</div></div></div>
+        <div class="subcalc-error" id="dp_error"></div>
+        <div class="calc-output"><span class="l">Actual Deposit Paid Out</span><span class="v" id="dp_paid_out">&pound;0.00</span></div>
+      </div>
+      <div class="modal-foot"><button class="btn-ghost" id="dpCancel">Cancel</button><button class="btn-sm" id="dpSave">Use Amount</button></div>
+    </aside>
   </div>
 </div>
 
@@ -501,6 +559,8 @@ var inspectionBreakdowns={c_insp:{used:false,dekraCount:0,otherInspectionRows:[]
 // Calculator-controlled fields remain read-only; values can only be changed through their form calculators.
 function unlockAfterCalc(fieldId, overPillId){ var el=document.getElementById(fieldId); if(el) el.setAttribute('readonly','readonly'); }
 var calcTarget = null; // which field a shared modal is editing
+var rejWork = null; // working copy while the rejection-loss modal is open
+var rpDraft = null, dpDraft = null;
 
 function $(s){return document.querySelector(s)}
 function num(v){var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n}
@@ -810,10 +870,37 @@ function setMoney(id,val){var el=document.getElementById(id);if(el){el.value=Str
 function jiraTag(id){var p=document.querySelector('.jhint[data-for="'+id+'"]');if(p)p.hidden=false;}
 
 /* ---- shared rejection-loss calculator (target: investigation or fos) ---- */
+function cloneObj(o){return JSON.parse(JSON.stringify(o||{}));}
+function rejHas(v){return v!==null&&v!==undefined&&v!=='';}
+function closeRejSides(){
+  $('#retainedSide').classList.remove('show');
+  $('#depositSide').classList.remove('show');
+  rpDraft=null;dpDraft=null;
+}
+function currentCustomerDeduction(){
+  var el=$('#rl_customer_deduction');
+  return el&&String(el.value).trim()!==''?Math.max(0,num(el.value)):null;
+}
+function ensureRejWork(bd){
+  var s=PREFILL.saved||{};
+  var w=cloneObj(bd&&bd.used?bd:{});
+  w.used=!!(bd&&bd.used);
+  if(!rejHas(w.customerDeductionAmount)&&rejHas(s.rejCustomerDeduction))w.customerDeductionAmount=s.rejCustomerDeduction;
+  if(!rejHas(w.repaymentsMadeByCustomer)&&rejHas(s.rejRepaymentsMade))w.repaymentsMadeByCustomer=s.rejRepaymentsMade;
+  if(!rejHas(w.repaymentsDeduction)&&rejHas(s.rejRepaymentsDeduction))w.repaymentsDeduction=s.rejRepaymentsDeduction;
+  if(!rejHas(w.customerRefundAmount)&&rejHas(s.rejCustomerRefund))w.customerRefundAmount=s.rejCustomerRefund;
+  if(!rejHas(w.customerDeposit)&&rejHas(s.rejCustomerDeposit))w.customerDeposit=s.rejCustomerDeposit;
+  if(!rejHas(w.depositDeduction)&&rejHas(s.rejDepositDeduction))w.depositDeduction=s.rejDepositDeduction;
+  if(!rejHas(w.retainedPayments))w.retainedPayments=rejHas(s.rejRetained)?s.rejRetained:0;
+  if(!rejHas(w.depositPaidOut))w.depositPaidOut=rejHas(s.rejDeposit)?s.rejDeposit:0;
+  return w;
+}
 function openRejCalc(which){
   calcTarget=which;
+  closeRejSides();
   var overlay=$('#rejOverlay');
   var bd = which==='fos'?fosRejBreakdown:rejBreakdown;
+  rejWork=ensureRejWork(bd);
   // Credit Amount: computed & read-only only if purchase price, deposit AND part-ex are all present (0 ok, empty not).
   var pp=PREFILL.purchasePrice, dep0=PREFILL.deposit, pe=PREFILL.partEx;
   var allPresent = (pp!==null&&pp!==undefined) && (dep0!==null&&dep0!==undefined) && (pe!==null&&pe!==undefined);
@@ -824,13 +911,13 @@ function openRejCalc(which){
     credEl.setAttribute('readonly','readonly');
     $('#rl_creditHint').textContent='Purchase price minus deposit minus part exchange';
   } else {
-    // one or more source values missing - let the handler enter it
     credEl.removeAttribute('readonly');
-    credEl.value=String(bd.used?bd.creditAmount:computedCredit);
+    credEl.value=String(rejHas(rejWork.creditAmount)?rejWork.creditAmount:computedCredit);
     $('#rl_creditHint').textContent='Enter manually (a source value is missing in Jira)';
   }
-  $('#rl_retained').value=String(bd.used?bd.retainedPayments:0);
-  $('#rl_proceeds').value=String(bd.used?bd.vehicleProceeds:(PREFILL.vehicleProceeds||0));
+  $('#rl_customer_deduction').value=rejHas(rejWork.customerDeductionAmount)?String(rejWork.customerDeductionAmount):'';
+  $('#rl_retained').value=String(rejHas(rejWork.retainedPayments)?rejWork.retainedPayments:0);
+  $('#rl_proceeds').value=String(rejHas(rejWork.vehicleProceeds)?rejWork.vehicleProceeds:(PREFILL.vehicleProceeds||0));
   var vehicleOutcome = which==='fos' ? ($('#fosRejection').value||'') : ($('#rejection').value||'');
   var proceedsLabel='Vehicle Proceeds Received';
   if(vehicleOutcome==='Sold at Auction') proceedsLabel='Auction Proceeds Received';
@@ -844,9 +931,14 @@ function openRejCalc(which){
     mm.style.display='block';
     mm.textContent='Auction Sale Value ('+gbp.format(PREFILL.auctionSaleValue)+') and suspense funds received ('+gbp.format(PREFILL.suspenseTotal)+') do not match. Check which figure is correct before saving.';
   } else { mm.style.display='none'; }
-  var dep=$('#rl_deposit'),depRow=$('#rl_depositRow');
-  if(PREFILL.deposit===0){depRow.classList.add('disabled');dep.disabled=true;dep.value='0';$('#rl_depositHint').textContent='Deposit was £0 on the loan';}
-  else{depRow.classList.remove('disabled');dep.disabled=false;dep.value=String(bd.used?bd.depositPaidOut:0);$('#rl_depositHint').textContent='Deposit refunded to the customer';}
+  var dep=$('#rl_deposit'),depRow=$('#rl_depositRow'),depBtn=$('#rl_depositCalcBtn');
+  if(PREFILL.deposit===0 && !rejHas(rejWork.customerDeposit)){
+    depRow.classList.add('disabled');depBtn.disabled=true;dep.value='0';
+    $('#rl_depositHint').textContent='Deposit was £0 on the loan';
+  } else {
+    depRow.classList.remove('disabled');depBtn.disabled=false;dep.value=String(rejHas(rejWork.depositPaidOut)?rejWork.depositPaidOut:0);
+    $('#rl_depositHint').textContent='Calculated from the customer deposit and deposit deduction';
+  }
   $('#rejCalcTitle').textContent=which==='fos'?'FOS Rejection Loss':'Vehicle Rejection Loss';
   rejCalcCompute();overlay.classList.add('show');
 }
@@ -854,18 +946,131 @@ function rejCalcCompute(){
   var t=num($('#rl_credit').value)-num($('#rl_retained').value)-num($('#rl_proceeds').value)+num($('#rl_deposit').value);
   $('#rl_total').textContent=gbp.format(t);return t;
 }
+function allocationState(rpDed,depDed){
+  var total=currentCustomerDeduction();
+  var used=Math.max(0,num(rpDed))+Math.max(0,num(depDed));
+  return {total:total,used:used,remaining:total===null?null:Math.max(0,total-used)};
+}
+function showSubError(id,msg){var el=$(id);el.textContent=msg||'';el.classList.toggle('show',!!msg);}
+function openRetainedCalc(){
+  if(!rejWork)return;
+  closeRejSides();
+  var savedRp=rejHas(rejWork.repaymentsDeduction);
+  var made=rejHas(rejWork.repaymentsMadeByCustomer)?rejWork.repaymentsMadeByCustomer:0;
+  var other=Math.max(0,num(rejWork.depositDeduction||0));
+  var overall=currentCustomerDeduction();
+  var maxByOverall=overall===null?Infinity:Math.max(0,overall-other);
+  var deduction=savedRp?rejWork.repaymentsDeduction:(overall===null?0:Math.min(overall,made,maxByOverall));
+  rpDraft={made:Math.max(0,num(made)),deduction:Math.max(0,num(deduction)),savedDeduction:savedRp,deductionTouched:false};
+  $('#rp_made').value=String(rpDraft.made);
+  $('#rp_deduction').value=String(rpDraft.deduction);
+  rpCompute();$('#retainedSide').classList.add('show');
+}
+function rpCompute(){
+  if(!rpDraft)return;
+  var made=Math.max(0,num($('#rp_made').value));
+  var overall=currentCustomerDeduction();
+  var other=Math.max(0,num(rejWork&&rejWork.depositDeduction||0));
+  var maxByOverall=overall===null?Infinity:Math.max(0,overall-other);
+  if(!rpDraft.savedDeduction&&!rpDraft.deductionTouched&&overall!==null){
+    $('#rp_deduction').value=String(Math.min(overall,made,maxByOverall));
+  }
+  var deduction=Math.max(0,num($('#rp_deduction').value));
+  var maxAllowed=Math.min(made,maxByOverall);
+  var retained=Math.max(0,made-deduction);
+  var refund=Math.max(0,made-retained);
+  var a=allocationState(deduction,other);
+  $('#rp_retained').textContent=gbp.format(retained);
+  $('#rp_refund').textContent=gbp.format(refund);
+  $('#rp_alloc_total').textContent=overall===null?'Not set':gbp.format(overall);
+  $('#rp_alloc_used').textContent=gbp.format(deduction+other);
+  $('#rp_alloc_remaining').textContent=overall===null?'—':gbp.format(Math.max(0,overall-(deduction+other)));
+  var err='';
+  if(deduction>made+0.00001)err='Repayments Deduction cannot be greater than Repayments Made By Customer.';
+  else if(overall!==null&&deduction+other>overall+0.00001)err='Repayments Deduction plus Deposit Deduction cannot be greater than the Customer Deduction Amount.';
+  else if(overall===null&&deduction>0)err='Enter a Customer Deduction Amount on the main calculator before applying a repayments deduction.';
+  showSubError('#rp_error',err);
+  rpDraft.made=made;rpDraft.deduction=deduction;rpDraft.retained=retained;rpDraft.refund=refund;rpDraft.maxAllowed=maxAllowed;rpDraft.error=err;
+  return rpDraft;
+}
+function openDepositCalc(){
+  if(!rejWork)return;
+  closeRejSides();
+  var customerDeposit=rejHas(rejWork.customerDeposit)?rejWork.customerDeposit:(PREFILL.deposit==null?0:PREFILL.deposit);
+  var deduction=rejHas(rejWork.depositDeduction)?rejWork.depositDeduction:0;
+  dpDraft={customerDeposit:Math.max(0,num(customerDeposit)),deduction:Math.max(0,num(deduction))};
+  $('#dp_customer_deposit').value=String(dpDraft.customerDeposit);
+  $('#dp_deduction').value=String(dpDraft.deduction);
+  dpCompute();$('#depositSide').classList.add('show');
+}
+function dpCompute(){
+  if(!dpDraft)return;
+  var customerDeposit=Math.max(0,num($('#dp_customer_deposit').value));
+  var deduction=Math.max(0,num($('#dp_deduction').value));
+  var rp=Math.max(0,num(rejWork&&rejWork.repaymentsDeduction||0));
+  var overall=currentCustomerDeduction();
+  var paidOut=Math.max(0,customerDeposit-deduction);
+  $('#dp_paid_out').textContent=gbp.format(paidOut);
+  $('#dp_alloc_total').textContent=overall===null?'Not set':gbp.format(overall);
+  $('#dp_alloc_used').textContent=gbp.format(rp+deduction);
+  $('#dp_alloc_remaining').textContent=overall===null?'—':gbp.format(Math.max(0,overall-(rp+deduction)));
+  var err='';
+  if(deduction>customerDeposit+0.00001)err='Deposit Deduction cannot be greater than the Customer Deposit.';
+  else if(overall!==null&&rp+deduction>overall+0.00001)err='Repayments Deduction plus Deposit Deduction cannot be greater than the Customer Deduction Amount.';
+  else if(overall===null&&deduction>0)err='Enter a Customer Deduction Amount on the main calculator before applying a deposit deduction.';
+  showSubError('#dp_error',err);
+  dpDraft.customerDeposit=customerDeposit;dpDraft.deduction=deduction;dpDraft.paidOut=paidOut;dpDraft.error=err;
+  return dpDraft;
+}
+function validateMainDeduction(){
+  if(!rejWork)return '';
+  var total=currentCustomerDeduction();
+  var rp=Math.max(0,num(rejWork.repaymentsDeduction||0));
+  var dp=Math.max(0,num(rejWork.depositDeduction||0));
+  if(total===null&&(rp>0||dp>0))return 'Enter a Customer Deduction Amount because a repayments or deposit deduction has been applied.';
+  if(total!==null&&rp+dp>total+0.00001)return 'Repayments Deduction plus Deposit Deduction cannot be greater than the Customer Deduction Amount.';
+  return '';
+}
 function initRejCalc(){
-  ['rl_credit','rl_retained','rl_proceeds','rl_deposit'].forEach(function(id){document.getElementById(id).addEventListener('input',rejCalcCompute)});
+  ['rl_credit','rl_proceeds'].forEach(function(id){document.getElementById(id).addEventListener('input',rejCalcCompute)});
+  $('#rl_customer_deduction').addEventListener('input',function(){if(rejWork)rejWork.customerDeductionAmount=String(this.value).trim()===''?null:Math.max(0,num(this.value));if(rpDraft)rpCompute();if(dpDraft)dpCompute();});
   $('#rejLossCalcBtn').addEventListener('click',function(){openRejCalc('inv')});
   $('#fosRejCalcBtn').addEventListener('click',function(){openRejCalc('fos')});
-  $('#rejCancel').addEventListener('click',function(){$('#rejOverlay').classList.remove('show')});
-  $('#rejOverlay').addEventListener('click',function(e){if(e.target===$('#rejOverlay'))$('#rejOverlay').classList.remove('show')});
+  $('#rl_retainedCalcBtn').addEventListener('click',openRetainedCalc);
+  $('#rl_depositCalcBtn').addEventListener('click',openDepositCalc);
+  $('#rp_made').addEventListener('input',rpCompute);
+  $('#rp_deduction').addEventListener('input',function(){if(rpDraft)rpDraft.deductionTouched=true;rpCompute();});
+  $('#dp_customer_deposit').addEventListener('input',dpCompute);
+  $('#dp_deduction').addEventListener('input',dpCompute);
+  $('#rpCancel').addEventListener('click',function(){closeRejSides();});
+  $('#dpCancel').addEventListener('click',function(){closeRejSides();});
+  $('#rpSave').addEventListener('click',function(){
+    var r=rpCompute();if(!r||r.error)return;
+    rejWork.repaymentsMadeByCustomer=r.made;
+    rejWork.repaymentsDeduction=r.deduction;
+    rejWork.retainedPayments=r.retained;
+    rejWork.customerRefundAmount=r.refund;
+    $('#rl_retained').value=String(r.retained);rejCalcCompute();closeRejSides();
+  });
+  $('#dpSave').addEventListener('click',function(){
+    var r=dpCompute();if(!r||r.error)return;
+    rejWork.customerDeposit=r.customerDeposit;
+    rejWork.depositDeduction=r.deduction;
+    rejWork.depositPaidOut=r.paidOut;
+    $('#rl_deposit').value=String(r.paidOut);rejCalcCompute();closeRejSides();
+  });
+  $('#rejCancel').addEventListener('click',function(){closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')});
+  $('#rejOverlay').addEventListener('click',function(e){if(e.target===$('#rejOverlay')){closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')}});
   $('#rejSave').addEventListener('click',function(){
+    if(!rejWork)rejWork={};
+    rejWork.customerDeductionAmount=currentCustomerDeduction();
+    var deductionError=validateMainDeduction();
+    if(deductionError){alert(deductionError);return;}
     var t=rejCalcCompute();
-    var bd={used:true,creditAmount:num($('#rl_credit').value),retainedPayments:num($('#rl_retained').value),vehicleProceeds:num($('#rl_proceeds').value),depositPaidOut:num($('#rl_deposit').value),total:t};
-    if(calcTarget==='fos'){fosRejBreakdown=bd;setMoney('f_rejloss',t);$('#fosRejCalcPill').hidden=false}
-    else{rejBreakdown=bd;setMoney('c_rejloss',t);$('#rejLossCalcPill').hidden=false}
-    $('#rejOverlay').classList.remove('show');recompute();
+    var bd={used:true,creditAmount:num($('#rl_credit').value),retainedPayments:num($('#rl_retained').value),vehicleProceeds:num($('#rl_proceeds').value),depositPaidOut:num($('#rl_deposit').value),customerDeductionAmount:rejWork.customerDeductionAmount,repaymentsMadeByCustomer:rejHas(rejWork.repaymentsMadeByCustomer)?num(rejWork.repaymentsMadeByCustomer):null,repaymentsDeduction:rejHas(rejWork.repaymentsDeduction)?num(rejWork.repaymentsDeduction):null,customerRefundAmount:rejHas(rejWork.customerRefundAmount)?num(rejWork.customerRefundAmount):null,customerDeposit:rejHas(rejWork.customerDeposit)?num(rejWork.customerDeposit):null,depositDeduction:rejHas(rejWork.depositDeduction)?num(rejWork.depositDeduction):null,total:t};
+    if(calcTarget==='fos'){fosRejBreakdown=bd;rejBreakdown={used:false};setMoney('f_rejloss',t);$('#fosRejCalcPill').hidden=false}
+    else{rejBreakdown=bd;fosRejBreakdown={used:false};setMoney('c_rejloss',t);$('#rejLossCalcPill').hidden=false}
+    closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');recompute();
   });
 }
 
@@ -1007,7 +1212,13 @@ function restoreSavedBreakdowns(){
       creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),
       retainedPayments:has(s.rejRetained)?s.rejRetained:0,
       vehicleProceeds:has(s.rejProceeds)?s.rejProceeds:0,
-      depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};
+      depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0,
+      customerDeductionAmount:has(s.rejCustomerDeduction)?s.rejCustomerDeduction:null,
+      repaymentsMadeByCustomer:has(s.rejRepaymentsMade)?s.rejRepaymentsMade:null,
+      repaymentsDeduction:has(s.rejRepaymentsDeduction)?s.rejRepaymentsDeduction:null,
+      customerRefundAmount:has(s.rejCustomerRefund)?s.rejCustomerRefund:null,
+      customerDeposit:has(s.rejCustomerDeposit)?s.rejCustomerDeposit:null,
+      depositDeduction:has(s.rejDepositDeduction)?s.rejDepositDeduction:null};
     bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;
     if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false}
     else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false}
