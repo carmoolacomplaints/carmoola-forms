@@ -217,6 +217,9 @@
   </div>
 
   <section class="review-shell" id="reviewShell">
+    <div style="display:flex;justify-content:flex-end;margin:0 0 12px">
+      <button type="button" class="switchbtn" id="reviewToClosure">Go to Closure Logging</button>
+    </div>
     <div class="review-hero">
       <div class="review-eyebrow">Financial Ombudsman Service</div>
       <h2>Decision Review</h2>
@@ -513,16 +516,20 @@ function sumClass(c){var t=0;var els=document.querySelectorAll('.'+c);for(var i=
 var REVIEW_MODE=false, REVIEW_DOCS={}, REVIEW_SELECTED='';
 var FOS_REQUIRED_STAGE='', FOS_REQUIRED_ACTIONS=[], FOS_COMPLETED_ACTIONS=[];
 function fosReviewIsAvailable(){
-  var r=PREFILL&&PREFILL.fosReview;if(!r||!r.allowed||!PREFILL.fosApplicable)return false;
+  var r=PREFILL&&PREFILL.fosReview;
+  if(!r||!r.allowed||!PREFILL.fosApplicable)return false;
+
+  // IMPORTANT: only trust an explicit TOP-LEVEL Jira issue status.
+  // Do not fall back to fosReview.status/latestStage/etc: those describe the
+  // review payload and can exist even when the complaint is in another Jira status.
+  var rawStatus=PREFILL.issueStatusName||PREFILL.jiraIssueStatus||PREFILL.issueStatus||'';
+  if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||rawStatus.value||rawStatus.status||'';
+  if(String(rawStatus||'').trim().toLowerCase()!=='fos decision review')return false;
+
   var stage=String(r.latestStage||'').toLowerCase();
   if(stage!=='investigator'&&stage!=='ombudsman')return false;
   var docs=r.documents||{},stageDoc=docs[stage]||{};
   if(!stageDoc.available)return false;
-  // FOS Decision Review must be explicitly confirmed by Jira status.
-  // If status is missing, unknown or anything else, do not expose the review workspace.
-  var rawStatus=PREFILL.statusName||PREFILL.status||PREFILL.issueStatus||PREFILL.jiraStatus||(r&&r.statusName)||(r&&r.status)||(r&&r.issueStatus)||(r&&r.jiraStatus)||'';
-  if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||rawStatus.value||rawStatus.status||'';
-  if(String(rawStatus||'').trim().toLowerCase()!=='fos decision review')return false;
   return true;
 }
 function fmtReviewDate(v){if(!v)return '';var d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
@@ -534,7 +541,12 @@ function reviewSetMode(on){
   $('#reviewShell').classList.toggle('active',REVIEW_MODE);
   $('#closureShell').classList.toggle('hidden-for-review',REVIEW_MODE);
   $('#footer').hidden=REVIEW_MODE;
-  $('#reviewViewToggle').textContent=REVIEW_MODE?'Go to Closure Logging':'Open FOS Decision Review';
+
+  // The "FOS decision review is available" banner belongs to Closure Logging only.
+  // When the complaint first opens in FOS Decision Review, it is hidden because
+  // the handler is already looking at that workspace.
+  $('#reviewViewSwitch').hidden=REVIEW_MODE;
+
   $('#formTitle').textContent=REVIEW_MODE?'FOS Decision Review':'Complaint Closure Form';
   document.title=PREFILL.issueKey+' - '+(REVIEW_MODE?'FOS Decision Review':'Complaint Closure Form');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -580,7 +592,8 @@ function reviewSelectDoc(kind){
 
 function renderReview(){
   var r=PREFILL.fosReview;if(!fosReviewIsAvailable())return;
-  $('#reviewViewSwitch').hidden=false;
+  // Keep the Closure Logging return banner hidden until reviewSetMode(false).
+  $('#reviewViewSwitch').hidden=true;
   var resp=r.documents.response||{},inv=r.documents.investigator||{},omb=r.documents.ombudsman||{};
   $('#rvResponseLabel').textContent=resp.title||'Carmoola Response';
   $('#rvResponseMeta').textContent=resp.available?((resp.documentType||'Stored response')+(resp.wordCount?' · '+resp.wordCount+' words':'')):'Not available';
@@ -630,7 +643,8 @@ function initReview(){
       reviewSelectDoc(this.dataset.reviewDoc);
     });
   });
-  $('#reviewViewToggle').addEventListener('click',function(){reviewSetMode(!REVIEW_MODE);});
+  $('#reviewViewToggle').addEventListener('click',function(){reviewSetMode(true);});
+  $('#reviewToClosure').addEventListener('click',function(){reviewSetMode(false);});
   $('#reviewConfirmCancel').addEventListener('click',function(){$('#reviewConfirmOverlay').classList.remove('show');});$('#reviewConfirmOverlay').addEventListener('click',function(e){if(e.target===$('#reviewConfirmOverlay'))e.currentTarget.classList.remove('show');});$('#reviewConfirmGo').addEventListener('click',function(){submitReviewAction(this.dataset.action);});
   reviewSetMode(true);
 }
