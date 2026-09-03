@@ -522,8 +522,10 @@ function fosReviewIsAvailable(){
   // IMPORTANT: only trust an explicit TOP-LEVEL Jira issue status.
   // Do not fall back to fosReview.status/latestStage/etc: those describe the
   // review payload and can exist even when the complaint is in another Jira status.
-  var rawStatus=PREFILL.issueStatusName||PREFILL.jiraIssueStatus||PREFILL.issueStatus||'';
-  if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||rawStatus.value||rawStatus.status||'';
+  // Only trust the dedicated live Jira status name returned by the API.
+  // Do NOT fall back to jiraIssueStatus / issueStatus or any FOS review metadata.
+  var rawStatus=PREFILL.issueStatusName;
+  if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||'';
   if(String(rawStatus||'').trim().toLowerCase()!=='fos decision review')return false;
 
   var stage=String(r.latestStage||'').toLowerCase();
@@ -1391,6 +1393,9 @@ function boot(){
     .then(function(d){
       if(!d.ok){$('#loading').textContent=(d.errors&&d.errors[0])||'Could not load this complaint.';return;}
       PREFILL=d.prefill;
+      $('#reviewViewSwitch').hidden=true;
+      $('#reviewShell').classList.remove('active');
+      $('#closureShell').classList.remove('hidden-for-review');
       $('#loading').hidden=true;$('#shell').hidden=false;$('#footer').hidden=false;
       var moneyEls=document.querySelectorAll('.cost,.fcost,.in input');for(var mi=0;mi<moneyEls.length;mi++)attachMoney(moneyEls[mi]);
       initTagHelp();gateFos();initTabs();initVehicleVisibility();
