@@ -131,6 +131,7 @@
   .rcmini-body{border-top:1px solid #F6D3E6;padding:6px 9px 8px}.rcmini table{width:100%;border-collapse:collapse;font-size:11.5px}.rcmini td{padding:5px 3px;border-top:1px solid var(--line)}.rcmini tr:first-child td{border-top:0}.rcmini td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}.rcmini-total{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #F6D3E6;margin-top:4px;padding:7px 3px 1px;font-size:11.5px;font-weight:700}
   .rc-editor-head{display:grid;grid-template-columns:minmax(0,1.5fr) 120px minmax(150px,1fr) 32px;gap:8px;padding:0 0 6px;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.rc-edit-row{display:grid;grid-template-columns:minmax(0,1.5fr) 120px minmax(150px,1fr) 32px;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}.rc-edit-row input,.rc-edit-row select{font-size:13px;padding:9px 10px}.rc-edit-row .money input{padding-left:25px}.rc-del{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;border-radius:6px}.rc-del:hover{background:#F5F1F6;color:var(--err)}
   .rc-editor-error{display:none;background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:8px;padding:9px 11px;font-size:12.5px;margin-bottom:10px}.rc-editor-error.show{display:block}
+  .cost-breakdown-warning{display:none;background:#FFF3D6;border:1px solid #F0D48A;color:#6F5100;border-radius:9px;padding:10px 12px;font-size:12.5px;line-height:1.45;margin-bottom:10px}.cost-breakdown-warning.show{display:block}.cost-breakdown-warning strong{color:#5B4100}
   .warnbox{background:#FFF3D6;border:1px solid #F0D48A;color:#6F5100;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.5}.warnbox strong{color:#5B4100}
   @media(max-width:620px){.rc-editor-head{display:none}.rc-edit-row{grid-template-columns:1fr 105px 32px}.rc-edit-row select{grid-column:1 / span 2}.rc-edit-row .rc-del{grid-column:3;grid-row:1 / span 2}.rc-list .typecol{display:none}}
 
@@ -384,6 +385,7 @@
   <div class="modal" role="dialog" aria-modal="true" style="max-width:620px">
     <div class="modal-head"><h3 id="inspCalcTitle">Inspection, Storage or Recovery Costs</h3><p>Record inspection, storage and recovery separately. DEKRA inspections are &pound;160 each.</p></div>
     <div class="modal-body">
+      <div class="cost-breakdown-warning show" id="inspBreakdownWarning"><strong>Break the costs down.</strong> Where there is more than one inspection, storage or recovery charge, record each charge separately rather than combining them into one line.</div>
       <div class="insp-section">
         <div class="insp-section-head"><strong>Inspection</strong><span id="ik_inspection_total">&pound;0.00</span></div>
         <div class="insp-section-body">
@@ -425,6 +427,7 @@
     <div class="modal-head"><h3 id="costModalTitle">Record Cost</h3><p>Add a line for each cost. The total will be written to the cost field.</p></div>
     <div class="modal-body">
       <div class="rc-editor-error" id="costEditorError"></div>
+      <div class="cost-breakdown-warning" id="costBreakdownWarning"><strong>Break the costs down.</strong> Add each individual cost as a separate line with a useful description — don't group several costs together in one row.</div>
       <div id="cost_rows"></div>
       <button type="button" class="vehtoggle" id="cost_add" style="margin-top:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Row</button>
       <div class="calc-total"><span class="l">Recorded Cost Total</span><span class="v" id="cost_total">&pound;0.00</span></div>
@@ -508,16 +511,42 @@ function sumClass(c){var t=0;var els=document.querySelectorAll('.'+c);for(var i=
 
 var REVIEW_MODE=false, REVIEW_DOCS={}, REVIEW_SELECTED='';
 var FOS_REQUIRED_STAGE='', FOS_REQUIRED_ACTIONS=[], FOS_COMPLETED_ACTIONS=[];
+function fosReviewIsAvailable(){
+  var r=PREFILL&&PREFILL.fosReview;
+  if(!r||!r.allowed||!PREFILL.fosApplicable)return false;
+
+  // Fail closed: the review workspace is only available when the complaint's
+  // actual Jira status is explicitly FOS Decision Review.
+  var rawStatus=PREFILL.statusName||PREFILL.status||PREFILL.issueStatus||PREFILL.jiraStatus||'';
+  if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||rawStatus.value||'';
+  if(String(rawStatus||'').trim().toLowerCase()!=='fos decision review')return false;
+
+  var stage=String(r.latestStage||'').toLowerCase();
+  if(stage!=='investigator'&&stage!=='ombudsman')return false;
+  var docs=r.documents||{},stageDoc=docs[stage]||{};
+  if(!stageDoc.available)return false;
+  return true;
+}
 function fmtReviewDate(v){if(!v)return '';var d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
 function fmtReviewOutcome(v){var s=String(v||'').trim();if(!s)return '';var map={upheld:'Upheld',not_upheld:'Not Upheld',partially_upheld:'Partially Upheld',withdrawn:'Withdrawn',unclear:'Unclear'};var k=s.toLowerCase().replace(/[\s-]+/g,'_');if(map[k])return map[k];return s.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
 function reviewDocObject(kind){return (PREFILL&&PREFILL.fosReview&&PREFILL.fosReview.documents&&PREFILL.fosReview.documents[kind])||null;}
 function reviewSetMode(on){
-  if(!PREFILL||!PREFILL.fosReview||!PREFILL.fosReview.allowed)return;
+  if(!fosReviewIsAvailable()){
+    REVIEW_MODE=false;
+    $('#reviewShell').classList.remove('active');
+    $('#closureShell').classList.remove('hidden-for-review');
+    $('#reviewViewSwitch').hidden=true;
+    return;
+  }
   REVIEW_MODE=!!on;
   $('#reviewShell').classList.toggle('active',REVIEW_MODE);
   $('#closureShell').classList.toggle('hidden-for-review',REVIEW_MODE);
   $('#footer').hidden=REVIEW_MODE;
-  $('#reviewViewToggle').textContent=REVIEW_MODE?'Go to Closure Logging':'Open FOS Decision Review';
+
+  // The return-to-review banner only belongs on Closure Logging. When the
+  // review workspace is already open, keep it hidden.
+  $('#reviewViewSwitch').hidden=REVIEW_MODE;
+  $('#reviewViewToggle').textContent='Open FOS Decision Review';
   $('#formTitle').textContent=REVIEW_MODE?'FOS Decision Review':'Complaint Closure Form';
   document.title=PREFILL.issueKey+' - '+(REVIEW_MODE?'FOS Decision Review':'Complaint Closure Form');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -562,8 +591,7 @@ function reviewSelectDoc(kind){
 }
 
 function renderReview(){
-  var r=PREFILL.fosReview;if(!r||!r.allowed)return;
-  $('#reviewViewSwitch').hidden=false;
+  var r=PREFILL.fosReview;if(!fosReviewIsAvailable())return;
   var resp=r.documents.response||{},inv=r.documents.investigator||{},omb=r.documents.ombudsman||{};
   $('#rvResponseLabel').textContent=resp.title||'Carmoola Response';
   $('#rvResponseMeta').textContent=resp.available?((resp.documentType||'Stored response')+(resp.wordCount?' · '+resp.wordCount+' words':'')):'Not available';
@@ -605,7 +633,7 @@ function submitReviewAction(action){
     .catch(function(e){er.textContent=e.message||'Could not complete the review action.';er.classList.add('show');go.disabled=false;go.textContent=action==='escalate_ombudsman'?'Yes, Escalate':'Yes, Accept View';});
 }
 function initReview(){
-  if(!PREFILL.fosReview||!PREFILL.fosReview.allowed)return;
+  if(!fosReviewIsAvailable()){ $('#reviewViewSwitch').hidden=true; return; }
   renderReview();
   document.querySelectorAll('[data-review-doc]').forEach(function(btn){
     btn.addEventListener('click',function(){
@@ -868,7 +896,7 @@ function initInspCalc(){
   $('#ik_storage_add').addEventListener('click',function(){$('#ik_storage_rows').appendChild(inspectionRow({desc:'',amount:0},inspCalcCompute));inspCalcCompute();});
   $('#ik_recovery_add').addEventListener('click',function(){$('#ik_recovery_rows').appendChild(inspectionRow({desc:'',amount:0},inspCalcCompute));inspCalcCompute();});
   $('#inspCancel').addEventListener('click',function(){$('#inspOverlay').classList.remove('show')});$('#inspOverlay').addEventListener('click',function(e){if(e.target===$('#inspOverlay'))$('#inspOverlay').classList.remove('show')});
-  $('#inspSave').addEventListener('click',function(){var r=inspCalcCompute();inspectionBreakdowns[calcTarget]={used:true,dekraCount:r.dekraCount,otherInspectionRows:collectInspectionRows('#ik_other_rows'),storageRows:collectInspectionRows('#ik_storage_rows'),recoveryRows:collectInspectionRows('#ik_recovery_rows')};syncInspectionCost(calcTarget);renderRunningMini();$('#inspOverlay').classList.remove('show');});
+  $('#inspSave').addEventListener('click',function(){var groups=['#ik_other_rows','#ik_storage_rows','#ik_recovery_rows'],missing=false;groups.forEach(function(sel){document.querySelectorAll(sel+' .calcrow').forEach(function(row){var d=row.querySelector('.insp_desc').value.trim(),a=num(row.querySelector('.insp_amt').value);if(a!==0&&!d)missing=true;});});if(missing){alert('Please add a useful description for each inspection, storage or recovery cost.');return;}var r=inspCalcCompute();inspectionBreakdowns[calcTarget]={used:true,dekraCount:r.dekraCount,otherInspectionRows:collectInspectionRows('#ik_other_rows'),storageRows:collectInspectionRows('#ik_storage_rows'),recoveryRows:collectInspectionRows('#ik_recovery_rows')};syncInspectionCost(calcTarget);renderRunningMini();$('#inspOverlay').classList.remove('show');});
 }
 
 /* ---- shared Other Costs calculator (add/remove description+amount rows) ---- */
@@ -1155,8 +1183,9 @@ var COST_META={
 function cleanCostRows(rows){return (rows||[]).map(function(r){return {desc:String(r.desc||'').trim(),amount:num(r.amount)};}).filter(function(r){return r.desc!==''||r.amount!==0;});}
 function costRowsTotal(rows){return cleanCostRows(rows).reduce(function(a,r){return a+num(r.amount)},0);}
 function syncCostFromBreakdown(id){var b=costBreakdowns[id]||{used:false,rows:[]};var t=costRowsTotal(b.rows);setMoney(id,t);var p=document.getElementById(id+'_recorded');if(p)p.hidden=!b.used;recompute();}
-function costEditorRow(r){r=r||{desc:'',amount:0};var wrap=document.createElement('div');wrap.className='calcrow';wrap.innerHTML='<div class="rl"><input type="text" class="cost_desc" placeholder="Description" value="'+esc(r.desc||'')+'"></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" class="cost_amt" value="'+esc(r.amount!=null?r.amount:0)+'"></div><button type="button" class="oc_del" aria-label="Remove" style="flex:none;border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px">&times;</button>';wrap.querySelector('.cost_amt').addEventListener('input',costEditorCompute);wrap.querySelector('.oc_del').addEventListener('click',function(){wrap.parentNode.removeChild(wrap);costEditorCompute();});return wrap;}
-function costEditorCompute(){var t=0;document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){t+=num(row.querySelector('.cost_amt').value)});$('#cost_total').textContent=gbp.format(t);return t;}
+function costEditorRow(r){r=r||{desc:'',amount:0};var wrap=document.createElement('div');wrap.className='calcrow';wrap.innerHTML='<div class="rl"><input type="text" class="cost_desc" placeholder="Describe this specific cost" value="'+esc(r.desc||'')+'"></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" class="cost_amt" value="'+esc(r.amount!=null?r.amount:0)+'"></div><button type="button" class="oc_del" aria-label="Remove" style="flex:none;border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px">&times;</button>';wrap.querySelector('.cost_desc').addEventListener('input',costEditorCompute);wrap.querySelector('.cost_amt').addEventListener('input',costEditorCompute);wrap.querySelector('.oc_del').addEventListener('click',function(){wrap.parentNode.removeChild(wrap);costEditorCompute();});return wrap;}
+function updateCostBreakdownWarning(){var count=0;document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim();if(d||num(raw)!==0)count++;});var w=$('#costBreakdownWarning');if(w)w.classList.toggle('show',count<=1);}
+function costEditorCompute(){var t=0;document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){t+=num(row.querySelector('.cost_amt').value)});$('#cost_total').textContent=gbp.format(t);updateCostBreakdownWarning();return t;}
 function openCostEditor(id){costCalcTarget=id;var meta=COST_META[id];if(!meta)return;$('#costModalTitle').textContent=meta.title;var box=$('#cost_rows');box.innerHTML='';var b=costBreakdowns[id]||{used:false,rows:[]};var rows=cleanCostRows(b.rows);if(!rows.length)rows=[{desc:'',amount:0}];rows.forEach(function(r){box.appendChild(costEditorRow(r));});$('#costEditorError').classList.remove('show');$('#costEditorError').textContent='';costEditorCompute();$('#costOverlay').classList.add('show');}
 function collectCostEditor(){var rows=[],error='';document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim(),a=num(raw);if(!d&&(!raw||a===0))return;if(!d){error='Each cost with an amount needs a description.';return;}if(raw===''){error='Each cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a});});return {rows:rows,error:error};}
 function initCostEditors(){document.querySelectorAll('[data-cost-target]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.costTarget;if(id==='c_insp'){openInspCalc('inv');return;}if(id==='f_insp'){openInspCalc('fos');return;}openCostEditor(id);});});$('#cost_add').addEventListener('click',function(){$('#cost_rows').appendChild(costEditorRow({desc:'',amount:0}));costEditorCompute();});$('#costCancel').addEventListener('click',function(){$('#costOverlay').classList.remove('show')});$('#costOverlay').addEventListener('click',function(e){if(e.target===$('#costOverlay'))$('#costOverlay').classList.remove('show')});$('#costSave').addEventListener('click',function(){var got=collectCostEditor(),er=$('#costEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}costBreakdowns[costCalcTarget]={used:true,rows:cleanCostRows(got.rows)};syncCostFromBreakdown(costCalcTarget);renderRunningMini();$('#costOverlay').classList.remove('show');});}
@@ -1178,7 +1207,7 @@ function restoreCostBreakdowns(){
   Object.keys(COST_META).forEach(function(id){
     var meta=COST_META[id],rows=Array.isArray(saved[meta.saved])?saved[meta.saved]:[],legacy=rawJiraCost(id);
     if(present[meta.saved])costBreakdowns[id]={used:true,rows:cleanCostRows(rows)};
-    else if(legacy.present)costBreakdowns[id]={used:true,rows:[{desc:meta.fallback||meta.title,amount:legacy.value}]};
+    else if(legacy.present)costBreakdowns[id]={used:true,rows:[{desc:'',amount:legacy.value}]};
     else costBreakdowns[id]={used:false,rows:[]};
     syncCostFromBreakdown(id);
   });
@@ -1191,12 +1220,12 @@ function restoreInspectionBreakdowns(){
     if(!b.used){
       var dk=isFos?s.fosDekra:s.invDekra,oth=isFos?s.fosOtherInsp:s.invOtherInsp,st=isFos?s.fosStorage:s.invStorage,rc=isFos?s.fosRecovery:s.invRecovery;
       if(legacyRows.length){b.used=true;b.otherInspectionRows=legacyRows;}
-      else if(dk!=null||oth!=null||st!=null||rc!=null){b.used=true;b.dekraCount=Number(dk)||0;if(Number(oth))b.otherInspectionRows=[{desc:'Other Inspection Cost',amount:Number(oth)}];if(Number(st))b.storageRows=[{desc:'Storage Cost',amount:Number(st)}];if(Number(rc))b.recoveryRows=[{desc:'Recovery Cost',amount:Number(rc)}];}
+      else if(dk!=null||oth!=null||st!=null||rc!=null){b.used=true;b.dekraCount=Number(dk)||0;if(Number(oth))b.otherInspectionRows=[{desc:'',amount:Number(oth)}];if(Number(st))b.storageRows=[{desc:'',amount:Number(st)}];if(Number(rc))b.recoveryRows=[{desc:'',amount:Number(rc)}];}
       else if(main.present){
         b.used=true;
         if(main.value===160)b.dekraCount=1;
-        else if(main.value>160&&Number(PREFILL.dekraDefault)>0){b.dekraCount=1;b.otherInspectionRows=[{desc:'Inspection, Storage Or Recovery Cost',amount:main.value-160}];}
-        else if(main.value!==0)b.otherInspectionRows=[{desc:'Inspection, Storage Or Recovery Cost',amount:main.value}];
+        else if(main.value>160&&Number(PREFILL.dekraDefault)>0){b.dekraCount=1;b.otherInspectionRows=[{desc:'',amount:main.value-160}];}
+        else if(main.value!==0)b.otherInspectionRows=[{desc:'',amount:main.value}];
       }
     }
     inspectionBreakdowns[id]=b;syncInspectionCost(id);
@@ -1343,7 +1372,7 @@ function boot(){
       initRejCalc();initInspCalc();initCostEditors();
       applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
       // Outside FOS Decision Review, keep the existing default-to-FOS behaviour.
-      if(PREFILL.fosApplicable && !(PREFILL.fosReview&&PREFILL.fosReview.allowed))selectTab('tab-fos');
+      if(PREFILL.fosApplicable && !fosReviewIsAvailable())selectTab('tab-fos');
     })
     .catch(function(){$('#loading').textContent='Network error loading the complaint.';});
 }
