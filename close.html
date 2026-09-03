@@ -110,9 +110,10 @@
   .calc-total .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
   .modal-foot{padding:14px 22px 20px;display:flex;gap:10px;justify-content:flex-end}
   /* Rejection-loss nested calculators */
-  .rej-workspace{display:flex;align-items:flex-start;gap:14px;width:min(960px,100%);max-height:90vh}
-  .rej-workspace>.modal{flex:0 0 470px;max-width:470px}
-  .rej-side{display:none;flex:1;min-width:0;background:var(--white);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
+  /* Keep the main rejection-loss calculator centred. Side calculators open to its right. */
+  .rej-workspace{position:relative;width:min(470px,100%);max-height:90vh}
+  .rej-workspace>.modal{width:100%;max-width:470px}
+  .rej-side{display:none;position:absolute;left:calc(100% + 14px);top:0;width:470px;background:var(--white);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto}
   .rej-side.show{display:block}
   .deduction-box{background:#FFF7FB;border:1px solid #F2CFE1;border-radius:11px;padding:13px 14px;margin-bottom:12px}
   .deduction-box label{display:block;font-size:13.5px;font-weight:800;color:var(--pink-dark);margin-bottom:4px}
@@ -132,7 +133,7 @@
   .calc-output{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--tint-soft);border:1px solid #F6D3E6;border-radius:10px;padding:12px 14px;margin-top:10px}
   .calc-output .l{font-size:13px;font-weight:700;color:var(--pink-dark)}
   .calc-output .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
-  @media(max-width:900px){.rej-workspace{display:block;max-height:92vh;overflow:auto}.rej-workspace>.modal{max-width:100%;width:100%}.rej-side{margin-top:12px;max-height:none}.overlay{align-items:flex-start}.calcrow.with-action .in{width:190px}}
+  @media(max-width:980px){.rej-workspace{width:min(470px,100%);max-height:92vh;overflow:auto}.rej-workspace>.modal{max-width:100%;width:100%}.rej-side{position:static;width:100%;margin-top:12px;max-height:none}.overlay{align-items:flex-start}.calcrow.with-action .in{width:190px}}
   @media(max-width:520px){.calcrow.with-action{align-items:flex-start;flex-wrap:wrap}.calcrow.with-action .in{width:100%}.allocation-strip{grid-template-columns:1fr}.rej-workspace{width:100%}}
   .btn-ghost{font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);background:transparent;border:1.5px solid var(--line-strong);border-radius:10px;padding:10px 16px;cursor:pointer}
   .btn-ghost:hover{border-color:#C9BFD2}
