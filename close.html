@@ -196,6 +196,7 @@
   .review-stagebar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 0;position:relative;z-index:1}.review-stage{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);border-radius:11px;padding:10px 12px}.review-stage.done{background:rgba(255,255,255,.13)}.review-stage.current{border-color:#FF78BB;background:rgba(249,0,129,.24)}.review-stage .k{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#DDBFD1}.review-stage .v{font-size:13px;font-weight:700;margin-top:2px}
   .review-grid{display:grid;grid-template-columns:230px minmax(0,1fr);gap:14px;align-items:start}.review-nav{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:8px;position:sticky;top:14px}.review-nav-title{padding:9px 10px 6px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.docbtn{width:100%;border:0;background:transparent;text-align:left;padding:11px;border-radius:10px;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;gap:9px;align-items:flex-start;margin:2px 0}.docbtn:hover{background:var(--tint-soft)}.docbtn.active{background:var(--tint);color:var(--pink-dark)}.docbtn:disabled{opacity:.42;cursor:not-allowed}.docico{width:30px;height:30px;border-radius:8px;background:#F3EDF4;display:flex;align-items:center;justify-content:center;flex:none;font-size:14px}.docbtn.active .docico{background:#fff}.docmeta{min-width:0}.docmeta strong{display:block;font-size:13px}.docmeta span{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.docbtn.active .docmeta span{color:#8E3A68}
   .review-reader{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.reader-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.reader-title{min-width:0}.reader-title h3{margin:0;font-size:16px}.reader-title p{margin:3px 0 0;font-size:11.5px;color:var(--muted)}.reader-link{font-size:12px;font-weight:700;color:var(--pink-dark);text-decoration:none;border:1px solid #F4C5DC;background:var(--tint-soft);padding:7px 10px;border-radius:8px;white-space:nowrap}.reader-link:hover{background:var(--tint)}.reader-body{padding:20px;min-height:360px;max-height:580px;overflow:auto;white-space:pre-wrap;font-family:'DM Sans',sans-serif;font-size:13.5px;line-height:1.7;color:#322B38}.reader-empty{color:var(--muted);text-align:center;padding:80px 20px}.review-actions{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px;margin-top:14px}.review-actions h3{margin:0 0 4px;font-size:15px}.review-actions p{margin:0;color:var(--muted);font-size:12.5px}.review-action-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.review-accept,.review-escalate,.review-continue{font-family:inherit;font-size:13.5px;font-weight:800;border-radius:10px;padding:11px 15px;cursor:pointer}.review-accept,.review-continue{border:0;background:var(--pink);color:#fff;box-shadow:0 4px 14px rgba(249,0,129,.22)}.review-accept:hover,.review-continue:hover{background:var(--pink-dark)}.review-escalate{border:1.5px solid #6E5A77;background:#fff;color:#3B2A43}.review-escalate:hover{border-color:var(--pink-dark);color:var(--pink-dark);background:var(--tint-soft)}.review-badge{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:var(--good-tint);color:var(--good);border-radius:6px;padding:4px 7px;margin-left:7px}.review-badge.final{background:#F0E9F4;color:#5D3C6B}
+  .review-action-complete{display:inline-flex;align-items:center;gap:7px;border:1px solid #B8DEC9;background:#EDF8F2;color:#0F6B49;font-family:inherit;font-size:13.5px;font-weight:800;border-radius:10px;padding:11px 15px;cursor:default}.review-action-muted{display:inline-flex;align-items:center;border:1px solid var(--line-strong);background:#F5F2F7;color:#9A929F;font-family:inherit;font-size:13.5px;font-weight:700;border-radius:10px;padding:11px 15px;cursor:default}.vehicle-stage-note{display:none;margin-top:8px;padding:9px 11px;border:1px solid var(--line);background:#F8F5F9;border-radius:9px;font-size:12px;font-weight:700;color:var(--muted)}.vehicle-stage-note.show{display:block}.vehicle-stage-note strong{color:var(--pink-dark)}
   .confirm-copy{font-size:13.5px;color:var(--ink);line-height:1.6}.confirm-copy strong{color:var(--pink-dark)}.confirm-note{margin-top:12px;padding:11px 12px;background:var(--tint-soft);border:1px solid #F6D3E6;border-radius:9px;font-size:12px;color:#69445A}.btn-dangersoft{font-family:inherit;font-size:14px;font-weight:800;color:#fff;background:#5A365F;border:0;border-radius:10px;padding:10px 18px;cursor:pointer}.btn-dangersoft:hover{background:#432647}
 
   /* AI summaries and FOS required actions */
@@ -311,6 +312,7 @@
       <div class="field" id="vehQuestionField">
         <label for="rejection">What Happened To The Vehicle? <span class="req">*</span> <span class="pill auto" id="rejAutoPill" hidden>Auto-detected</span></label>
         <select id="rejection"><option value="">Select&hellip;</option><option>Rejected to Broker</option><option>Rejected to Dealership</option><option>Sold at Auction</option><option>No Vehicle Rejection</option></select>
+        <div class="vehicle-stage-note" id="invVehicleStageNote"></div>
         <div id="mainMismatch" style="display:none;background:#FFF3D6;border:1px solid #F0D48A;color:#7A5A00;border-radius:10px;padding:10px 12px;margin-top:9px;font-size:12.5px;font-weight:600"></div>
       </div>
     </div>
@@ -357,7 +359,7 @@
         <div class="field"><label for="fosInvestigator">FOS Investigator Outcome <span class="req">*</span></label><select id="fosInvestigator"><option value="">Select&hellip;</option><option>Upheld</option><option>Not Upheld</option><option>Withdrawn</option></select></div>
         <div class="field"><label for="fosOmbudsman">FOS Ombudsman Outcome <span class="req" id="ombReq" hidden>*</span></label><select id="fosOmbudsman" disabled><option value="">Select&hellip;</option><option>Upheld</option><option>Not Upheld</option><option>Withdrawn</option></select></div>
         <div class="field"><div class="readout"><span class="lbl">Overall FOS Outcome</span><span class="val none" id="overallFos">&mdash;</span></div></div>
-        <div class="field hiddenrow" id="fosVehField"><label for="fosRejection">What Happened To The Vehicle? <span class="req">*</span></label><p class="help">Shown because the FOS outcome is upheld and the agreement may be unwound.</p><select id="fosRejection"><option value="">Select&hellip;</option><option>Rejected to Broker</option><option>Rejected to Dealership</option><option>Sold at Auction</option><option>No Vehicle Rejection</option></select></div>
+        <div class="field hiddenrow" id="fosVehField"><label for="fosRejection">What Happened To The Vehicle? <span class="req">*</span></label><p class="help">Shown because the FOS outcome is upheld and the agreement may be unwound.</p><select id="fosRejection"><option value="">Select&hellip;</option><option>Rejected to Broker</option><option>Rejected to Dealership</option><option>Sold at Auction</option><option>No Vehicle Rejection</option></select><div class="vehicle-stage-note" id="fosVehicleStageNote"></div></div>
       </div>
       <div class="card">
         <div class="card-head"><span class="num">Costs</span><h2>FOS Costs</h2></div>
@@ -676,7 +678,7 @@ function renderReview(){
   }else if(r.latestStage==='ombudsman'){
     $('#rvActionTitle').innerHTML='Final Ombudsman decision received <span class="review-badge final">Final FOS stage</span>';
     $('#rvActionCopy').textContent='Review the final decision and then continue to closure logging to record the outcome, redress and costs.';
-    var c=document.createElement('button');c.type='button';c.className='review-continue';c.textContent='Continue to Closure Logging';c.addEventListener('click',function(){reviewSetMode(false);});buttons.appendChild(c);
+    var c=document.createElement('button');c.type='button';c.className='review-continue';c.textContent='Continue to Closure Logging';c.addEventListener('click',function(){openReviewConfirm('accept_ombudsman');});buttons.appendChild(c);
   }else{
     $('#rvActionTitle').textContent='FOS decision material unavailable';$('#rvActionCopy').textContent='No Investigator or Ombudsman decision text was found in Supabase.';
   }
@@ -686,17 +688,36 @@ function openReviewConfirm(action){
   var ov=$('#reviewConfirmOverlay'),title=$('#reviewConfirmTitle'),sub=$('#reviewConfirmSub'),copy=$('#reviewConfirmCopy'),go=$('#reviewConfirmGo'),er=$('#reviewConfirmError');
   er.classList.remove('show');er.textContent='';go.disabled=false;go.dataset.action=action;
   if(action==='accept_investigator'){
-    title.textContent='Accept the Investigator’s view?';sub.textContent='This confirms Carmoola will not ask for an Ombudsman review.';copy.innerHTML='<strong>Accept Investigator View</strong><br><br>This will record the review in Jira and take you to closure logging so the FOS outcome, redress and costs can be completed. The complaint will remain in FOS Decision Review until the closure work is dealt with.';go.textContent='Yes, Accept View';go.className='btn-sm';
+    title.textContent='Accept the Investigator’s view?';sub.textContent='This confirms Carmoola will not ask for an Ombudsman review.';copy.innerHTML='<strong>Accept Investigator View</strong><br><br>This will record the review in Jira, move the complaint back to <strong>FOS Investigation</strong> and take you to the complaint so closure work can continue.';go.textContent='Yes, Accept View';go.className='btn-sm';
+  }else if(action==='accept_ombudsman'){
+    title.textContent='Continue with the Ombudsman decision?';sub.textContent='This confirms the final FOS decision has been reviewed.';copy.innerHTML='<strong>Continue to Closure Logging</strong><br><br>This will record the review in Jira and move the complaint back to <strong>Ombudsman Investigation</strong> so the final outcome, redress and costs can be completed.';go.textContent='Yes, Continue';go.className='btn-sm';
   }else{
     title.textContent='Escalate to an Ombudsman?';sub.textContent='This will progress the complaint to the final FOS stage.';copy.innerHTML='<strong>Escalate to Ombudsman</strong><br><br>Carmoola will reply on the FOS Zendesk ticket asking for an Ombudsman to review the complaint, then Jira will move to <strong>Ombudsman Investigation</strong>.'+'<div class="confirm-note">Only continue if you are satisfied Carmoola should challenge the Investigator’s view.</div>';go.textContent='Yes, Escalate';go.className='btn-dangersoft';
   }
   ov.classList.add('show');
 }
+function showReviewActionComplete(action,status){
+  var buttons=$('#rvActionButtons');buttons.innerHTML='';
+  var done=document.createElement('button');done.type='button';done.disabled=true;done.className='review-action-complete';
+  if(action==='accept_investigator')done.textContent='✓ Investigator View Accepted';
+  else if(action==='accept_ombudsman')done.textContent='✓ Ombudsman Decision Reviewed';
+  else done.textContent='✓ Escalated to Ombudsman';
+  buttons.appendChild(done);
+  if(action==='accept_investigator'||action==='escalate_ombudsman'){
+    var other=document.createElement('button');other.type='button';other.disabled=true;other.className='review-action-muted';other.textContent=action==='accept_investigator'?'Escalate to Ombudsman':'Accept Investigator View';buttons.appendChild(other);
+  }
+  $('#rvActionTitle').innerHTML='Decision recorded <span class="review-badge">Completed</span>';
+  $('#rvActionCopy').textContent='Jira has been moved to '+(status||'the next stage')+'. Returning to the complaint…';
+}
 function submitReviewAction(action){
   var go=$('#reviewConfirmGo'),er=$('#reviewConfirmError');go.disabled=true;go.textContent=action==='escalate_ombudsman'?'Escalating…':'Saving…';er.classList.remove('show');
   fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'fos_review_action',reviewAction:action})})
-    .then(function(r){return r.json();}).then(function(d){if(!d.ok){throw new Error((d.errors&&d.errors[0])||'Could not complete the review action.');}$('#reviewConfirmOverlay').classList.remove('show');if(action==='escalate_ombudsman'){window.location.href=d.redirect||PREFILL.jiraUrl;}else{reviewSetMode(false);}})
-    .catch(function(e){er.textContent=e.message||'Could not complete the review action.';er.classList.add('show');go.disabled=false;go.textContent=action==='escalate_ombudsman'?'Yes, Escalate':'Yes, Accept View';});
+    .then(function(r){return r.json();}).then(function(d){
+      if(!d.ok)throw new Error((d.errors&&d.errors[0])||'Could not complete the review action.');
+      $('#reviewConfirmOverlay').classList.remove('show');showReviewActionComplete(action,d.status);
+      setTimeout(function(){window.location.href=d.redirect||PREFILL.jiraUrl;},700);
+    })
+    .catch(function(e){er.textContent=e.message||'Could not complete the review action.';er.classList.add('show');go.disabled=false;go.textContent=action==='escalate_ombudsman'?'Yes, Escalate':(action==='accept_ombudsman'?'Yes, Continue':'Yes, Accept View');});
 }
 function initReview(){
   if(!fosReviewIsAvailable()){ $('#reviewViewSwitch').hidden=true; return; }
@@ -828,18 +849,69 @@ function initVehicleVisibility(){
   }
 }
 
-function initRejection(){
-  var sel=$('#rejection'),rejLossField=$('#rejLossField'),loss=$('#c_rejloss'),btn=$('#rejLossCalcBtn');
-  function sync(){
-    var v=sel.value;var isReject=(v==='Rejected to Broker'||v==='Rejected to Dealership'||v==='Sold at Auction');
-    loss.disabled=!isReject;btn.disabled=!isReject;rejLossField.style.opacity=isReject?'1':'.55';
-    if(!isReject){loss.value='0';markZero(loss);rejBreakdown={used:false};$('#rejLossCalcPill').hidden=true;}
-    recompute();if(typeof updateCostRequirements==='function')updateCostRequirements();
+function isRealVehicleRejection(v){return v==='Rejected to Broker'||v==='Rejected to Dealership'||v==='Sold at Auction';}
+function clearStageDisplayOption(sel){
+  var opt=sel.querySelector('option[data-stage-display="1"]');if(opt)opt.parentNode.removeChild(opt);
+}
+function setStageDisplayOption(sel,text){
+  clearStageDisplayOption(sel);var opt=document.createElement('option');opt.value='__stage_locked__';opt.textContent=text;opt.setAttribute('data-stage-display','1');sel.insertBefore(opt,sel.firstChild);sel.value='__stage_locked__';
+}
+function savedRejectionStage(){var s=(PREFILL&&PREFILL.saved)||{};return s.rejStage||'';}
+function currentRejectionOwner(){
+  var saved=savedRejectionStage();if(saved==='Investigation'||saved==='FOS')return saved;
+  if(isRealVehicleRejection($('#rejection').value))return 'Investigation';
+  if(isRealVehicleRejection($('#fosRejection').value))return 'FOS';
+  return '';
+}
+function syncRejectionOwnership(){
+  var invSel=$('#rejection'),fosSel=$('#fosRejection'),invLoss=$('#c_rejloss'),fosLoss=$('#f_rejloss'),invBtn=$('#rejLossCalcBtn'),fosBtn=$('#fosRejCalcBtn');
+  var invField=$('#rejLossField'),fosField=fosLoss?fosLoss.closest('.field'):null;
+  var invNote=$('#invVehicleStageNote'),fosNote=$('#fosVehicleStageNote');
+  var saved=savedRejectionStage(),owner=currentRejectionOwner();
+
+  clearStageDisplayOption(invSel);clearStageDisplayOption(fosSel);
+  invNote.classList.remove('show');fosNote.classList.remove('show');invNote.textContent='';fosNote.textContent='';
+
+  if(owner==='Investigation'){
+    invSel.disabled=false;
+    fosSel.disabled=true;setStageDisplayOption(fosSel,'Vehicle already rejected during Investigation');
+    fosNote.innerHTML='<strong>Vehicle already rejected during Investigation.</strong> A second rejection loss cannot be recorded at FOS.';fosNote.classList.add('show');
+    invLoss.disabled=!isRealVehicleRejection(invSel.value);invBtn.disabled=invLoss.disabled;invField.style.opacity=invLoss.disabled?'.55':'1';
+    fosLoss.disabled=true;fosBtn.disabled=true;if(fosField)fosField.style.opacity='.55';
+    if(!savedRejectionStage()&&fosRejBreakdown.used){fosRejBreakdown={used:false};setMoney('f_rejloss',0);$('#fosRejCalcPill').hidden=true;}
+  }else if(owner==='FOS'){
+    invSel.disabled=true;setStageDisplayOption(invSel,'Vehicle rejection directed by FOS');
+    invNote.innerHTML='<strong>Vehicle rejection directed by FOS.</strong> The rejection loss is recorded on the FOS side only.';invNote.classList.add('show');
+    fosSel.disabled=false;
+    invLoss.disabled=true;invBtn.disabled=true;invField.style.opacity='.55';
+    fosLoss.disabled=!isRealVehicleRejection(fosSel.value);fosBtn.disabled=fosLoss.disabled;if(fosField)fosField.style.opacity=fosLoss.disabled?'.55':'1';
+    if(!savedRejectionStage()&&rejBreakdown.used){rejBreakdown={used:false};setMoney('c_rejloss',0);$('#rejLossCalcPill').hidden=true;}
+  }else{
+    invSel.disabled=false;fosSel.disabled=false;
+    var invReject=isRealVehicleRejection(invSel.value),fosReject=isRealVehicleRejection(fosSel.value);
+    invLoss.disabled=!invReject;invBtn.disabled=!invReject;invField.style.opacity=invReject?'1':'.55';
+    fosLoss.disabled=!fosReject;fosBtn.disabled=!fosReject;if(fosField)fosField.style.opacity=fosReject?'1':'.55';
   }
-  sel.addEventListener('change',sync);return sync;
+
+  if(saved==='Investigation'){
+    invSel.disabled=false;
+  }else if(saved==='FOS'){
+    fosSel.disabled=false;
+  }
+  recompute();if(typeof updateCostRequirements==='function')updateCostRequirements();
+}
+function initRejection(){
+  var sel=$('#rejection');
+  sel.addEventListener('change',function(){
+    if(!isRealVehicleRejection(sel.value)&&savedRejectionStage()!=='Investigation'){
+      setMoney('c_rejloss',0);rejBreakdown={used:false};$('#rejLossCalcPill').hidden=true;
+    }
+    syncRejectionOwnership();
+  });
+  return syncRejectionOwnership;
 }
 function initFos(){
-  var omb=$('#fosOmbudsman'),inv=$('#fosInvestigator'),overall=$('#overallFos');
+  var omb=$('#fosOmbudsman'),inv=$('#fosInvestigator'),overall=$('#overallFos'),fosSel=$('#fosRejection');
   var ombStage=PREFILL.fosStage==='ombudsman';
   $('#stageInv').classList.toggle('active',!ombStage);
   $('#stageOmb').classList.toggle('active',ombStage);
@@ -847,13 +919,15 @@ function initFos(){
   function sync(){
     var result=(ombStage&&omb.value)?omb.value:inv.value;
     overall.textContent=result||'\u2014';overall.classList.toggle('none',!result);
-    // FOS vehicle question only when overall FOS outcome is Upheld
     var upheld=(result==='Upheld');
     $('#fosVehField').classList.toggle('hiddenrow',!upheld);
-    if(!upheld)$('#fosRejection').value='';
-    if(typeof updateCostRequirements==='function')updateCostRequirements();
+    if(!upheld&&savedRejectionStage()!=='FOS'){fosSel.value='';setMoney('f_rejloss',0);fosRejBreakdown={used:false};$('#fosRejCalcPill').hidden=true;}
+    syncRejectionOwnership();
   }
-  omb.addEventListener('change',sync);inv.addEventListener('change',sync);$('#fosRejection').addEventListener('change',function(){if(typeof updateCostRequirements==='function')updateCostRequirements();});return sync;
+  omb.addEventListener('change',sync);inv.addEventListener('change',sync);fosSel.addEventListener('change',function(){
+    if(!isRealVehicleRejection(fosSel.value)&&savedRejectionStage()!=='FOS'){setMoney('f_rejloss',0);fosRejBreakdown={used:false};$('#fosRejCalcPill').hidden=true;}
+    syncRejectionOwnership();
+  });return sync;
 }
 function gateFos(){
   var tab=$('#tab-fos');
@@ -1468,8 +1542,9 @@ function runningRequires(id){var types=RUNNING_REQUIREMENTS[id]||[];return norma
 function isRealRejection(v){return v==='Rejected to Broker'||v==='Rejected to Dealership'||v==='Sold at Auction';}
 function costIsRequired(id){
   if(id.indexOf('f_')===0&&!PREFILL.fosApplicable)return false;
-  if(id==='c_rejloss')return isRealRejection($('#rejection').value);
-  if(id==='f_rejloss')return PREFILL.fosApplicable&&$('#overallFos').textContent==='Upheld'&&isRealRejection($('#fosRejection').value);
+  var owner=typeof currentRejectionOwner==='function'?currentRejectionOwner():'';
+  if(id==='c_rejloss')return owner==='Investigation'&&isRealRejection($('#rejection').value);
+  if(id==='f_rejloss')return owner==='FOS'&&PREFILL.fosApplicable&&$('#overallFos').textContent==='Upheld'&&isRealRejection($('#fosRejection').value);
   return runningRequires(id);
 }
 function updateCostRequirements(){
@@ -1502,8 +1577,14 @@ function applyPrefill(){
 
   var isVehicleComplaint = (PREFILL.complaintType||'').toLowerCase()==='vehicle issues';
   var rej=PREFILL.rejectionOutcome||[];
-  if(rej.length){
-    // existing value in Jira always wins (vehicle or not)
+  var savedStage=((PREFILL.saved||{}).rejStage)||'';
+  if(rej.length && savedStage==='FOS'){
+    // The shared Jira vehicle outcome records the physical outcome; when FOS owns
+    // the rejection it belongs on the FOS side, not the Investigation selector.
+    $('#rejection').value='No Vehicle Rejection';
+    if(rej[0]!=='No Vehicle Rejection')$('#fosRejection').value=rej[0];
+  } else if(rej.length){
+    // Existing Investigation value in Jira wins.
     $('#rejection').value=rej[0];
   } else if(isVehicleComplaint && PREFILL.autoOutcome){
     $('#rejection').value=PREFILL.autoOutcome;$('#rejAutoPill').hidden=false;
@@ -1527,8 +1608,10 @@ function collectAndValidate(){
   var errors=[];
   var outcome=$('#outcome').value;
   if(!outcome)errors.push('Complaint outcome is required.');
-  var rejection=$('#rejection').value;
-  if(!rejection)errors.push('Select what happened to the vehicle.');
+  var owner=typeof currentRejectionOwner==='function'?currentRejectionOwner():'';
+  var rejection=(owner==='FOS')?'No Vehicle Rejection':$('#rejection').value;
+  if(!rejection||rejection==='__stage_locked__')errors.push('Select what happened to the vehicle.');
+  if(rejBreakdown.used&&fosRejBreakdown.used)errors.push('A vehicle rejection loss can only be recorded at Investigation or FOS, not both.');
   function costVal(id,label){var el=document.getElementById(id);if(el.disabled)return num(el.value);if(el.value===''){errors.push(label+' is required (enter 0 if none).');return 0;}return num(el.value);}
   Object.keys(COST_META).forEach(function(id){if(costIsRequired(id)&&costFieldNeedsRecord(id)&&!costRecordedOrLegacy(id))errors.push(COST_META[id].title+' must be recorded using the Record Cost button.');});
   if(costIsRequired('c_insp')&&costFieldNeedsRecord('c_insp')&&!costRecordedOrLegacy('c_insp'))errors.push('Inspection, Storage or Recovery Costs must be recorded using the Record Cost button.');
@@ -1556,7 +1639,8 @@ function collectAndValidate(){
     };
     payload.fos={investigator:inv,ombudsman:omb,costs:fcosts};
     var overall=$('#overallFos').textContent;
-    if(overall==='Upheld'){var fv=$('#fosRejection').value;if(!fv)errors.push('FOS: select what happened to the vehicle.');payload.fosVehicleOutcome=fv;}
+    if(overall==='Upheld'&&owner!=='Investigation'){var fv=$('#fosRejection').value;if(!fv||fv==='__stage_locked__')errors.push('FOS: select what happened to the vehicle.');else payload.fosVehicleOutcome=fv;}
+    if(owner==='Investigation')payload.fosVehicleOutcome='Vehicle already rejected during Investigation';
   }
   return {payload:payload,errors:errors};
 }
@@ -1593,7 +1677,7 @@ function boot(){
       $('#loading').hidden=true;$('#shell').hidden=false;$('#footer').hidden=false;
       var moneyEls=document.querySelectorAll('.cost,.fcost,.in input');for(var mi=0;mi<moneyEls.length;mi++)attachMoney(moneyEls[mi]);
       gateFos();initTabs();initVehicleVisibility();
-      var syncRej=initRejection();var syncFos=initFos();window.__syncRej=syncRej;
+      var syncRej=initRejection();var syncFos=initFos();window.__syncRej=syncRej;window.__syncRejectionOwnership=syncRejectionOwnership;
       initRejCalc();initInspCalc();initCostEditors();
       applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
       // Outside FOS Decision Review, keep the existing default-to-FOS behaviour.
