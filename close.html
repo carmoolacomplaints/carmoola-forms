@@ -1064,8 +1064,8 @@ function rpCompute(){
   }
   var deduction=Math.max(0,num($('#rp_deduction').value));
   var maxAllowed=Math.min(made,maxByOverall);
-  var retained=Math.max(0,made-deduction);
-  var refund=Math.max(0,made-retained);
+  var retained=Math.max(0,deduction);
+  var refund=Math.max(0,made-deduction);
   var a=allocationState(deduction,other);
   $('#rp_retained').textContent=gbp.format(retained);
   $('#rp_refund').textContent=gbp.format(refund);
