@@ -278,6 +278,14 @@ body.actions-on-home .actions-page#actionsHome{display:block}
 .home-detail{padding:2px 16px;border-right:1px solid #EDE7EE;min-width:0}.home-detail:last-child{border-right:0}
 .home-detail-label{display:block;text-transform:uppercase;color:#817683;font-size:10px;letter-spacing:.055em;font-weight:800;margin-bottom:6px}
 .home-detail strong{display:block;font-size:14px;font-weight:750;color:#251C29;overflow-wrap:anywhere}
+
+/* Vehicle information is context only, and appears for Vehicle Issues complaints. */
+.home-vehicle-section{border-top:1px solid #F0E9F0;padding:15px 18px 17px;background:#FFFCFE}
+.home-vehicle-section[hidden]{display:none!important}
+.home-vehicle-heading{font-size:10px;font-weight:800;letter-spacing:.09em;color:#9D6689;text-transform:uppercase;margin:0 0 13px 16px}
+.home-vehicle-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}
+.home-vehicle-grid .home-detail:nth-child(3n){border-right:0}
+@media(max-width:730px){.home-vehicle-section{padding:15px 7px}.home-vehicle-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-vehicle-grid .home-detail:nth-child(3n){border-right:1px solid #EDE7EE}.home-vehicle-grid .home-detail:nth-child(2n){border-right:0}.home-vehicle-heading{margin-left:12px}}
 .home-action-heading{display:flex;align-items:flex-end;justify-content:space-between;margin:26px 0 14px;gap:16px}
 .home-action-heading h3{font-size:20px;letter-spacing:-.04em;margin:0 0 3px;font-weight:800}
 .home-action-heading p{margin:0;color:#756C79;font-size:12.5px}.home-action-count{color:#9A8E9E;font-size:10px;letter-spacing:.08em;font-weight:800;white-space:nowrap;margin-bottom:3px}
@@ -495,6 +503,16 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
       <div class="home-detail"><span class="home-detail-label">Introducer</span><strong id="homeIntroducer">—</strong></div>
       <div class="home-detail"><span class="home-detail-label">Assigned to</span><strong id="homeAssignee">—</strong></div>
       <div class="home-detail"><span class="home-detail-label">Date received</span><strong id="homeReceived">—</strong></div>
+    </div>
+    <div class="home-vehicle-section" id="homeVehicleSection" hidden>
+      <div class="home-vehicle-heading">Vehicle details</div>
+      <div class="home-vehicle-grid">
+        <div class="home-detail"><span class="home-detail-label">Registration</span><strong id="homeVehicleRegistration">—</strong></div>
+        <div class="home-detail"><span class="home-detail-label">Make and model</span><strong id="homeVehicleMakeModel">—</strong></div>
+        <div class="home-detail"><span class="home-detail-label">Original mileage</span><strong id="homeVehicleOriginalMileage">—</strong></div>
+        <div class="home-detail"><span class="home-detail-label">Mileage at complaint</span><strong id="homeVehicleComplaintMileage">—</strong></div>
+        <div class="home-detail"><span class="home-detail-label">Origination to complaint</span><strong id="homeVehicleComplaintDelay">—</strong></div>
+      </div>
     </div>
   </div>
 
@@ -2148,6 +2166,23 @@ function initActionsHome(){
   var p=PREFILL;
   var values={homeReference:p.issueKey,homeDealership:p.dealershipName,homeIntroducer:p.introducerName,homeAssignee:p.assigneeName,homeReceived:p.receivedDate,homeStatus:p.statusName,homeFooterRef:p.issueKey,homeComplaintType:p.complaintType};
   Object.keys(values).forEach(function(id){document.getElementById(id).textContent=values[id]||'Not recorded';});
+  var vehicleSection=$('#homeVehicleSection');
+  var isVehicleIssues=/^vehicle\s+issues?$/i.test(String(p.complaintType||'').trim());
+  vehicleSection.hidden=!isVehicleIssues;
+  if(isVehicleIssues){
+    var vd=p.vehicleDetails||{};
+    var valueOrDash=function(v){return v===null||v===undefined||String(v).trim()===''?'Not recorded':String(v).trim();};
+    var mileage=function(v){
+      if(v===null||v===undefined||String(v).trim()==='')return 'Not recorded';
+      var num=Number(String(v).replace(/,/g,''));
+      return Number.isFinite(num)?new Intl.NumberFormat('en-GB',{maximumFractionDigits:0}).format(num)+' miles':valueOrDash(v);
+    };
+    $('#homeVehicleRegistration').textContent=valueOrDash(vd.registration).toUpperCase();
+    $('#homeVehicleMakeModel').textContent=[vd.make,vd.model].filter(function(v){return v&&String(v).trim();}).join(' ')||'Not recorded';
+    $('#homeVehicleOriginalMileage').textContent=mileage(vd.originalMileage);
+    $('#homeVehicleComplaintMileage').textContent=mileage(vd.complaintMileage);
+    $('#homeVehicleComplaintDelay').textContent=vd.originationToComplaint===null||vd.originationToComplaint===undefined||String(vd.originationToComplaint).trim()===''?'Not recorded':valueOrDash(vd.originationToComplaint)+' days';
+  }
   $('#homeCustomerHero').textContent=p.customerName||'Complaint overview';
   $('#homeJiraLink').href=p.jiraUrl||'#';
   var tile=$('#fosHomeTile');tile.disabled=!p.fosApplicable;
