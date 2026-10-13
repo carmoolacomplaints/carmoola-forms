@@ -347,6 +347,26 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 @media(max-width:730px){body .shell{padding:0 17px 28px}.home-topline{height:65px;margin-bottom:17px}.home-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px 8px}.home-detail:nth-child(2){border-right:0}.home-detail{padding:6px 12px}body.actions-in-workspace .home-summary-head{padding:15px 18px}.costs-page-intro{padding:19px;align-items:flex-start}.costs-overview{min-width:120px;padding-left:12px}.costs-overview strong{font-size:23px}}
 @media(max-width:530px){.home-topline{height:auto;min-height:70px;flex-wrap:wrap;gap:10px;padding:13px 0}.home-brand{gap:8px}.home-brand-product{font-size:12px}.global-home-btn{padding:8px;font-size:11px}.home-jira-link{padding:8px;font-size:11px}.costs-page-intro{flex-direction:column;gap:15px}.costs-overview{border:0;border-top:1px solid rgba(255,255,255,.2);width:100%;padding:12px 0 0;text-align:left}.costs-ledger-head{padding:16px;align-items:flex-start;flex-direction:column}.costs-ledger-list{padding:5px 10px}.costs-ledger-bottom{padding:15px}.home-status-pill{max-width:100%}}
 
+
+/* Post-resolution recovery workspace */
+.post-hero{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:23px 26px;background:linear-gradient(120deg,#32172f,#642348);border-radius:16px;color:white;margin-bottom:18px}
+.post-eyebrow{color:#FBAAD3;font-size:11px;letter-spacing:.08em;font-weight:800;text-transform:uppercase}
+.post-hero h2{font-size:25px;margin:5px 0}.post-hero p{font-size:13px;color:#F1D9E8;margin:0}
+.post-chip{font-size:12px;font-weight:700;color:#FFE8F3;border:1px solid #9F6486;border-radius:999px;padding:8px 12px}
+.post-card{background:white;border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:15px;box-shadow:var(--shadow)}
+.post-card h3{font-size:17px;margin:0 0 5px}.post-card p.post-muted{font-size:13px;color:var(--muted);margin:0 0 18px}
+.post-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.post-field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700}
+.post-field input,.post-field select{width:100%;min-width:0}.post-field small{font-weight:500;color:var(--muted)}
+.post-statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:16px}
+.post-stat{background:#FAF6F9;border:1px solid #EEE1EA;border-radius:11px;padding:15px}.post-stat span{display:block;color:#705C6E;font-size:11px;font-weight:700}.post-stat strong{display:block;font-size:21px;margin-top:5px;font-variant-numeric:tabular-nums}
+.post-stat.owed{background:#FDECF5;border-color:#F2C6DF}.post-stat.owed strong{color:#A6005B}
+.post-lines{margin:14px 0 8px}.post-line{display:grid;grid-template-columns:minmax(0,1fr) 130px 38px;gap:9px;margin:8px 0}.post-line input{font-size:13px}
+.post-out{display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid #EEDCE7;padding-top:16px;font-size:15px;font-weight:700}.post-out strong{font-size:23px;color:var(--pink-dark)}
+.post-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;margin:15px 0}.post-alert{padding:13px 15px;background:#FFF6DA;border:1px solid #EBD194;border-radius:10px;color:#725216;font-size:13px;margin-bottom:15px}
+.post-error{display:none;background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:10px;padding:12px 14px;margin:12px 0}.post-error.show{display:block}
+.post-hint{font-size:12px;color:var(--muted);margin-top:9px}.post-btn-secondary{border:1.5px solid #E5C7D8;background:#FFF7FB;color:#9A145F;padding:10px 13px;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit}
+.post-btn-secondary:disabled{opacity:.45;cursor:default}.post-record{padding:9px 0;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media(max-width:700px){.post-hero{padding:19px;align-items:flex-start;flex-direction:column}.post-grid,.post-statgrid{grid-template-columns:1fr}.post-card{padding:17px}.post-line{grid-template-columns:minmax(0,1fr) 98px 32px}}
 </style>
 </head>
 <body>
@@ -387,7 +407,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 <div class="actions-shared-header">
   <div class="home-topline">
     <div class="home-brand"><span class="home-brand-mark">carmoola<span>.</span></span><span class="home-brand-divider"></span><span class="home-brand-product">Complaint Actions</span></div>
-    <div class="global-top-actions"><button type="button" class="global-home-btn" id="globalHomeBtn" hidden>⌂ &nbsp;Home</button><a class="home-jira-link" id="homeJiraLink" href="#" target="_blank" rel="noopener">↖ &nbsp;Back to Complaint</a></div>
+    <div class="global-top-actions"><button type="button" class="global-home-btn" id="globalHomeBtn" hidden>⌂ &nbsp;Home</button><a class="home-jira-link" id="homeJiraLink" href="#">↖ &nbsp;Back to Complaint</a></div>
   </div>
   <div class="home-summary">
     <div class="home-summary-head">
@@ -424,7 +444,22 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   </div>
   <div class="actions-save-row"><span class="actions-feedback" id="runningPageFeedback" role="status"></span><button type="button" class="btn" id="runningPageSave">Save Running Costs</button></div>
 </section>
-<section id="actionsPost" class="actions-page"><div class="actions-subhero"><h2>Post-Resolution</h2></div></section>
+<section id="actionsPost" class="actions-page">
+  <div class="post-hero"><div><span class="post-eyebrow">COMPLAINT ACTIONS · RECOVERY MANAGEMENT</span><h2>Post-Resolution</h2><p>Manage third-party recovery, payments and the audit trail in Jira.</p></div><span class="post-chip" id="postStageChip">Loading…</span></div>
+  <div id="postTransition" class="post-card" hidden><h3>Move complaint to post-resolution</h3><p class="post-muted" id="postTransitionDesc"></p><div class="post-alert">Only proceed once the appropriate response and resolution requirements have been completed.</div><button type="button" class="btn" id="postTransitionBtn">Move to Post-Resolution Tasks</button></div>
+  <div id="postNotAvailable" class="post-card" hidden><h3>Recovery workspace not yet available</h3><p class="post-muted">This complaint must be in Post-Resolution Tasks or Partner Funds Outstanding before financial details can be saved.</p></div>
+  <div id="postWorkspace" hidden>
+    <div class="post-statgrid"><div class="post-stat"><span>ORIGINAL RECOVERY BALANCE</span><strong id="postOriginal">Not set</strong></div><div class="post-stat"><span>PAYMENTS RECEIVED</span><strong id="postPaid">£0.00</strong></div><div class="post-stat owed"><span>CURRENT OUTSTANDING</span><strong id="postOutstanding">£0.00</strong></div></div>
+    <div class="post-card"><h3>Recovery calculation</h3><p class="post-muted">The credit amount is calculated from the existing Jira purchase price, deposit and part exchange.</p>
+      <div class="post-grid"><label class="post-field">Recover from<input id="postParty" type="text" maxlength="255" placeholder="Dealership or partner"></label><label class="post-field">Recovery status<select id="postStatus"><option>Not Required</option><option>Not Requested</option><option>Awaiting Payment</option><option>Partially Paid</option><option>Paid</option><option>Disputed</option><option>Written Off</option></select></label><label class="post-field">Credit amount<input id="postCredit" type="text" readonly></label><label class="post-field">Less: dealership / partner deduction (£)<input id="postDeduction" type="number" step="0.01" min="0" value="0"></label><label class="post-field">Recovery due date<input id="postDue" type="date"></label></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px"><strong>Additional adjustments</strong><button id="postAddLine" type="button" class="post-btn-secondary">+ Add line</button></div><p class="post-hint">Positive adjustments increase the amount owed; negative adjustments reduce it. Up to five lines, with 25-character descriptions.</p><div id="postLines" class="post-lines"></div><div class="post-out"><span>Calculated recovery</span><strong id="postCalculated">£0.00</strong></div>
+      <div class="post-actions"><button class="post-btn-secondary" type="button" disabled title="Coming soon">Generate Request for Payment · Coming soon</button><button id="postSave" class="btn" type="button">Save Recovery Details</button></div><div class="post-error" id="postError" role="alert"></div>
+    </div>
+    <div class="post-grid"><div class="post-card"><h3>Record payment</h3><p class="post-muted">Reduce the outstanding balance when funds have been received.</p><label class="post-field">Payment amount (£)<input id="postPayment" type="number" min="0.01" step="0.01" placeholder="0.00"></label><label class="post-field" style="margin-top:12px">Bank reference / payment identifier<input id="postPaymentRef" maxlength="90" type="text" placeholder="Payment reference"></label><div class="post-actions"><button id="postRecordPayment" type="button" class="post-btn-secondary">Record Payment</button></div></div>
+    <div class="post-card"><h3>Write off balance</h3><p class="post-muted">Requires a reason; all changes are recorded against the complaint.</p><label class="post-field">Write-off amount (£)<input id="postWriteoff" type="number" min="0.01" step="0.01" placeholder="0.00"></label><label class="post-field" style="margin-top:12px">Reason<input id="postWriteoffReason" type="text" maxlength="180" placeholder="Why is this amount being written off?"></label><div class="post-actions"><button id="postRecordWriteoff" type="button" class="post-btn-secondary">Record Write-off</button></div></div></div>
+    <div class="post-card"><h3>Balance history</h3><p class="post-muted">Latest balance movements. Detailed updates and payment references are also recorded in Jira comments.</p><div id="postHistory"></div></div>
+  </div>
+</section>
 
   <div class="view-switch" id="reviewViewSwitch" hidden style="display:none!important">
     <div class="context" id="reviewViewContext">FOS decision review is available for this complaint.</div>
@@ -1828,6 +1863,36 @@ function initSubmit(){
 }
 
 
+
+// Post-Resolution: all persisted data is stored on the Jira issue.
+var POST_DATA=null;
+function prHtml(s){return String(s).replace(/[&<>"']/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x];});}
+function prCash(x){var v=Number(x);return Number.isFinite(v)?Math.round(v*100)/100:0;}
+function prRows(){return Array.from(document.querySelectorAll('.post-line')).map(function(el){return [el.querySelector('.pr-desc').value.trim(),prCash(el.querySelector('.pr-amount').value)];}).filter(function(x){return x[0]||x[1];});}
+function prAddLine(desc,amount){var panel=$('#postLines');if(panel.children.length>=5)return;var row=document.createElement('div');row.className='post-line';row.innerHTML='<input class="pr-desc" type="text" maxlength="25" placeholder="Adjustment description" aria-label="Adjustment description"><input class="pr-amount" type="number" step="0.01" placeholder="+ / − £" aria-label="Adjustment amount"><button type="button" class="post-btn-secondary" aria-label="Remove adjustment">×</button>';row.querySelector('.pr-desc').value=desc||'';row.querySelector('.pr-amount').value=amount===undefined?'':amount;row.querySelector('button').addEventListener('click',function(){row.remove();prUpdateMath();});row.querySelectorAll('input').forEach(function(input){input.addEventListener('input',prUpdateMath);});panel.appendChild(row);}
+function prUpdateMath(){if(!POST_DATA)return;var calc=prCash(POST_DATA.creditAmount-prCash($('#postDeduction').value)+prRows().reduce(function(v,r){return v+r[1];},0));var paid=prCash((POST_DATA.history||{}).p),written=prCash((POST_DATA.history||{}).w);$('#postCalculated').textContent=gbp.format(calc);$('#postOutstanding').textContent=gbp.format(calc-paid-written);$('#postPaid').textContent=gbp.format(paid);}
+function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation','Holding Letter Due','Final Response Due'];var target=s==='Outsourced'?'Partner Funds Outstanding':nonOut.includes(s)?'Post-Resolution Tasks':'';var active=['Post-Resolution Tasks','Partner Funds Outstanding'].includes(s);$('#postStageChip').textContent=s||'Unknown status';$('#postTransition').hidden=!target;$('#postWorkspace').hidden=!active;$('#postNotAvailable').hidden=!!target||active;
+  if(target){$('#postTransitionDesc').textContent='Current status: '+s+'. The next Jira workflow stage is '+target+'.';$('#postTransitionBtn').textContent='Move to '+target;}
+  if(!active)return;
+  $('#postParty').value=p.party||(s==='Partner Funds Outstanding'?PREFILL.introducerName:PREFILL.dealershipName)||'';
+  $('#postCredit').value=gbp.format(p.creditAmount);
+  $('#postDeduction').value=p.deduction||0;
+  $('#postDue').value=p.dueDate||'';
+  $('#postStatus').value=p.recoveryStatus||'Not Requested';
+  $('#postOriginal').textContent=p.originalBalance===null?'Not set':gbp.format(p.originalBalance);
+  $('#postLines').innerHTML='';(p.adjustments||[]).forEach(function(r){prAddLine(r[0],r[1]);});
+  var hist=(p.history||{}).e||[];$('#postHistory').innerHTML=hist.length?hist.slice().reverse().map(function(e){var code={N:'Initial calculation',A:'Balance amended',P:'Payment received',W:'Write-off'}[e[1]]||'Recovery updated';return '<div class="post-record"><strong>'+prHtml(code)+'</strong> · '+prHtml(String(e[0]))+' · Balance '+gbp.format(Number(e[2])/100)+'</div>';}).join(''):'<div class="post-hint">No recovery history recorded yet.</div>';
+  prUpdateMath();
+}
+function prError(msg){$('#postError').textContent=msg||'';$('#postError').classList.toggle('show',!!msg);}
+function prRequest(payload,btn,after){if(btn.disabled)return;prError('');var label=btn.textContent;btn.disabled=true;btn.textContent='Saving…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))}).then(function(r){return r.json();}).then(function(data){if(!data.ok)throw Error((data.errors&&data.errors[0])||'Could not save in Jira.');after(data);}).catch(function(error){prError(error.message||'Network error saving recovery.');}).finally(function(){btn.disabled=false;btn.textContent=label;});}
+function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DATA)return;
+  $('#postDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();});
+  $('#postTransitionBtn').addEventListener('click',function(){var target=PREFILL.statusName==='Outsourced'?'Partner Funds Outstanding':'Post-Resolution Tasks';if(!window.confirm('Confirm that the appropriate complaint response and resolution requirements are complete. Move this complaint to '+target+'?'))return;prRequest({action:'post_transition',confirmed:true},this,function(data){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;prRender();showActionsSaveToast('Complaint moved to '+data.statusName+'.');});});
+  function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(rows.some(function(r){return !r[0];})){prError('Every adjustment amount needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Jira.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();gotoActionsPage('home');showActionsSaveToast(mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.');});}
+  $('#postSave').addEventListener('click',function(){submit('save',this);});$('#postRecordPayment').addEventListener('click',function(){submit('payment',this);});$('#postRecordWriteoff').addEventListener('click',function(){submit('writeoff',this);});prRender();
+}
+
 var ACTION_PAGE='home';
 function gotoActionsPage(page){
   if(page==='review'&&!PREFILL.fosApplicable)return;
@@ -1838,6 +1903,7 @@ function gotoActionsPage(page){
   $('#actionsHome').classList.toggle('active',page==='home');
   $('#actionsRunning').classList.toggle('active',page==='running');
   $('#actionsPost').classList.toggle('active',page==='post');
+  if(page==='post' && POST_DATA)prRender();
   $('#closureShell').style.display=page==='closure'?'':'none';
   $('#reviewShell').classList.toggle('active',page==='review');
   $('#reviewViewSwitch').hidden=true;
@@ -1894,7 +1960,7 @@ function boot(){
       initRejCalc();initInspCalc();initCostEditors();
       applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
       // Outside FOS Decision Review, keep the existing default-to-FOS behaviour.
-      initActionsHome();
+      initPostResolution();initActionsHome();
     })
     .catch(function(){$('#loading').textContent='Network error loading the complaint.';});
 }
