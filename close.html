@@ -250,6 +250,9 @@
 .actions-save-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;flex-wrap:wrap}
 .actions-feedback{color:var(--good);font-size:13px;font-weight:700}
 .actions-feedback.error{color:var(--err)}
+.actions-toast{position:fixed;top:22px;left:50%;transform:translate(-50%,-12px);z-index:120;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 32px);padding:14px 20px;border:1px solid #B8DEC9;border-radius:12px;background:#F1FBF5;color:#126343;box-shadow:0 12px 36px rgba(23,46,35,.16);font-size:14px;font-weight:700;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,transform .2s,visibility .2s}
+.actions-toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.actions-toast-icon{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#138456;color:white;font-size:16px;flex:none}
 @media(max-width:580px){.actions-facts,.actions-tiles{grid-template-columns:1fr}.actions-hero{padding:22px}.actions-hero h2{font-size:25px}}
 
 
@@ -401,6 +404,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 
 </div>
 <div class="actions-nav" id="actionsNav" hidden><button type="button" class="actions-home-link" id="actionsHomeBtn">⌂ &nbsp;Complaint Home</button><span class="actions-current" id="actionsCurrent"></span></div>
+<div id="actionsSaveToast" class="actions-toast" role="status" aria-live="polite"><span class="actions-toast-icon">✓</span><span>Running costs updated successfully.</span></div>
 <section id="actionsHome" class="actions-page active" aria-label="Complaint homepage">
   <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">4 WORKSPACES</span></div>
   <div class="actions-tiles home-tiles">
@@ -1816,7 +1820,7 @@ function initSubmit(){
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)})
       .then(function(r){return r.json()})
       .then(function(d){
-        if(d.ok){btn.textContent='Saved \u2713';window.location.href=d.redirect;}
+        if(d.ok){btn.textContent='Saved \u2713';runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;gotoActionsPage('home');showActionsSaveToast('Closure details updated successfully.');btn.disabled=false;btn.textContent='Save Closure Details';}
         else{showErrors(d.errors||['Something went wrong saving. Please try again.']);btn.disabled=false;btn.textContent='Save Closure Details';}
       })
       .catch(function(){showErrors(['Network error saving. Please try again.']);btn.disabled=false;btn.textContent='Save Closure Details';});
@@ -1846,6 +1850,14 @@ function gotoActionsPage(page){
   document.title=PREFILL.issueKey+' | Complaint Actions | Carmoola';
   window.scrollTo({top:0,behavior:'smooth'});
 }
+var actionsToastTimer=null;
+function showActionsSaveToast(message){
+  var toast=$('#actionsSaveToast');
+  toast.querySelector('span:last-child').textContent=message||'Running costs updated successfully.';
+  clearTimeout(actionsToastTimer);
+  toast.classList.add('show');
+  actionsToastTimer=setTimeout(function(){toast.classList.remove('show');},5000);
+}
 function initActionsHome(){
   var p=PREFILL;
   var values={homeReference:p.issueKey,homeDealership:p.dealershipName,homeIntroducer:p.introducerName,homeAssignee:p.assigneeName,homeReceived:p.receivedDate,homeStatus:p.statusName,homeFooterRef:p.issueKey,homeComplaintType:p.complaintType};
@@ -1860,7 +1872,7 @@ function initActionsHome(){
   $('#runningPageSave').addEventListener('click',function(){
     var b=this,feedback=$('#runningPageFeedback');feedback.textContent='';feedback.classList.remove('error');b.disabled=true;b.textContent='Saving…';
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),saveRunningCostsOnly:true,runningCostsRows:normaliseRunningRows(runningCostsRows)})})
-      .then(function(r){return r.json();}).then(function(d){if(!d.ok)throw new Error((d.errors&&d.errors[0])||'Unable to save costs.');runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;feedback.textContent='Running costs saved to Jira.';})
+      .then(function(r){return r.json();}).then(function(d){if(!d.ok)throw new Error((d.errors&&d.errors[0])||'Unable to save costs.');runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;gotoActionsPage('home');showActionsSaveToast();})
       .catch(function(e){feedback.textContent=e.message||'Network error.';feedback.classList.add('error');})
       .finally(function(){b.disabled=false;b.textContent='Save Running Costs';});
   });
