@@ -252,6 +252,47 @@
 .actions-feedback.error{color:var(--err)}
 @media(max-width:580px){.actions-facts,.actions-tiles{grid-template-columns:1fr}.actions-hero{padding:22px}.actions-hero h2{font-size:25px}}
 
+
+/* Compact Complaint Actions homepage — isolated from the established workspaces */
+body.actions-on-home{background:#FCF9FB;padding-bottom:0}
+body.actions-on-home .shell{max-width:1100px;padding:0 30px 22px}
+body.actions-on-home .shell>.logo,body.actions-on-home .shell>.head,body.actions-on-home .shell>.refsection,body.actions-on-home .shell>.infobox{display:none!important}
+body.actions-on-home .actions-page#actionsHome{display:block}
+.home-topline{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #EDE7EC;margin-bottom:24px}
+.home-brand{display:flex;align-items:center;gap:16px}.home-brand-mark{color:#F90081;font-weight:800;font-size:25px;letter-spacing:-1.2px}.home-brand-mark span{color:#F90081}
+.home-brand-divider{height:24px;width:1px;background:#DDD3DE}.home-brand-product{font-size:15px;font-weight:750;color:#29202B;letter-spacing:-.03em}
+.home-jira-link{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#6C5567;font-weight:700;font-size:12px;border:1px solid #E7DDE7;background:#fff;padding:10px 13px;border-radius:9px;transition:.15s}.home-jira-link:hover{border-color:#F90081;color:#B8005F}
+.home-summary{border:1px solid #E9E1EA;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 7px 26px rgba(37,16,32,.035)}
+.home-summary-head{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:23px 28px 20px;background:linear-gradient(110deg,#2D172B,#482039 70%,#5D2245);color:#fff}
+.home-kicker{display:block;color:#F7B7D8;font-size:10.5px;font-weight:800;letter-spacing:.12em}
+.home-summary-head h2{font-size:30px;line-height:1.2;letter-spacing:-.04em;margin:7px 0 5px;font-weight:800}
+.home-context{font-size:12.5px;color:#EACBDE}
+.home-status-wrap{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.home-status-label{font-size:10px;font-weight:800;letter-spacing:.1em;color:#E7BFD3}
+.home-status-pill{display:inline-flex;align-items:center;background:#fff;color:#9A095C;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:800;max-width:225px;overflow-wrap:anywhere}
+.home-status-pill:before{content:'';width:7px;height:7px;background:#F90081;border-radius:50%;margin-right:8px;flex:none}
+.home-detail-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:18px 18px}
+.home-detail{padding:2px 16px;border-right:1px solid #EDE7EE;min-width:0}.home-detail:last-child{border-right:0}
+.home-detail-label{display:block;text-transform:uppercase;color:#817683;font-size:10px;letter-spacing:.055em;font-weight:800;margin-bottom:6px}
+.home-detail strong{display:block;font-size:14px;font-weight:750;color:#251C29;overflow-wrap:anywhere}
+.home-action-heading{display:flex;align-items:flex-end;justify-content:space-between;margin:26px 0 14px;gap:16px}
+.home-action-heading h3{font-size:20px;letter-spacing:-.04em;margin:0 0 3px;font-weight:800}
+.home-action-heading p{margin:0;color:#756C79;font-size:12.5px}.home-action-count{color:#9A8E9E;font-size:10px;letter-spacing:.08em;font-weight:800;white-space:nowrap;margin-bottom:3px}
+.home-tiles{gap:13px}.home-tiles .actions-tile{min-height:150px;padding:20px 22px;gap:14px;border-radius:15px;box-shadow:0 3px 18px rgba(39,21,37,.035);border:1px solid #E9E1E9;justify-content:space-between}
+.home-tiles .actions-tile:hover:not(:disabled){border-color:#F90081;box-shadow:0 9px 25px rgba(249,0,129,.085);transform:translateY(-2px)}
+.home-tiles .tile-top{display:flex;width:100%;align-items:center;justify-content:space-between}
+.home-tiles .glyph{height:40px;width:40px;border-radius:11px;background:#FFF0F7;color:#CC086D}
+.home-tiles .glyph svg{height:21px;width:21px}.home-tiles .arrow{position:static;font-size:19px;color:#CC086D;line-height:1}
+.home-tiles .tile-copy{display:flex;flex-direction:column;gap:3px}.home-tiles .tile-copy strong{font-size:16px;font-weight:800;letter-spacing:-.025em}
+.home-tiles .tile-copy small{font-size:12px;line-height:1.35;color:#766B79}
+.home-tiles .actions-tile:disabled{opacity:1;background:#F5F3F6;border-color:#E9E5EB}
+.home-tiles .actions-tile:disabled .glyph{background:#EAE6ED;color:#A49AA7}
+.home-tiles .actions-tile:disabled strong{color:#968C9B}.home-tiles .actions-tile:disabled small{color:#A59CAB}
+.home-footer-note{text-align:center;font-size:10px;letter-spacing:.12em;color:#ADA1AE;font-weight:750;margin-top:21px}.home-footer-note span{padding:0 3px}
+@media(max-width:730px){body.actions-on-home .shell{padding:0 17px 28px}.home-topline{height:65px;margin-bottom:17px}.home-brand-mark{font-size:22px}.home-brand-product{font-size:13px}.home-summary-head{padding:20px;align-items:flex-start}.home-summary-head h2{font-size:25px}.home-detail-grid{grid-template-columns:repeat(2,1fr);row-gap:17px;padding:18px 7px}.home-detail:nth-child(2){border-right:0}.home-action-heading{margin-top:21px}.home-tiles .actions-tile{min-height:137px;padding:17px}.home-status-pill{font-size:11px}}
+@media(max-width:520px){.home-summary-head{flex-direction:column;gap:14px}.home-status-wrap{align-items:flex-start;text-align:left}.home-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-action-count{display:none}.home-brand-divider{display:none}.home-jira-link{font-size:11px;padding:8px}.home-tiles{grid-template-columns:1fr}.home-tiles .actions-tile{min-height:120px}.home-footer-note{margin-bottom:10px}}
+@media(max-height:750px) and (min-width:731px){.home-topline{height:60px;margin-bottom:14px}.home-summary-head{padding:17px 25px 15px}.home-summary-head h2{font-size:27px}.home-detail-grid{padding:13px 15px}.home-action-heading{margin:19px 0 10px}.home-tiles .actions-tile{min-height:130px;padding:16px 19px}.home-footer-note{margin-top:12px}}
+
 </style>
 </head>
 <body>
@@ -290,24 +331,31 @@
 
 
 <div class="actions-nav" id="actionsNav" hidden><button type="button" class="actions-home-link" id="actionsHomeBtn">⌂ &nbsp;Complaint Home</button><span class="actions-current" id="actionsCurrent"></span></div>
-<section id="actionsHome" class="actions-page active">
-  <div class="actions-hero"><div class="actions-eyebrow">Carmoola · Complaint Actions</div><h2 id="homeCustomerHero">Complaint overview</h2><p>Everything you need to manage this complaint, in one place.</p><span class="actions-ref" id="homeRefHero">—</span></div>
-  <h3 class="actions-section-title">Complaint details</h3>
-  <div class="actions-facts">
-    <div class="actions-fact"><div class="k">Complaint reference</div><div class="v" id="homeReference">—</div></div>
-    <div class="actions-fact"><div class="k">Customer</div><div class="v" id="homeCustomer">—</div></div>
-    <div class="actions-fact"><div class="k">Dealership</div><div class="v" id="homeDealership">—</div></div>
-    <div class="actions-fact"><div class="k">Current assignee</div><div class="v" id="homeAssignee">—</div></div>
-    <div class="actions-fact"><div class="k">Complaint received</div><div class="v" id="homeReceived">—</div></div>
-    <div class="actions-fact"><div class="k">Current status</div><div class="v actions-status" id="homeStatus">—</div></div>
+<section id="actionsHome" class="actions-page active" aria-label="Complaint homepage">
+  <div class="home-topline">
+    <div class="home-brand"><span class="home-brand-mark">carmoola<span>.</span></span><span class="home-brand-divider"></span><span class="home-brand-product">Complaint Actions</span></div>
+    <a class="home-jira-link" id="homeJiraLink" href="#" target="_blank" rel="noopener">Open in Jira <span aria-hidden="true">↗</span></a>
   </div>
-  <h3 class="actions-section-title">Choose an action</h3>
-  <div class="actions-tiles">
-    <button type="button" class="actions-tile" data-go="closure"><span class="glyph">✓</span><span class="arrow">↗</span><strong>Complaint Closure</strong><small>Log the outcome, compensation, costs and losses.</small></button>
-    <button type="button" class="actions-tile" data-go="running"><span class="glyph">£</span><span class="arrow">↗</span><strong>Running Costs</strong><small>View, add and categorise costs incurred during the complaint.</small></button>
-    <button type="button" class="actions-tile" data-go="review" id="fosHomeTile"><span class="glyph">F</span><span class="arrow">↗</span><strong>FOS Decision Review</strong><small id="fosHomeHint">Review the Investigator or Ombudsman decision.</small></button>
-    <button type="button" class="actions-tile" data-go="post"><span class="glyph">→</span><span class="arrow">↗</span><strong>Post-Resolution</strong><small>Post-resolution workspace.</small></button>
+  <div class="home-summary">
+    <div class="home-summary-head">
+      <div><span class="home-kicker">COMPLAINT <span id="homeReference">—</span></span><h2 id="homeCustomerHero">Complaint overview</h2><div class="home-context" id="homeComplaintType">Complaint details</div></div>
+      <div class="home-status-wrap"><span class="home-status-label">CURRENT STATUS</span><span class="home-status-pill" id="homeStatus">—</span></div>
+    </div>
+    <div class="home-detail-grid">
+      <div class="home-detail"><span class="home-detail-label">Dealership</span><strong id="homeDealership">—</strong></div>
+      <div class="home-detail"><span class="home-detail-label">Introducer</span><strong id="homeIntroducer">—</strong></div>
+      <div class="home-detail"><span class="home-detail-label">Assigned to</span><strong id="homeAssignee">—</strong></div>
+      <div class="home-detail"><span class="home-detail-label">Date received</span><strong id="homeReceived">—</strong></div>
+    </div>
   </div>
+  <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">4 WORKSPACES</span></div>
+  <div class="actions-tiles home-tiles">
+    <button type="button" class="actions-tile" data-go="closure"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Complaint Closure</strong><small>Outcomes, redress and final costs</small></span></button>
+    <button type="button" class="actions-tile" data-go="running"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M8 15h3"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Running Costs</strong><small>Record and manage complaint expenses</small></span></button>
+    <button type="button" class="actions-tile" data-go="review" id="fosHomeTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l4 4v14H4V3h4z"/><path d="M15 3v5h5M8 12h8M8 16h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>FOS Decision Review</strong><small id="fosHomeHint">Review Investigator and Ombudsman decisions</small></span></button>
+    <button type="button" class="actions-tile" data-go="post"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6 6 6-6 6"/><path d="M4 5v14"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Post-Resolution</strong><small>Follow-up actions after the complaint ends</small></span></button>
+  </div>
+  <div class="home-footer-note">COMPLAINT ACTIONS <span>·</span> <span id="homeFooterRef">—</span></div>
 </section>
 <section id="actionsRunning" class="actions-page">
   <div class="actions-subhero"><h2>Running Costs</h2><p>All costs recorded during the life of this complaint. Categorise costs here, then use the suggested items beneath the relevant fields on the closure form.</p><div class="actions-cost-total" id="runningHeroTotal">£0.00</div></div>
@@ -1730,6 +1778,7 @@ var ACTION_PAGE='home';
 function gotoActionsPage(page){
   if(page==='review'&&!PREFILL.fosApplicable)return;
   ACTION_PAGE=page;
+  document.body.classList.toggle('actions-on-home',page==='home');
   $('#actionsHome').classList.toggle('active',page==='home');
   $('#actionsRunning').classList.toggle('active',page==='running');
   $('#actionsPost').classList.toggle('active',page==='post');
@@ -1747,10 +1796,10 @@ function gotoActionsPage(page){
 }
 function initActionsHome(){
   var p=PREFILL;
-  var values={homeReference:p.issueKey,homeCustomer:p.customerName,homeDealership:p.dealershipName,homeAssignee:p.assigneeName,homeReceived:p.receivedDate,homeStatus:p.statusName};
+  var values={homeReference:p.issueKey,homeDealership:p.dealershipName,homeIntroducer:p.introducer,homeAssignee:p.assigneeName,homeReceived:p.receivedDate,homeStatus:p.statusName,homeFooterRef:p.issueKey,homeComplaintType:p.complaintType};
   Object.keys(values).forEach(function(id){document.getElementById(id).textContent=values[id]||'Not recorded';});
   $('#homeCustomerHero').textContent=p.customerName||'Complaint overview';
-  $('#homeRefHero').textContent=p.issueKey;
+  $('#homeJiraLink').href=p.jiraUrl||'#';
   var tile=$('#fosHomeTile');tile.disabled=!p.fosApplicable;
   $('#fosHomeHint').textContent=!p.fosApplicable?'Not available — this complaint has not been referred to FOS.':(fosReviewIsAvailable()?'Review the latest decision and choose the next action.':'FOS referral recorded. No active decision review is currently available.');
   document.querySelectorAll('[data-go]').forEach(function(btn){btn.addEventListener('click',function(){gotoActionsPage(btn.dataset.go);});});
