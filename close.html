@@ -262,7 +262,7 @@ body.actions-on-home .shell{max-width:1100px;padding:0 30px 22px}
 body.actions-on-home .shell>.logo,body.actions-on-home .shell>.head,body.actions-on-home .shell>.refsection,body.actions-on-home .shell>.infobox{display:none!important}
 body.actions-on-home .actions-page#actionsHome{display:block}
 .home-topline{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #EDE7EC;margin-bottom:24px}
-.home-brand{display:flex;align-items:center;gap:16px}.home-brand-mark{color:#F90081;font-weight:800;font-size:25px;letter-spacing:-1.2px}.home-brand-mark span{color:#F90081}
+.home-brand{display:flex;align-items:center;gap:16px}.home-brand-logo{display:block;width:142px;max-height:36px;height:auto;object-fit:contain;object-position:left center}
 .home-brand-divider{height:24px;width:1px;background:#DDD3DE}.home-brand-product{font-size:15px;font-weight:750;color:#29202B;letter-spacing:-.03em}
 .home-jira-link{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#6C5567;font-weight:700;font-size:12px;border:1px solid #E7DDE7;background:#fff;padding:10px 13px;border-radius:9px;transition:.15s}.home-jira-link:hover{border-color:#F90081;color:#B8005F}
 .home-summary{border:1px solid #E9E1EA;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 7px 26px rgba(37,16,32,.035)}
@@ -292,7 +292,7 @@ body.actions-on-home .actions-page#actionsHome{display:block}
 .home-tiles .actions-tile:disabled .glyph{background:#EAE6ED;color:#A49AA7}
 .home-tiles .actions-tile:disabled strong{color:#968C9B}.home-tiles .actions-tile:disabled small{color:#A59CAB}
 .home-footer-note{text-align:center;font-size:10px;letter-spacing:.12em;color:#ADA1AE;font-weight:750;margin-top:21px}.home-footer-note span{padding:0 3px}
-@media(max-width:730px){body.actions-on-home .shell{padding:0 17px 28px}.home-topline{height:65px;margin-bottom:17px}.home-brand-mark{font-size:22px}.home-brand-product{font-size:13px}.home-summary-head{padding:20px;align-items:flex-start}.home-summary-head h2{font-size:25px}.home-detail-grid{grid-template-columns:repeat(2,1fr);row-gap:17px;padding:18px 7px}.home-detail:nth-child(2){border-right:0}.home-action-heading{margin-top:21px}.home-tiles .actions-tile{min-height:137px;padding:17px}.home-status-pill{font-size:11px}}
+@media(max-width:730px){body.actions-on-home .shell{padding:0 17px 28px}.home-topline{height:65px;margin-bottom:17px}.home-brand-logo{width:128px}.home-brand-product{font-size:13px}.home-summary-head{padding:20px;align-items:flex-start}.home-summary-head h2{font-size:25px}.home-detail-grid{grid-template-columns:repeat(2,1fr);row-gap:17px;padding:18px 7px}.home-detail:nth-child(2){border-right:0}.home-action-heading{margin-top:21px}.home-tiles .actions-tile{min-height:137px;padding:17px}.home-status-pill{font-size:11px}}
 @media(max-width:520px){.home-summary-head{flex-direction:column;gap:14px}.home-status-wrap{align-items:flex-start;text-align:left}.home-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-action-count{display:none}.home-brand-divider{display:none}.home-jira-link{font-size:11px;padding:8px}.home-tiles{grid-template-columns:1fr}.home-tiles .actions-tile{min-height:120px}.home-footer-note{margin-bottom:10px}}
 @media(max-height:750px) and (min-width:731px){.home-topline{height:60px;margin-bottom:14px}.home-summary-head{padding:17px 25px 15px}.home-summary-head h2{font-size:27px}.home-detail-grid{padding:13px 15px}.home-action-heading{margin:19px 0 10px}.home-tiles .actions-tile{min-height:130px;padding:16px 19px}.home-footer-note{margin-top:12px}}
 
@@ -357,6 +357,24 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 .post-card h3{font-size:17px;margin:0 0 5px}.post-card p.post-muted{font-size:13px;color:var(--muted);margin:0 0 18px}
 .post-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.post-field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700}
 .post-field input,.post-field select{width:100%;min-width:0}.post-field small{font-weight:500;color:var(--muted)}
+/* Unified Carmoola styling for all Post-Resolution input types, including native number and date controls. */
+.post-field input[type="text"],.post-field input[type="number"],.post-field input[type="date"],.post-field select,.post-line input[type="text"],.post-line input[type="number"]{
+  display:block;width:100%;min-width:0;min-height:47px;box-sizing:border-box;
+  border:1.5px solid var(--line-strong);border-radius:10px;
+  background:var(--white);color:var(--ink);padding:11px 13px;
+  font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:500;
+  line-height:1.45;box-shadow:none;transition:border-color .16s,box-shadow .16s;
+}
+.post-field input[type="number"],.post-line input[type="number"]{font-variant-numeric:tabular-nums;}
+.post-field input[type="date"]{color-scheme:light;cursor:pointer;}
+.post-field input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.65;}
+.post-field input[readonly]{background:#F9F7FA;color:#5D5361;cursor:default;font-weight:600;}
+.post-field input:focus,.post-field select:focus,.post-line input:focus{
+  outline:none;border-color:var(--pink);box-shadow:0 0 0 3px var(--tint);
+}
+.post-field input::placeholder,.post-line input::placeholder{color:#978D9E;font-weight:400;}
+.post-line input[type="text"],.post-line input[type="number"]{font-size:13.5px;}
+
 .post-statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:16px}
 .post-stat{background:#FAF6F9;border:1px solid #EEE1EA;border-radius:11px;padding:15px}.post-stat span{display:block;color:#705C6E;font-size:11px;font-weight:700}.post-stat strong{display:block;font-size:21px;margin-top:5px;font-variant-numeric:tabular-nums}
 .post-stat.owed{background:#FDECF5;border-color:#F2C6DF}.post-stat.owed strong{color:#A6005B}
@@ -406,7 +424,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 
 <div class="actions-shared-header">
   <div class="home-topline">
-    <div class="home-brand"><span class="home-brand-mark">carmoola<span>.</span></span><span class="home-brand-divider"></span><span class="home-brand-product">Complaint Actions</span></div>
+    <div class="home-brand"><img class="home-brand-logo" src="https://www.carmoola.co.uk/hubfs/carmoola-logo.svg" alt="Carmoola" loading="eager"><span class="home-brand-divider"></span><span class="home-brand-product">Complaint Actions</span></div>
     <div class="global-top-actions"><button type="button" class="global-home-btn" id="globalHomeBtn" hidden>⌂ &nbsp;Home</button><a class="home-jira-link" id="homeJiraLink" href="#">↖ &nbsp;Back to Complaint</a></div>
   </div>
   <div class="home-summary">
