@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Complaint Closure Form</title>
+<title>Complaint Actions | Carmoola</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
@@ -207,6 +207,51 @@
   .fos-task-card{background:var(--white);border:1px solid #CDE7D9;border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 20px 16px;margin-bottom:16px}.fos-task-card.hidden{display:none}.fos-task-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:15px 0 10px}.fos-task-head h2{margin:0;font-size:15px}.fos-task-head p{margin:3px 0 0;font-size:12px;color:var(--muted)}.fos-task-progress{flex:none;background:var(--good-tint);color:var(--good);border-radius:999px;padding:5px 9px;font-size:10.5px;font-weight:800;white-space:nowrap}.fos-task-list{border-top:1px solid var(--line)}.fos-task{display:flex;gap:11px;align-items:flex-start;padding:12px 2px;border-top:1px solid var(--line);cursor:pointer;transition:.14s}.fos-task:first-child{border-top:0}.fos-task:hover{background:#FCFAFC}.fos-task input{position:absolute;opacity:0;pointer-events:none}.fos-task-check{width:20px;height:20px;flex:none;margin-top:1px;border:1.7px solid #BFB6C5;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;transition:.14s}.fos-task-check svg{display:none}.fos-task-text{font-size:13px;line-height:1.5;color:#352D39;transition:.14s}.fos-task.done{background:#F2FAF6}.fos-task.done .fos-task-check{background:var(--good);border-color:var(--good)}.fos-task.done .fos-task-check svg{display:block}.fos-task.done .fos-task-text{color:#4D725F;text-decoration:line-through;text-decoration-thickness:1.5px}.fos-task.saving{opacity:.62}.fos-task-error{display:none;margin:8px 0 0;background:#FCE8EE;border:1px solid #F5C2D2;color:#9A1638;border-radius:8px;padding:8px 10px;font-size:11.5px}.fos-task-error.show{display:block}
   @media(max-width:720px){.review-grid{grid-template-columns:1fr}.review-nav{position:static;display:flex;overflow:auto}.review-nav-title{display:none}.docbtn{min-width:180px}.review-stagebar{grid-template-columns:1fr}.reader-body{max-height:500px}.view-switch{align-items:flex-start;flex-direction:column}}
 
+
+/* Complaint Actions navigation */
+#actionsNav[hidden]{display:none!important}
+.actions-nav{display:flex;align-items:center;gap:8px;margin:0 0 20px;flex-wrap:wrap}
+.actions-home-link{border:1px solid var(--line-strong);background:#fff;color:var(--pink-dark);border-radius:10px;padding:10px 13px;font:700 13px 'DM Sans',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.actions-home-link:hover{background:var(--tint-soft);border-color:var(--pink)}
+.actions-current{font-size:12px;font-weight:700;color:var(--muted);padding-left:3px}
+.actions-page{display:none}.actions-page.active{display:block}
+.actions-hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#251729,#551837 70%,#8B1B59);color:#fff;border-radius:19px;padding:27px 28px;margin-bottom:17px;box-shadow:0 12px 30px rgba(73,24,57,.15)}
+.actions-hero:after{content:'';position:absolute;width:260px;height:260px;right:-100px;top:-145px;border-radius:50%;background:rgba(249,0,129,.27)}
+.actions-eyebrow{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#FFB5D9}
+.actions-hero h2{font-size:30px;letter-spacing:-.03em;position:relative;margin:9px 0 8px;z-index:1}
+.actions-hero p{position:relative;color:#F5DEEA;font-size:13.5px;margin:0;z-index:1}
+.actions-ref{display:inline-block;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);border-radius:7px;padding:5px 9px;margin-top:15px;font-size:13px;font-weight:800}
+.actions-section-title{font-size:17px;font-weight:800;letter-spacing:-.015em;margin:24px 0 12px}
+.actions-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.actions-fact{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:12px;padding:15px 17px;min-width:0}
+.actions-fact .k{font-size:10.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.055em;margin-bottom:6px}
+.actions-fact .v{font-size:15px;font-weight:700;overflow-wrap:anywhere}
+.actions-status{color:var(--pink-dark)}
+.actions-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.actions-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px;min-height:169px;width:100%;background:white;border:1.5px solid var(--line);border-radius:15px;padding:19px;box-shadow:var(--shadow);font-family:inherit;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s}
+.actions-tile:not(:disabled):hover{transform:translateY(-2px);border-color:#F59AC8;box-shadow:0 10px 28px rgba(56,17,39,.1)}
+.actions-tile .glyph{display:grid;place-items:center;background:var(--tint);color:var(--pink-dark);border-radius:10px;width:40px;height:40px;font-size:21px;font-weight:800}
+.actions-tile strong{font-size:16px;color:var(--ink)}
+.actions-tile small{font-size:12.5px;color:var(--muted);line-height:1.5}
+.actions-tile .arrow{position:absolute;right:18px;top:23px;color:var(--pink);font-size:20px}
+.actions-tile:disabled{background:#F5F3F6;border-color:#E4DFE8;cursor:not-allowed;box-shadow:none;opacity:.7}
+.actions-tile:disabled .glyph{background:#E5E1E8;color:#8E8594}
+.actions-tile:disabled .arrow{display:none}
+.actions-subhero{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:15px;padding:20px 22px;margin-bottom:15px}
+.actions-subhero h2{font-size:21px;margin:0 0 5px;letter-spacing:-.02em}
+.actions-subhero p{font-size:13px;margin:0;color:var(--muted)}
+.actions-cost-total{font-size:29px;font-weight:800;color:var(--pink-dark);margin-top:12px;font-variant-numeric:tabular-nums}
+#runningCostsCard{margin:0;border:0;box-shadow:none;border-radius:0}
+#runningCostsCard .running-strip-body{border:0;padding:0}
+#runningCostsCard .running-see{display:none}
+#runningCostsCard .running-summary-action{background:var(--pink);color:#fff;border-color:var(--pink)}
+#runningCostsCard>summary{cursor:default;min-height:auto;padding:0 0 12px}
+#runningCostsCard>summary .rs-label{font-size:16px}
+.actions-save-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;flex-wrap:wrap}
+.actions-feedback{color:var(--good);font-size:13px;font-weight:700}
+.actions-feedback.error{color:var(--err)}
+@media(max-width:580px){.actions-facts,.actions-tiles{grid-template-columns:1fr}.actions-hero{padding:22px}.actions-hero h2{font-size:25px}}
+
 </style>
 </head>
 <body>
@@ -216,7 +261,7 @@
 <div class="shell" id="shell" hidden>
   <svg class="logo" viewBox="0 0 470 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Carmoola" fill="#F90081"><text x="0" y="62" font-family="'DM Sans',sans-serif" font-size="72" font-weight="800" letter-spacing="-1">carmoola</text></svg>
 
-  <div class="head"><h1 id="formTitle">Complaint Closure Form</h1></div>
+  <div class="head"><h1 id="formTitle">Complaint Actions</h1></div>
 
   <div class="refsection">
     <div class="refwrap"><span class="refk">Complaint</span><span class="refv" id="refKey">&mdash;</span></div>
@@ -243,7 +288,43 @@
   </div>
 
 
-  <div class="view-switch" id="reviewViewSwitch" hidden>
+
+<div class="actions-nav" id="actionsNav" hidden><button type="button" class="actions-home-link" id="actionsHomeBtn">⌂ &nbsp;Complaint Home</button><span class="actions-current" id="actionsCurrent"></span></div>
+<section id="actionsHome" class="actions-page active">
+  <div class="actions-hero"><div class="actions-eyebrow">Carmoola · Complaint Actions</div><h2 id="homeCustomerHero">Complaint overview</h2><p>Everything you need to manage this complaint, in one place.</p><span class="actions-ref" id="homeRefHero">—</span></div>
+  <h3 class="actions-section-title">Complaint details</h3>
+  <div class="actions-facts">
+    <div class="actions-fact"><div class="k">Complaint reference</div><div class="v" id="homeReference">—</div></div>
+    <div class="actions-fact"><div class="k">Customer</div><div class="v" id="homeCustomer">—</div></div>
+    <div class="actions-fact"><div class="k">Dealership</div><div class="v" id="homeDealership">—</div></div>
+    <div class="actions-fact"><div class="k">Current assignee</div><div class="v" id="homeAssignee">—</div></div>
+    <div class="actions-fact"><div class="k">Complaint received</div><div class="v" id="homeReceived">—</div></div>
+    <div class="actions-fact"><div class="k">Current status</div><div class="v actions-status" id="homeStatus">—</div></div>
+  </div>
+  <h3 class="actions-section-title">Choose an action</h3>
+  <div class="actions-tiles">
+    <button type="button" class="actions-tile" data-go="closure"><span class="glyph">✓</span><span class="arrow">↗</span><strong>Complaint Closure</strong><small>Log the outcome, compensation, costs and losses.</small></button>
+    <button type="button" class="actions-tile" data-go="running"><span class="glyph">£</span><span class="arrow">↗</span><strong>Running Costs</strong><small>View, add and categorise costs incurred during the complaint.</small></button>
+    <button type="button" class="actions-tile" data-go="review" id="fosHomeTile"><span class="glyph">F</span><span class="arrow">↗</span><strong>FOS Decision Review</strong><small id="fosHomeHint">Review the Investigator or Ombudsman decision.</small></button>
+    <button type="button" class="actions-tile" data-go="post"><span class="glyph">→</span><span class="arrow">↗</span><strong>Post-Resolution</strong><small>Post-resolution workspace.</small></button>
+  </div>
+</section>
+<section id="actionsRunning" class="actions-page">
+  <div class="actions-subhero"><h2>Running Costs</h2><p>All costs recorded during the life of this complaint. Categorise costs here, then use the suggested items beneath the relevant fields on the closure form.</p><div class="actions-cost-total" id="runningHeroTotal">£0.00</div></div>
+    <div class="running-strip" id="runningCostsCard">
+    <div class="running-summary">
+      <span class="rs-label">Running Costs</span>
+      <span class="rs-total" id="runningTotal">&pound;0.00</span>
+      <button type="button" class="running-summary-action" id="runningEditBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span id="runningEditLabel">Add Running Cost</span></button>
+      <span class="running-see"><span class="running-see-text">See Running Costs</span></span>
+    </div>
+    <div class="running-strip-body"><div id="runningList"></div></div>
+  </div>
+  <div class="actions-save-row"><span class="actions-feedback" id="runningPageFeedback" role="status"></span><button type="button" class="btn" id="runningPageSave">Save Running Costs</button></div>
+</section>
+<section id="actionsPost" class="actions-page"><div class="actions-subhero"><h2>Post-Resolution</h2></div></section>
+
+  <div class="view-switch" id="reviewViewSwitch" hidden style="display:none!important">
     <div class="context" id="reviewViewContext">FOS decision review is available for this complaint.</div>
     <button type="button" class="switchbtn" id="reviewViewToggle">Open FOS Decision Review</button>
   </div>
@@ -287,15 +368,7 @@
   </section>
 
   <div class="closure-shell" id="closureShell">
-  <details class="running-strip" id="runningCostsCard">
-    <summary>
-      <span class="rs-label">Running Costs</span>
-      <span class="rs-total" id="runningTotal">&pound;0.00</span>
-      <button type="button" class="running-summary-action" id="runningEditBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span id="runningEditLabel">Add Running Cost</span></button>
-      <span class="running-see"><span class="running-see-text">See Running Costs</span></span>
-    </summary>
-    <div class="running-strip-body"><div id="runningList"></div></div>
-  </details>
+
 
   <div class="tabs" role="tablist">
     <button class="tab" id="tab-internal" role="tab" aria-selected="true" aria-controls="panel-internal">Investigation</button>
@@ -599,26 +672,10 @@ function fmtReviewDate(v){if(!v)return '';var d=new Date(v);if(isNaN(d))return S
 function fmtReviewOutcome(v){var s=String(v||'').trim();if(!s)return '';var map={upheld:'Upheld',not_upheld:'Not Upheld',partially_upheld:'Partially Upheld',withdrawn:'Withdrawn',unclear:'Unclear'};var k=s.toLowerCase().replace(/[\s-]+/g,'_');if(map[k])return map[k];return s.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
 function reviewDocObject(kind){return (PREFILL&&PREFILL.fosReview&&PREFILL.fosReview.documents&&PREFILL.fosReview.documents[kind])||null;}
 function reviewSetMode(on){
-  if(!fosReviewIsAvailable()){
-    REVIEW_MODE=false;
-    $('#reviewShell').classList.remove('active');
-    $('#closureShell').classList.remove('hidden-for-review');
-    $('#reviewViewSwitch').hidden=true;
-    return;
-  }
-  REVIEW_MODE=!!on;
-  $('#reviewShell').classList.toggle('active',REVIEW_MODE);
-  $('#closureShell').classList.toggle('hidden-for-review',REVIEW_MODE);
-  $('#footer').hidden=REVIEW_MODE;
-
-  // The return-to-review banner only belongs on Closure Logging. When the
-  // review workspace is already open, keep it hidden.
-  $('#reviewViewSwitch').hidden=REVIEW_MODE;
-  $('#reviewViewToggle').textContent='Open FOS Decision Review';
-  $('#formTitle').textContent=REVIEW_MODE?'FOS Decision Review':'Complaint Closure Form';
-  document.title=PREFILL.issueKey+' - '+(REVIEW_MODE?'FOS Decision Review':'Complaint Closure Form');
-  window.scrollTo({top:0,behavior:'smooth'});
+  REVIEW_MODE=!!on && fosReviewIsAvailable();
+  // Page visibility is controlled by the Complaint Actions router.
 }
+
 function reviewArray(v){
   if(Array.isArray(v))return v.map(function(x){return String(x||'').trim();}).filter(Boolean);
   if(v==null||v==='')return [];
@@ -720,7 +777,7 @@ function submitReviewAction(action){
     .catch(function(e){er.textContent=e.message||'Could not complete the review action.';er.classList.add('show');go.disabled=false;go.textContent=action==='escalate_ombudsman'?'Yes, Escalate':(action==='accept_ombudsman'?'Yes, Continue':'Yes, Accept View');});
 }
 function initReview(){
-  if(!fosReviewIsAvailable()){ $('#reviewViewSwitch').hidden=true; return; }
+  if(!fosReviewIsAvailable()){ $('#reviewViewSwitch').hidden=true; $('#reviewShell').innerHTML='<div class="actions-subhero"><h2>FOS Decision Review</h2><p>This complaint has been referred to FOS, but it is not currently at the FOS Decision Review stage with a decision available.</p></div>'; return; }
   renderReview();
   document.querySelectorAll('[data-review-doc]').forEach(function(btn){
     btn.addEventListener('click',function(){
@@ -730,7 +787,7 @@ function initReview(){
   });
   $('#reviewViewToggle').addEventListener('click',function(){reviewSetMode(!REVIEW_MODE);});
   $('#reviewConfirmCancel').addEventListener('click',function(){$('#reviewConfirmOverlay').classList.remove('show');});$('#reviewConfirmOverlay').addEventListener('click',function(e){if(e.target===$('#reviewConfirmOverlay'))e.currentTarget.classList.remove('show');});$('#reviewConfirmGo').addEventListener('click',function(){submitReviewAction(this.dataset.action);});
-  reviewSetMode(true);
+  reviewSetMode(false);
 }
 
 
@@ -1248,6 +1305,7 @@ function initClosedLock(){
   $('#unlockBtn').addEventListener('click',function(){
     lockAll(false);
     $('#closedBanner').style.display='none';
+    $('#unlockBtn').dataset.unlocked='1';
   });
 }
 // Lock (or unlock) every interactive control on the form.
@@ -1364,6 +1422,7 @@ function rcTypeBadge(type){var u=type==='Uncategorised';return '<span class="rc-
 function renderRunningMain(){
   var rows=normaliseRunningRows(runningCostsRows),total=runningTotal(rows);
   $('#runningTotal').textContent=gbp.format(total);
+  $('#runningHeroTotal').textContent=gbp.format(total);
   $('#runningEditLabel').textContent=rows.length?'Edit Running Costs':'Add Running Cost';
   var box=$('#runningList');
   if(!rows.length){box.className='rc-empty';box.innerHTML='No running costs recorded.';return;}
@@ -1666,6 +1725,46 @@ function initSubmit(){
   });
 }
 
+
+var ACTION_PAGE='home';
+function gotoActionsPage(page){
+  if(page==='review'&&!PREFILL.fosApplicable)return;
+  ACTION_PAGE=page;
+  $('#actionsHome').classList.toggle('active',page==='home');
+  $('#actionsRunning').classList.toggle('active',page==='running');
+  $('#actionsPost').classList.toggle('active',page==='post');
+  $('#closureShell').style.display=page==='closure'?'':'none';
+  $('#reviewShell').classList.toggle('active',page==='review');
+  $('#reviewViewSwitch').hidden=true;
+  $('#actionsNav').hidden=page==='home';
+  $('#actionsCurrent').textContent={'closure':'/ Complaint Closure','running':'/ Running Costs','review':'/ FOS Decision Review','post':'/ Post-Resolution'}[page]||'';
+  $('#footer').hidden=page!=='closure';
+  $('#manageBtn').style.display=page==='closure'?'':'none';
+  $('#closedBanner').style.display=(page==='closure'&&PREFILL.alreadyClosed&&$('#unlockBtn').dataset.unlocked!=='1')?'block':'none';
+  $('#formTitle').textContent='Complaint Actions';
+  document.title=PREFILL.issueKey+' | Complaint Actions | Carmoola';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function initActionsHome(){
+  var p=PREFILL;
+  var values={homeReference:p.issueKey,homeCustomer:p.customerName,homeDealership:p.dealershipName,homeAssignee:p.assigneeName,homeReceived:p.receivedDate,homeStatus:p.statusName};
+  Object.keys(values).forEach(function(id){document.getElementById(id).textContent=values[id]||'Not recorded';});
+  $('#homeCustomerHero').textContent=p.customerName||'Complaint overview';
+  $('#homeRefHero').textContent=p.issueKey;
+  var tile=$('#fosHomeTile');tile.disabled=!p.fosApplicable;
+  $('#fosHomeHint').textContent=!p.fosApplicable?'Not available — this complaint has not been referred to FOS.':(fosReviewIsAvailable()?'Review the latest decision and choose the next action.':'FOS referral recorded. No active decision review is currently available.');
+  document.querySelectorAll('[data-go]').forEach(function(btn){btn.addEventListener('click',function(){gotoActionsPage(btn.dataset.go);});});
+  $('#actionsHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
+  $('#runningPageSave').addEventListener('click',function(){
+    var b=this,feedback=$('#runningPageFeedback');feedback.textContent='';feedback.classList.remove('error');b.disabled=true;b.textContent='Saving…';
+    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),saveRunningCostsOnly:true,runningCostsRows:normaliseRunningRows(runningCostsRows)})})
+      .then(function(r){return r.json();}).then(function(d){if(!d.ok)throw new Error((d.errors&&d.errors[0])||'Unable to save costs.');runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;feedback.textContent='Running costs saved to Jira.';})
+      .catch(function(e){feedback.textContent=e.message||'Network error.';feedback.classList.add('error');})
+      .finally(function(){b.disabled=false;b.textContent='Save Running Costs';});
+  });
+  gotoActionsPage('home');
+}
+
 function boot(){
   var token=getToken();
   if(!token){$('#loading').textContent='This link is missing its access token. Please regenerate it from the complaint.';return;}
@@ -1681,7 +1780,7 @@ function boot(){
       initRejCalc();initInspCalc();initCostEditors();
       applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
       // Outside FOS Decision Review, keep the existing default-to-FOS behaviour.
-      if(PREFILL.fosApplicable && !fosReviewIsAvailable())selectTab('tab-fos');
+      initActionsHome();
     })
     .catch(function(){$('#loading').textContent='Network error loading the complaint.';});
 }
