@@ -348,6 +348,27 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 @media(max-width:530px){.home-topline{height:auto;min-height:70px;flex-wrap:wrap;gap:10px;padding:13px 0}.home-brand{gap:8px}.home-brand-product{font-size:12px}.global-home-btn{padding:8px;font-size:11px}.home-jira-link{padding:8px;font-size:11px}.costs-page-intro{flex-direction:column;gap:15px}.costs-overview{border:0;border-top:1px solid rgba(255,255,255,.2);width:100%;padding:12px 0 0;text-align:left}.costs-ledger-head{padding:16px;align-items:flex-start;flex-direction:column}.costs-ledger-list{padding:5px 10px}.costs-ledger-bottom{padding:15px}.home-status-pill{max-width:100%}}
 
 
+
+/* Deliberately secondary write-off action and protected modal */
+.post-writeoff-entry{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin:0 0 17px;color:#827887;font-size:12px}
+.post-writeoff-link{border:0;background:transparent;color:#786677;text-decoration:underline;text-underline-offset:3px;font:600 12px 'DM Sans',sans-serif;cursor:pointer;padding:6px}
+.post-writeoff-link:hover{color:var(--pink-dark)}
+.post-writeoff-overlay[hidden]{display:none!important}
+.post-writeoff-overlay{position:fixed;inset:0;z-index:110;background:rgba(24,13,27,.66);display:flex;justify-content:center;align-items:center;padding:18px}
+.post-writeoff-dialog{width:min(100%,460px);max-height:calc(100vh - 36px);overflow:auto;background:white;border-radius:19px;box-shadow:0 28px 90px rgba(12,6,15,.3);padding:26px}
+.post-writeoff-dialog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.post-writeoff-icon{width:39px;height:39px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#FFF1E9;color:#A74A21;font-size:23px;font-weight:800}
+.post-writeoff-close{font:26px 'DM Sans',sans-serif;border:0;background:#F7F3F7;color:#655868;border-radius:9px;width:34px;height:34px;cursor:pointer}
+.post-writeoff-dialog h3{font-size:20px;margin:0 0 8px}
+.post-writeoff-dialog .post-muted{color:var(--muted);font-size:13px;line-height:1.55;margin:0 0 17px}
+.post-writeoff-current{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid #E9E0E9;background:#F9F6FA;border-radius:10px;margin-bottom:18px;font-size:12px;color:var(--muted)}
+.post-writeoff-current strong{font-size:17px;color:var(--ink)}
+.post-writeoff-dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
+.post-writeoff-confirm{border:0;border-radius:10px;padding:11px 17px;background:#5D354E;color:white;font:700 13px 'DM Sans',sans-serif;cursor:pointer}
+.post-writeoff-confirm:hover{background:#442337}.post-writeoff-confirm:disabled{opacity:.55;cursor:wait}
+.post-writeoff-dialog .post-error.show{margin-top:13px}
+@media(max-width:530px){.post-writeoff-entry{justify-content:space-between}.post-writeoff-dialog{padding:20px}}
+
 /* Post-resolution recovery workspace */
 .post-hero{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:23px 26px;background:linear-gradient(120deg,#32172f,#642348);border-radius:16px;color:white;margin-bottom:18px}
 .post-eyebrow{color:#FBAAD3;font-size:11px;letter-spacing:.08em;font-weight:800;text-transform:uppercase}
@@ -486,7 +507,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         <div class="post-losses">
           <div class="post-losses-heading"><div class="post-financial-label"><span class="post-step-num">03</span><div><strong>Other losses to recover</strong><small>Add compensation, fees or any other amounts Carmoola is recovering.</small></div></div><button id="postAddLine" type="button" class="post-btn-secondary">+ Add loss</button></div>
           <div id="postLines" class="post-lines"></div>
-          <p class="post-hint">Add up to five losses, with a short description for each.</p>
+          
         </div>
       </div>
       <div class="post-out"><span>Total calculated recovery</span><strong id="postCalculated">£0.00</strong></div>
@@ -494,7 +515,19 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
       <div class="post-actions"><button class="post-btn-secondary" type="button" disabled title="Coming soon">Generate Request for Payment · Coming soon</button><button id="postSave" class="btn" type="button">Save Recovery Details</button></div><div class="post-error" id="postError" role="alert"></div>
     </div>
     <div class="post-grid"><div class="post-card"><h3>Record payment</h3><p class="post-muted">Reduce the outstanding balance when funds have been received.</p><label class="post-field">Payment amount (£)<input id="postPayment" type="number" min="0.01" step="0.01" placeholder="0.00"></label><label class="post-field" style="margin-top:12px">Bank reference / payment identifier<input id="postPaymentRef" maxlength="90" type="text" placeholder="Payment reference"></label><div class="post-actions"><button id="postRecordPayment" type="button" class="post-btn-secondary">Record Payment</button></div></div>
-    <div class="post-card"><h3>Write off balance</h3><p class="post-muted">Requires a reason; all changes are recorded against the complaint.</p><label class="post-field">Write-off amount (£)<input id="postWriteoff" type="number" min="0.01" step="0.01" placeholder="0.00"></label><label class="post-field" style="margin-top:12px">Reason<input id="postWriteoffReason" type="text" maxlength="180" placeholder="Why is this amount being written off?"></label><div class="post-actions"><button id="postRecordWriteoff" type="button" class="post-btn-secondary">Record Write-off</button></div></div></div>
+    <div class="post-writeoff-entry"><span>Need to close an unrecoverable balance?</span><button id="postOpenWriteoff" type="button" class="post-writeoff-link">Write off a balance <span aria-hidden="true">↗</span></button></div></div>
+    <div class="post-writeoff-overlay" id="postWriteoffModal" hidden role="presentation">
+      <div class="post-writeoff-dialog" role="dialog" aria-modal="true" aria-labelledby="postWriteoffTitle" aria-describedby="postWriteoffHelp">
+        <div class="post-writeoff-dialog-head"><div class="post-writeoff-icon" aria-hidden="true">!</div><button id="postCloseWriteoff" type="button" class="post-writeoff-close" aria-label="Close write-off dialog">×</button></div>
+        <h3 id="postWriteoffTitle">Write off recovery balance</h3>
+        <p id="postWriteoffHelp" class="post-muted">Only use this when a recovery will no longer be pursued. The amount and reason will be recorded in Jira.</p>
+        <div class="post-writeoff-current"><span>Current outstanding</span><strong id="postWriteoffOutstanding">£0.00</strong></div>
+        <label class="post-field">Amount to write off (£)<input id="postWriteoff" type="number" min="0.01" step="0.01" placeholder="0.00"></label>
+        <label class="post-field" style="margin-top:14px">Reason for write-off<input id="postWriteoffReason" type="text" maxlength="180" placeholder="Enter a reason for writing off this amount"></label>
+        <div id="postWriteoffError" class="post-error" role="alert"></div>
+        <div class="post-writeoff-dialog-actions"><button id="postCancelWriteoff" type="button" class="post-btn-secondary">Cancel</button><button id="postRecordWriteoff" type="button" class="post-writeoff-confirm">Confirm write-off</button></div>
+      </div>
+    </div>
     <div class="post-card"><h3>Balance history</h3><p class="post-muted">Latest balance movements. Detailed updates and payment references are also recorded in Jira comments.</p><div id="postHistory"></div></div>
   </div>
 </section>
@@ -1908,7 +1941,7 @@ function prHtml(s){return String(s).replace(/[&<>"']/g,function(x){return {'&':'
 function prCash(x){var v=Number(x);return Number.isFinite(v)?Math.round(v*100)/100:0;}
 function prDefaultDueDate(){var d=new Date();d.setDate(d.getDate()+5);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function prRows(){return Array.from(document.querySelectorAll('.post-line')).map(function(el){return [el.querySelector('.pr-desc').value.trim(),prCash(el.querySelector('.pr-amount').value)];}).filter(function(x){return x[0]||x[1];});}
-function prAddLine(desc,amount){var panel=$('#postLines');if(panel.children.length>=5)return;var row=document.createElement('div');row.className='post-line';row.innerHTML='<input class="pr-desc" type="text" maxlength="25" placeholder="e.g. FOS compensation" aria-label="Other loss description"><input class="pr-amount" type="number" step="0.01" min="0" placeholder="Amount (£)" aria-label="Other loss amount"><button type="button" class="post-btn-secondary" aria-label="Remove loss">×</button>';row.querySelector('.pr-desc').value=desc||'';row.querySelector('.pr-amount').value=amount===undefined?'':amount;row.querySelector('button').addEventListener('click',function(){row.remove();prUpdateMath();});row.querySelectorAll('input').forEach(function(input){input.addEventListener('input',prUpdateMath);});panel.appendChild(row);}
+function prAddLine(desc,amount){var panel=$('#postLines');var row=document.createElement('div');row.className='post-line';row.innerHTML='<input class="pr-desc" type="text" maxlength="25" placeholder="e.g. FOS compensation" aria-label="Other loss description"><input class="pr-amount" type="number" step="0.01" min="0" placeholder="Amount (£)" aria-label="Other loss amount"><button type="button" class="post-btn-secondary" aria-label="Remove loss">×</button>';row.querySelector('.pr-desc').value=desc||'';row.querySelector('.pr-amount').value=amount===undefined?'':amount;row.querySelector('button').addEventListener('click',function(){row.remove();prUpdateMath();});row.querySelectorAll('input').forEach(function(input){input.addEventListener('input',prUpdateMath);});panel.appendChild(row);}
 function prUpdateMath(){if(!POST_DATA)return;var calc=prCash(POST_DATA.creditAmount-prCash($('#postDeduction').value)+prRows().reduce(function(v,r){return v+r[1];},0));var paid=prCash((POST_DATA.history||{}).p),written=prCash((POST_DATA.history||{}).w);$('#postCalculated').textContent=gbp.format(calc);$('#postOutstanding').textContent=gbp.format(calc-paid-written);$('#postPaid').textContent=gbp.format(paid);}
 function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation','Holding Letter Due','Final Response Due'];var target=s==='Outsourced'?'Partner Funds Outstanding':nonOut.includes(s)?'Post-Resolution Tasks':'';var active=['Post-Resolution Tasks','Partner Funds Outstanding'].includes(s);$('#postStageChip').textContent=s||'Unknown status';$('#postTransition').hidden=!target;$('#postWorkspace').hidden=!active;$('#postNotAvailable').hidden=!!target||active;
   if(target){$('#postTransitionDesc').textContent='Current status: '+s+'. The next Jira workflow stage is '+target+'.';$('#postTransitionBtn').textContent='Move to '+target;}
@@ -1924,9 +1957,12 @@ function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation'
   prUpdateMath();
 }
 function prError(msg){$('#postError').textContent=msg||'';$('#postError').classList.toggle('show',!!msg);}
-function prRequest(payload,btn,after){if(btn.disabled)return;prError('');var label=btn.textContent;btn.disabled=true;btn.textContent='Saving…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))}).then(function(r){return r.json();}).then(function(data){if(!data.ok)throw Error((data.errors&&data.errors[0])||'Could not save in Jira.');after(data);}).catch(function(error){prError(error.message||'Network error saving recovery.');}).finally(function(){btn.disabled=false;btn.textContent=label;});}
+function prRequest(payload,btn,after){if(btn.disabled)return;prError('');var label=btn.textContent;btn.disabled=true;btn.textContent='Saving…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))}).then(function(r){return r.json();}).then(function(data){if(!data.ok)throw Error((data.errors&&data.errors[0])||'Could not save in Jira.');after(data);}).catch(function(error){prError(error.message||'Network error saving recovery.');if(!$('#postWriteoffModal').hidden){$('#postWriteoffError').textContent=error.message||'Network error saving recovery.';$('#postWriteoffError').classList.add('show');}}).finally(function(){btn.disabled=false;btn.textContent=label;});}
+function prOpenWriteoff(){var modal=$('#postWriteoffModal');$('#postWriteoffError').textContent='';$('#postWriteoffError').classList.remove('show');$('#postWriteoffOutstanding').textContent=$('#postOutstanding').textContent;modal.hidden=false;$('#postWriteoff').focus();}
+function prCloseWriteoff(){if($('#postRecordWriteoff').disabled)return;$('#postWriteoffModal').hidden=true;$('#postWriteoffError').textContent='';$('#postWriteoffError').classList.remove('show');$('#postOpenWriteoff').focus();}
 function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DATA)return;
   $('#postDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();});
+  $('#postOpenWriteoff').addEventListener('click',prOpenWriteoff);$('#postCloseWriteoff').addEventListener('click',prCloseWriteoff);$('#postCancelWriteoff').addEventListener('click',prCloseWriteoff);$('#postWriteoffModal').addEventListener('click',function(e){if(e.target===this)prCloseWriteoff();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#postWriteoffModal').hidden)prCloseWriteoff();});
   $('#postTransitionBtn').addEventListener('click',function(){var target=PREFILL.statusName==='Outsourced'?'Partner Funds Outstanding':'Post-Resolution Tasks';if(!window.confirm('Confirm that the appropriate complaint response and resolution requirements are complete. Move this complaint to '+target+'?'))return;prRequest({action:'post_transition',confirmed:true},this,function(data){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;prRender();showActionsSaveToast('Complaint moved to '+data.statusName+'.');});});
   function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(rows.some(function(r){return !r[0];})){prError('Every other loss needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Jira.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();gotoActionsPage('home');showActionsSaveToast(mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.');});}
   $('#postSave').addEventListener('click',function(){submit('save',this);});$('#postRecordPayment').addEventListener('click',function(){submit('payment',this);});$('#postRecordWriteoff').addEventListener('click',function(){submit('writeoff',this);});prRender();
