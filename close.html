@@ -418,6 +418,21 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 @media(max-width:700px){.post-hero{padding:19px;align-items:flex-start;flex-direction:column}.post-grid,.post-statgrid{grid-template-columns:1fr}.post-card{padding:17px}.post-line{grid-template-columns:minmax(0,1fr) 98px 32px}}
 
 .post-vehicle{border-color:#E9D6E2}.post-vehicle .post-field{max-width:440px}.post-auction-details{margin-top:14px;border:1px solid #EADDE5;background:#FCF8FB;border-radius:12px;padding:14px}.post-auction-line{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:13px}.post-auction-details p{font-size:12px;color:#766C79;margin:8px 0 0}.post-suspense{margin-top:4px}.post-suspense-row{padding:12px 0;border-bottom:1px solid #F0E7EE;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px}.post-suspense-row small{display:block;color:#867A88;margin-top:4px;font-size:11px}.post-suspense-state{font-size:11px;font-weight:700;color:#856C7E}.post-suspense-state.applied{color:#12855B}.post-manual-note{font-size:10px;font-weight:600;color:#7B707C}.post-manual-details summary{cursor:pointer;font-weight:700;font-size:13px;color:#A01461;padding:9px 0}.post-manual-details[open] summary{margin-bottom:12px}
+
+/* Cross-workspace closure validation */
+.closure-recovery-strip{border:1px solid #EAD5DF;border-left:4px solid #C07D19;background:#FFFCF6;border-radius:12px;padding:14px 17px;margin:0 0 17px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.closure-recovery-strip.is-complete{border-left-color:#12855B;background:#F4FAF7}
+.closure-recovery-strip strong{font-size:14px;display:block;color:#352535}.closure-recovery-strip p{font-size:12.5px;color:#736779;margin:4px 0 0}.closure-recovery-strip .post-btn-secondary{white-space:nowrap}
+.closure-recovery-overlay[hidden],.closure-check-overlay[hidden]{display:none!important}
+.closure-recovery-overlay,.closure-check-overlay{position:fixed;inset:0;background:rgba(22,13,28,.66);z-index:110;display:flex;justify-content:center;align-items:center;padding:20px}
+.closure-recovery-dialog{width:min(1100px,96vw);height:min(92vh,920px);background:#FCF8FB;border-radius:18px;box-shadow:0 24px 90px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden}
+.closure-recovery-dialog header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:15px 21px;background:#fff;border-bottom:1px solid #EADDE5;gap:12px}
+.closure-recovery-dialog header h3{margin:0;font-size:16px;color:#2C1930}.closure-recovery-dialog .closure-modal-body{padding:20px;overflow-y:auto;flex:1;min-height:0}
+.closure-check-dialog{width:min(490px,96vw);background:#fff;border-radius:17px;padding:23px;box-shadow:0 24px 90px rgba(0,0,0,.28)}
+.closure-check-dialog h3{margin:0 0 10px;font-size:20px}.closure-check-dialog p{font-size:13px;color:#6C6070;line-height:1.6}.closure-check-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+.closure-recovery-strip[hidden]{display:none!important}
+.closure-move-closed{display:flex;align-items:flex-start;gap:12px;padding:14px;margin-top:15px;background:#FCF7FA;border:1px solid #EADBE5;border-radius:11px;cursor:pointer}.closure-move-closed[hidden]{display:none!important}.closure-move-closed input{width:18px;height:18px;flex:none;accent-color:#F90081;margin:2px 0 0}.closure-move-closed strong{font-size:13.5px;display:block}.closure-move-closed small{display:block;font-size:12px;color:#726878;margin-top:3px}
+@media(max-width:620px){.closure-recovery-strip{flex-direction:column;align-items:flex-start}.closure-recovery-dialog .closure-modal-body{padding:10px}.closure-check-actions>*{flex:1}}
 </style>
 </head>
 <body>
@@ -476,6 +491,12 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 </div>
 <div class="actions-nav" id="actionsNav" hidden><button type="button" class="actions-home-link" id="actionsHomeBtn">⌂ &nbsp;Complaint Home</button><span class="actions-current" id="actionsCurrent"></span></div>
 <div id="actionsSaveToast" class="actions-toast" role="status" aria-live="polite"><span class="actions-toast-icon">✓</span><span>Running costs updated successfully.</span></div>
+<div class="closure-recovery-overlay" id="closureRecoveryModal" hidden role="dialog" aria-modal="true" aria-label="Post-Resolution recovery">
+  <div class="closure-recovery-dialog"><header><h3>Post-Resolution · Recovery details</h3><button type="button" class="post-btn-secondary" id="closureCloseRecovery">← Back to Closure</button></header><div class="closure-modal-body" id="closureRecoveryModalBody"></div></div>
+</div>
+<div class="closure-check-overlay" id="closureCheckModal" hidden role="dialog" aria-modal="true" aria-labelledby="closureCheckTitle">
+  <div class="closure-check-dialog"><h3 id="closureCheckTitle">Post-Resolution check</h3><p id="closureCheckDescription"></p><label id="closureMoveClosedRow" class="closure-move-closed" hidden><input id="closureMoveClosed" type="checkbox"><span><strong>Move the complaint to Closed</strong><small>After saving, transition the Jira complaint to Complaint Closed.</small></span></label><div class="closure-check-actions"><button type="button" class="post-btn-secondary" id="closureCheckCancel">Cancel</button><button type="button" class="post-btn-secondary" id="closureCheckReview">Review Recovery</button><button type="button" class="btn" id="closureCheckContinue">Continue &amp; Save Closure</button></div></div>
+</div>
 <section id="actionsHome" class="actions-page active" aria-label="Complaint homepage">
   <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">4 WORKSPACES</span></div>
   <div class="actions-tiles home-tiles">
@@ -583,6 +604,11 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   </section>
 
   <div class="closure-shell" id="closureShell">
+    <div class="closure-recovery-strip" id="closureRecoveryStrip" hidden role="status">
+      <div><strong id="closureRecoveryHeading">Post-Resolution recovery</strong><p id="closureRecoveryDescription"></p></div>
+      <button type="button" class="post-btn-secondary" id="closureOpenRecovery">Review Post-Resolution ↗</button>
+    </div>
+
 
 
   <div class="tabs" role="tablist">
@@ -1924,19 +1950,89 @@ function showErrors(list){
   var html='<b>Please fix the following:</b><ul>';for(var i=0;i<list.length;i++)html+='<li>'+list[i]+'</li>';html+='</ul>';
   box.innerHTML=html;box.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});
 }
+
+var closureRecoveryModalOpen=false;
+var closurePostOriginalParent=null,closurePostOriginalNext=null;
+function recoveryWasEstablished(p){return !!p&&p.originalBalance!==null&&p.originalBalance!==undefined;}
+function refreshClosureRecoverySummary(p){
+  var el=$('#closureRecoveryStrip');
+  if(!recoveryWasEstablished(p)){el.hidden=true;return;}
+  var balance=Number(p.currentBalance),hasBalance=Number.isFinite(balance)&&balance>0.005;
+  var isCompleted=!hasBalance&&['Paid','Written Off','Not Required'].includes(p.recoveryStatus||'');
+  el.hidden=false;el.classList.toggle('is-complete',isCompleted);
+  $('#closureRecoveryHeading').textContent=isCompleted?'Post-Resolution · Recovery complete':hasBalance?'Post-Resolution · '+gbp.format(balance)+' outstanding':'Post-Resolution · Recovery recorded';
+  $('#closureRecoveryDescription').textContent=(p.party||'Recovery party not set')+' · '+(p.recoveryStatus||'Status not set')+(p.dueDate?' · Due '+p.dueDate:'')+'. Recovery can continue after closure.';
+}
+function openClosureRecoveryModal(){
+  var page=$('#actionsPost'),slot=$('#closureRecoveryModalBody');
+  if(closureRecoveryModalOpen)return;
+  closurePostOriginalParent=page.parentNode;closurePostOriginalNext=page.nextSibling;
+  slot.appendChild(page);page.classList.add('active');closureRecoveryModalOpen=true;
+  $('#closureRecoveryModal').hidden=false;document.body.style.overflow='hidden';
+  prRender();prAutoReconcile();
+}
+function closeClosureRecoveryModal(){
+  if(!closureRecoveryModalOpen)return;
+  if(!$('#postRecordWriteoff').disabled&&$('#postWriteoffModal').hidden===false)return;
+  var page=$('#actionsPost');
+  if(closurePostOriginalNext&&closurePostOriginalNext.parentNode===closurePostOriginalParent)closurePostOriginalParent.insertBefore(page,closurePostOriginalNext);
+  else closurePostOriginalParent.appendChild(page);
+  page.classList.remove('active');closureRecoveryModalOpen=false;
+  $('#closureRecoveryModal').hidden=true;document.body.style.overflow='';
+  refreshClosureRecoverySummary(POST_DATA);
+}
+function initClosureRecoveryUI(){
+  $('#closureOpenRecovery').addEventListener('click',openClosureRecoveryModal);
+  $('#closureCloseRecovery').addEventListener('click',closeClosureRecoveryModal);
+  $('#closureCheckReview').addEventListener('click',function(){$('#closureCheckModal').hidden=true;openClosureRecoveryModal();});
+  $('#closureCheckCancel').addEventListener('click',function(){$('#closureCheckModal').hidden=true;});
+  $('#closureRecoveryModal').addEventListener('click',function(e){if(e.target===this)closeClosureRecoveryModal();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&closureRecoveryModalOpen&&$('#postWriteoffModal').hidden)closeClosureRecoveryModal();});
+  refreshClosureRecoverySummary(POST_DATA);
+}
+async function checkClosureRecoveryFresh(){
+  var response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'post_closure_check'})});
+  var data=await response.json();if(!data.ok)throw Error((data.errors||[])[0]||'Could not verify the latest recovery status.');
+  if(data.postResolution){POST_DATA=data.postResolution;refreshClosureRecoverySummary(POST_DATA);}
+  return data;
+}
 function initSubmit(){
-  $('#saveBtn').addEventListener('click',function(){
+  var saveBtn=$('#saveBtn');
+  async function performClosureSave(payload){
+    saveBtn.disabled=true;saveBtn.textContent='Saving…';
+    try{
+      var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var d=await r.json();
+      if(!d.ok){showErrors(d.errors||['Something went wrong saving. Please try again.']);return;}
+      runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;
+      if(d.statusName==='Complaint Closed'){PREFILL.statusName='Complaint Closed';$('#homeStatus').textContent='Complaint Closed';}
+      gotoActionsPage('home');showActionsSaveToast(d.statusName==='Complaint Closed'?'Closure details saved and complaint moved to Closed.':'Closure details updated successfully.');
+    }catch(e){showErrors(['Network error saving. Please try again.']);}
+    finally{saveBtn.disabled=false;saveBtn.textContent='Save Closure Details';}
+  }
+  saveBtn.addEventListener('click',async function(){
     var res=collectAndValidate();
     if(res.errors.length){if(runningCostsDirty){showRunningOnlyWarning(res.errors);return;}showErrors(res.errors);return;}
-    showErrors([]);
-    var btn=$('#saveBtn');btn.disabled=true;btn.textContent='Saving\u2026';
-    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(res.payload)})
-      .then(function(r){return r.json()})
-      .then(function(d){
-        if(d.ok){btn.textContent='Saved \u2713';runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;gotoActionsPage('home');showActionsSaveToast('Closure details updated successfully.');btn.disabled=false;btn.textContent='Save Closure Details';}
-        else{showErrors(d.errors||['Something went wrong saving. Please try again.']);btn.disabled=false;btn.textContent='Save Closure Details';}
-      })
-      .catch(function(){showErrors(['Network error saving. Please try again.']);btn.disabled=false;btn.textContent='Save Closure Details';});
+    showErrors([]);saveBtn.disabled=true;saveBtn.textContent='Checking…';
+    try{
+      var check=await checkClosureRecoveryFresh();
+      if(check.blockers&&check.blockers.length){showErrors(check.blockers);return;}
+      var canMoveClosed=!!check.canMoveToClosed;
+      if((check.warnings&&check.warnings.length)||canMoveClosed){
+        $('#closureCheckDescription').textContent=(check.warnings&&check.warnings.length?check.warnings.join(' ')+' ':'')+'Review the details, then save the complaint closure information.';
+        $('#closureMoveClosedRow').hidden=!canMoveClosed;
+        $('#closureMoveClosed').checked=false;
+        $('#closureCheckModal').hidden=false;
+        $('#closureCheckContinue').onclick=function(){
+          var moveClosed=canMoveClosed&&$('#closureMoveClosed').checked;
+          $('#closureCheckModal').hidden=true;
+          performClosureSave(Object.assign({},res.payload,{recoveryAcknowledged:true,moveToComplaintClosed:moveClosed}));
+        };
+        return;
+      }
+      await performClosureSave(res.payload);
+    }catch(e){showErrors(['Could not check the latest Post-Resolution balance: '+(e.message||'Network error')+'. Please try again.']);}
+    finally{if(saveBtn.textContent==='Checking…'){saveBtn.disabled=false;saveBtn.textContent='Save Closure Details';}}
   });
 }
 
@@ -1975,13 +2071,14 @@ function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DA
   $('#postDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();});
   $('#postOpenWriteoff').addEventListener('click',prOpenWriteoff);$('#postCloseWriteoff').addEventListener('click',prCloseWriteoff);$('#postCancelWriteoff').addEventListener('click',prCloseWriteoff);$('#postWriteoffModal').addEventListener('click',function(e){if(e.target===this)prCloseWriteoff();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#postWriteoffModal').hidden)prCloseWriteoff();});
   $('#postTransitionBtn').addEventListener('click',function(){var target=PREFILL.statusName==='Outsourced'?'Partner Funds Outstanding':'Post-Resolution Tasks';if(!window.confirm('Confirm that the appropriate complaint response and resolution requirements are complete. Move this complaint to '+target+'?'))return;prRequest({action:'post_transition',confirmed:true},this,function(data){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;prRender();showActionsSaveToast('Complaint moved to '+data.statusName+'.');});});
-  function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,vehicleResolution:$('#postVehicle').value,expectedReconciledRaw:POST_DATA.reconciledRaw||'',expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(rows.some(function(r){return !r[0];})){prError('Every other loss needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Jira.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();gotoActionsPage('home');showActionsSaveToast(mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.');});}
+  function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,vehicleResolution:$('#postVehicle').value,expectedReconciledRaw:POST_DATA.reconciledRaw||'',expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(rows.some(function(r){return !r[0];})){prError('Every other loss needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Jira.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();if(closureRecoveryModalOpen){refreshClosureRecoverySummary(POST_DATA);closeClosureRecoveryModal();}else gotoActionsPage('home');showActionsSaveToast(mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.');});}
   $('#postSave').addEventListener('click',function(){submit('save',this);});$('#postRecordPayment').addEventListener('click',function(){submit('payment',this);});$('#postRecordWriteoff').addEventListener('click',function(){submit('writeoff',this);});prRender();
 }
 
-var ACTION_PAGE='home';var PR_RECON_BUSY=false;function prAutoReconcile(){if(PR_RECON_BUSY||!POST_DATA||POST_DATA.originalBalance===null||!['Post-Resolution Tasks','Partner Funds Outstanding'].includes(PREFILL.statusName))return;PR_RECON_BUSY=true;fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'post_reconcile'})}).then(r=>r.json()).then(data=>{if(!data.ok)throw Error((data.errors||[])[0]||'Reconciliation failed');POST_DATA=data.postResolution;prRender();if(data.updated)showActionsSaveToast('New suspense funds automatically reconciled.');}).catch(err=>prError('Suspense reconciliation: '+err.message)).finally(()=>{PR_RECON_BUSY=false;});}
+var ACTION_PAGE='home';var PR_RECON_BUSY=false;function prAutoReconcile(){if(PR_RECON_BUSY||!POST_DATA||POST_DATA.originalBalance===null||!['Post-Resolution Tasks','Partner Funds Outstanding'].includes(PREFILL.statusName))return;PR_RECON_BUSY=true;fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'post_reconcile'})}).then(r=>r.json()).then(data=>{if(!data.ok)throw Error((data.errors||[])[0]||'Reconciliation failed');POST_DATA=data.postResolution;prRender();refreshClosureRecoverySummary(POST_DATA);if(data.updated)showActionsSaveToast('New suspense funds automatically reconciled.');}).catch(err=>prError('Suspense reconciliation: '+err.message)).finally(()=>{PR_RECON_BUSY=false;});}
 var ACTION_PAGE='home';
 function gotoActionsPage(page){
+  if(closureRecoveryModalOpen)closeClosureRecoveryModal();
   if(page==='review'&&!PREFILL.fosApplicable)return;
   ACTION_PAGE=page;
   document.body.classList.toggle('actions-on-home',page==='home');
@@ -2047,7 +2144,7 @@ function boot(){
       initRejCalc();initInspCalc();initCostEditors();
       applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
       // Outside FOS Decision Review, keep the existing default-to-FOS behaviour.
-      initPostResolution();initActionsHome();
+      initPostResolution();initClosureRecoveryUI();initActionsHome();
     })
     .catch(function(){$('#loading').textContent='Network error loading the complaint.';});
 }
