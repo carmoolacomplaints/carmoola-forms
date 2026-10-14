@@ -610,7 +610,6 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
     <div class="costs-ledger-list" id="runningList"></div>
     <div class="costs-ledger-bottom"><span>Running costs total</span><strong id="runningTotal">£0.00</strong></div>
   </div>
-  <div class="actions-save-row"><span class="actions-feedback" id="runningPageFeedback" role="status"></span><button type="button" class="btn" id="runningPageSave">Save Running Costs</button></div>
 </section>
 <section id="actionsPost" class="actions-page">
   <div class="post-hero"><div><span class="post-eyebrow">COMPLAINT ACTIONS · RECOVERY MANAGEMENT</span><h2>Post-Resolution</h2><p>Manage third-party recovery, payments and the audit trail in Complaints Hub.</p></div><span class="post-chip" id="postStageChip">Loading…</span></div>
@@ -1975,7 +1974,27 @@ function initRunningCosts(){
   $('#rc_add').addEventListener('click',function(){$('#rc_rows').appendChild(rcEditorRow({desc:'',amount:0,type:''}));rcEditorCompute();});
   $('#runningCancel').addEventListener('click',function(){$('#runningOverlay').classList.remove('show')});
   $('#runningOverlay').addEventListener('click',function(e){if(e.target===$('#runningOverlay'))$('#runningOverlay').classList.remove('show')});
-  $('#runningSave').addEventListener('click',function(){var got=collectRunningEditor();var er=$('#rcEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}runningCostsRows=normaliseRunningRows(got.rows);runningCostsDirty=runningRowsKey(runningCostsRows)!==runningCostsInitial;renderRunningMain();renderRunningMini();prRenderRunningCosts();updateCostRequirements();$('#runningOverlay').classList.remove('show');});
+  $('#runningSave').addEventListener('click',async function(){
+    var got=collectRunningEditor(),er=$('#rcEditorError'),button=this;
+    er.textContent='';er.classList.remove('show');
+    if(got.error){er.textContent=got.error;er.classList.add('show');return;}
+    var rows=normaliseRunningRows(got.rows);
+    button.disabled=true;button.textContent='Saving…';
+    try{
+      var response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),saveRunningCostsOnly:true,runningCostsRows:rows})});
+      var result=await response.json();
+      if(!response.ok||!result.ok)throw new Error((result.errors&&result.errors[0])||result.error||'Unable to save running costs.');
+      runningCostsRows=rows;
+      runningCostsInitial=runningRowsKey(rows);
+      runningCostsDirty=false;
+      renderRunningMain();renderRunningMini();prRenderRunningCosts();updateCostRequirements();
+      $('#runningOverlay').classList.remove('show');
+      showActionsSaveToast('Running costs saved to the Complaints Hub.');
+    }catch(error){
+      er.textContent=error.message||'Network error saving running costs. Please try again.';
+      er.classList.add('show');
+    }finally{button.disabled=false;button.textContent='Save Changes';}
+  });
 }
 function showRunningOnlyWarning(errors){pendingValidationErrors=errors||[];$('#runningOnlyError').classList.remove('show');$('#runningOnlyError').textContent='';$('#runningOnlySave').disabled=false;$('#runningOnlySave').textContent='Save Running Costs Only';$('#runningOnlyOverlay').classList.add('show');}
 function initRunningOnlySave(){
@@ -2472,13 +2491,6 @@ function initActionsHome(){
   $('#homeRejectionTile').addEventListener('click',function(){gotoActionsPage('rejection');homeRejectionDirect=true;syncRejectionPageOutcome();setRejectionPageMode(true);openRejCalc(prCustomerStage());});
   $('#actionsHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
   $('#globalHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
-  $('#runningPageSave').addEventListener('click',function(){
-    var b=this,feedback=$('#runningPageFeedback');feedback.textContent='';feedback.classList.remove('error');b.disabled=true;b.textContent='Saving…';
-    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),saveRunningCostsOnly:true,runningCostsRows:normaliseRunningRows(runningCostsRows)})})
-      .then(function(r){return r.json();}).then(function(d){if(!d.ok)throw new Error((d.errors&&d.errors[0])||'Unable to save costs.');runningCostsInitial=runningRowsKey(runningCostsRows);runningCostsDirty=false;gotoActionsPage('home');showActionsSaveToast();})
-      .catch(function(e){feedback.textContent=e.message||'Network error.';feedback.classList.add('error');})
-      .finally(function(){b.disabled=false;b.textContent='Save Running Costs';});
-  });
   gotoActionsPage('home');
 }
 
