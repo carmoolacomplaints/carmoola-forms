@@ -420,7 +420,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 @media(max-width:700px){.post-financial-row{grid-template-columns:1fr;gap:12px;padding:16px}.post-losses{padding:16px}.post-losses-heading{align-items:flex-start;flex-wrap:wrap}.post-losses .post-hint{margin-left:0}}
 .post-statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:16px}
 .post-stat{background:#FAF6F9;border:1px solid #EEE1EA;border-radius:11px;padding:15px}.post-stat span{display:block;color:#705C6E;font-size:11px;font-weight:700}.post-stat strong{display:block;font-size:21px;margin-top:5px;font-variant-numeric:tabular-nums}
-.post-stat.owed{background:#FDECF5;border-color:#F2C6DF}.post-stat.owed strong{color:#A6005B}
+.post-stat.owed{background:#FDECF5;border-color:#F2C6DF}.post-stat.owed strong{color:#A6005B}.post-stat .post-stat-note{display:block;margin-top:5px;font-size:11px;line-height:1.3;font-weight:500;color:#806F7F}.post-stat .post-stat-note:empty{display:none}
 .post-lines{margin:14px 0 8px}.post-line{display:grid;grid-template-columns:minmax(0,1fr) 130px 38px;gap:9px;margin:8px 0}.post-line input{font-size:13px}
 .post-out{display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid #EEDCE7;padding-top:16px;font-size:15px;font-weight:700}.post-out strong{font-size:23px;color:var(--pink-dark)}
 .post-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;margin:15px 0}.post-alert{padding:13px 15px;background:#FFF6DA;border:1px solid #EBD194;border-radius:10px;color:#725216;font-size:13px;margin-bottom:15px}
@@ -581,7 +581,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
       <label class="post-field">Vehicle position<select id="postVehicle"><option>Not Yet Decided</option><option>Dealership Return</option><option>Partner/Broker Return</option><option>Carmoola Auction — Planned</option><option>Carmoola Auction — Completed</option><option>No Vehicle Rejection</option><option>Other</option></select></label>
       <div id="postAuctionDetails" class="post-auction-details" hidden><div class="post-auction-line"><span>Gross auction sale (Jira)</span><strong id="postAuctionGross">—</strong></div><div class="post-auction-line"><span>Auction sold date</span><strong id="postAuctionDate">—</strong></div><p>Only confirmed <strong>net receipts in suspense</strong> will reduce the recovery. The gross sale value is not deducted.</p></div>
       <div class="post-hint" id="postVehicleWarning"></div></div>
-    <div class="post-statgrid"><div class="post-stat"><span>ORIGINAL RECOVERY BALANCE</span><strong id="postOriginal">Not set</strong></div><div class="post-stat"><span>PAYMENTS RECEIVED</span><strong id="postPaid">£0.00</strong></div><div class="post-stat owed"><span>CURRENT OUTSTANDING</span><strong id="postOutstanding">£0.00</strong></div></div>
+    <div class="post-statgrid"><div class="post-stat"><span>ORIGINAL RECOVERY BALANCE</span><strong id="postOriginal">Not set</strong></div><div class="post-stat"><span>PAYMENTS RECEIVED</span><strong id="postPaid">£0.00</strong><small class="post-stat-note" id="postPaidNote" aria-live="polite"></small></div><div class="post-stat owed"><span>CURRENT OUTSTANDING</span><strong id="postOutstanding">£0.00</strong></div></div>
     <div class="post-card post-recovery-card">
       <div class="post-section-heading"><div><span class="post-eyebrow-light">RECOVERY BREAKDOWN</span><h3>Recovery calculation</h3><p class="post-muted">A clear breakdown of the amount owed to Carmoola.</p></div></div>
       <div class="post-financial-stack">
@@ -2126,7 +2126,8 @@ function prUpdateMath(){
     :'Awaiting matched net auction funds in suspense; gross sale '+gross+'.';
   $('#postCalculated').textContent=gbp.format(Math.max(0,prCash(calc-paid-written-suggestedAllocation)));
   $('#postOutstanding').textContent=gbp.format(Math.max(0,prCash(calc-paid-written-suggestedAllocation)));
-  $('#postPaid').textContent=gbp.format(paid+suggestedAllocation)+(suggestedAllocation>0?' ('+gbp.format(suggestedAllocation)+' identified, pending save)':'');
+  $('#postPaid').textContent=gbp.format(paid+suggestedAllocation);
+  $('#postPaidNote').textContent=suggestedAllocation>0?'Identified · Pending save':paid>0?'Reconciled':'';
 }
 
 function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation','Holding Letter Due','Final Response Due'];var target=s==='Outsourced'?'Partner Funds Outstanding':nonOut.includes(s)?'Post-Resolution Tasks':'';var active=['Post-Resolution Tasks','Partner Funds Outstanding'].includes(s);$('#postStageChip').textContent=s||'Unknown status';$('#postTransition').hidden=!target;$('#postWorkspace').hidden=!active;$('#postNotAvailable').hidden=!!target||active;
