@@ -114,23 +114,28 @@
   .modal-foot .foot-info .k{font-weight:600}
   .modal-foot .foot-info .v{font-weight:800;color:var(--pink-dark);font-variant-numeric:tabular-nums}
 
+/* Give the standalone rejection workspace additional horizontal room on desktop. */
+@media(min-width:1100px){
+  body.actions-in-workspace:has(#actionsRejection.active) .shell{max-width:1380px}
+  body.actions-in-workspace:has(#actionsRejection.active) .rejection-page-layout{max-width:1240px}
+}
 /* Standalone rejection loss workspace, reusing the existing shared calculator DOM. */
 .rejection-page-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:23px 26px;border-radius:16px;background:linear-gradient(110deg,#30172e,#612344);color:#fff;margin-bottom:18px}
 .rejection-page-hero .eyebrow{font-size:10px;font-weight:800;letter-spacing:.12em;color:#f2b8d6}
 .rejection-page-hero h2{font-size:25px;letter-spacing:-.03em;margin:8px 0 5px}
 .rejection-page-hero p{font-size:13px;color:#efd2e2;margin:0}
 .rejection-page-chip{border:1px solid #ffffff55;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:700;white-space:nowrap}
-.rejection-page-layout{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:23px;max-width:970px;margin:0 auto 30px}
+.rejection-page-layout{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:23px;max-width:1240px;margin:0 auto 30px}
 .rejection-page-intro{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .rejection-page-intro h3{margin:0 0 5px;font-size:19px}.rejection-page-intro p{margin:0;font-size:13px;color:var(--muted)}
 .rejection-page-layout .rej-workspace{width:100%;max-height:none;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
 .rejection-page-layout .rej-workspace>.modal{max-width:none;width:100%;max-height:none;overflow:visible;border-radius:13px;box-shadow:none;border:1px solid var(--line)}
 .rejection-page-layout .modal-head{padding:18px 21px 14px}.rejection-page-layout .modal-body{padding:15px 21px}
 .rejection-page-layout .modal-foot{padding:16px 21px 20px}
-.rejection-page-layout .rej-workspace:has(.rej-side.show){grid-template-columns:minmax(0,1fr) minmax(310px,.88fr)}
+.rejection-page-layout .rej-workspace:has(.rej-side.show){grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:22px}
 .rejection-page-layout .rej-side{position:static;left:auto;top:auto;width:100%;max-height:none;box-shadow:none;border:1px solid var(--line);border-radius:13px;grid-column:2;grid-row:1}
-.rejection-page-layout .calcrow .in{width:155px}.rejection-page-layout .calcrow.with-action .in{width:210px}
-@media(max-width:850px){.rejection-page-layout .rej-workspace:has(.rej-side.show){grid-template-columns:minmax(0,1fr)}.rejection-page-layout .rej-side{grid-column:1;grid-row:auto}}
+.rejection-page-layout .calcrow .in{width:170px}.rejection-page-layout .calcrow.with-action .in{width:215px}
+@media(max-width:1000px){.rejection-page-layout .rej-workspace:has(.rej-side.show){grid-template-columns:minmax(0,1fr)}.rejection-page-layout .rej-side{grid-column:1;grid-row:auto}}
 @media(max-width:560px){.rejection-page-layout{padding:12px}.rejection-page-hero{padding:19px;align-items:flex-start;flex-direction:column}.rejection-page-layout .calcrow{flex-wrap:wrap}.rejection-page-layout .calcrow .in,.rejection-page-layout .calcrow.with-action .in{width:100%}.rejection-page-layout .modal-body{padding:12px 14px}}
 
   /* Rejection-loss nested calculators */
