@@ -455,6 +455,8 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 .sol-card h3{font-size:16px;margin:0 0 16px;letter-spacing:-.02em}.sol-datum{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:12px 0;border-top:1px solid #F1EDF1}.sol-datum:first-of-type{border-top:0}.sol-datum span{font-size:12.5px;color:#706676}.sol-datum strong{font-size:13px;text-align:right;overflow-wrap:anywhere}.sol-update{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.65;background:#FBF7FA;border:1px solid #F0E5EE;padding:16px;border-radius:11px;color:#382B39;min-height:92px}.sol-footnote{font-size:12px;color:#786D79;margin:12px 0 0}.sol-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.sol-links a{color:#A20B62;background:#FFF1F8;border:1px solid #F2C9DF;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:750;text-decoration:none}
 @media(max-width:770px){.sol-layout{grid-template-columns:repeat(2,minmax(0,1fr))}.sol-columns{grid-template-columns:1fr}}
 @media(max-width:520px){.sol-layout{grid-template-columns:1fr 1fr}.sol-stat{padding:13px}.sol-stat .v{font-size:19px}.home-tiles.home-tiles-five{grid-template-columns:1fr}}
+
+.post-customer-panel{margin-bottom:16px}.post-customer-panel>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px}.post-customer-panel>summary::-webkit-details-marker{display:none}.post-customer-panel>summary>span:first-child{display:flex;flex-direction:column;gap:5px}.post-customer-panel>summary strong{font-size:16px;color:#26192b}.post-customer-panel>summary small{font-size:12px;color:#837684}.post-customer-chevron{color:#9b286a;font-size:21px}.post-customer-panel[open] .post-customer-chevron{transform:rotate(180deg)}.post-customer-content{margin-top:17px;border-top:1px solid #f0e6ee;padding-top:17px}.post-customer-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.post-customer-datum{background:#fcf8fb;border:1px solid #f0e4ed;border-radius:10px;padding:11px;min-width:0}.post-customer-datum span{display:block;font-size:11px;color:#726477;margin-bottom:4px}.post-customer-datum strong{font-size:16px;overflow-wrap:anywhere}.post-customer-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.post-customer-difference{margin-top:10px;color:#84677a;font-size:12px}.post-customer-difference[hidden]{display:none!important}@media(max-width:650px){.post-customer-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -581,6 +583,17 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
       <label class="post-field">Vehicle position<select id="postVehicle"><option>Not Yet Decided</option><option>Dealership Return</option><option>Partner/Broker Return</option><option>Carmoola Auction — Planned</option><option>Carmoola Auction — Completed</option><option>No Vehicle Rejection</option><option>Other</option></select></label>
       <div id="postAuctionDetails" class="post-auction-details" hidden><div class="post-auction-line"><span>Gross auction sale (Jira)</span><strong id="postAuctionGross">—</strong></div><div class="post-auction-line"><span>Auction sold date</span><strong id="postAuctionDate">—</strong></div><p>Only confirmed <strong>net receipts in suspense</strong> will reduce the recovery. The gross sale value is not deducted.</p></div>
       <div class="post-hint" id="postVehicleWarning"></div></div>
+    <details class="post-card post-customer-panel" id="postCustomerPanel">
+      <summary><span><span class="post-eyebrow-light">CUSTOMER-SIDE CALCULATION</span><strong>Customer rejection loss &amp; deductions</strong><small>View or edit the same calculation used in Complaint Closure.</small></span><span class="post-customer-chevron">⌄</span></summary>
+      <div class="post-customer-content">
+        <div class="post-customer-summary" id="postCustomerSummary"></div>
+        <div class="post-customer-controls"><button type="button" class="post-btn-secondary" id="postEditCustomer">Edit customer rejection loss</button><button type="button" class="post-btn-secondary" id="postCopyDeduction">Copy customer deduction to dealership</button></div>
+        <p class="post-customer-difference" id="postDeductionDifference" hidden></p>
+        <p class="post-hint">Customer deductions and dealership deductions are separate amounts. Changes to the customer calculator are saved in the same Jira fields as Complaint Closure; the dealership deduction changes only when you choose to copy it.</p>
+        <div class="post-actions"><button type="button" class="btn" id="postSaveCustomer" disabled>Save customer calculation to Jira</button></div>
+        <p class="post-error" id="postCustomerError" role="alert"></p>
+      </div>
+    </details>
     <div class="post-statgrid"><div class="post-stat"><span>ORIGINAL RECOVERY BALANCE</span><strong id="postOriginal">Not set</strong></div><div class="post-stat"><span>PAYMENTS RECEIVED</span><strong id="postPaid">£0.00</strong><small class="post-stat-note" id="postPaidNote" aria-live="polite"></small></div><div class="post-stat owed"><span>CURRENT OUTSTANDING</span><strong id="postOutstanding">£0.00</strong></div></div>
     <div class="post-card post-recovery-card">
       <div class="post-section-heading"><div><span class="post-eyebrow-light">RECOVERY BREAKDOWN</span><h3>Recovery calculation</h3><p class="post-muted">A clear breakdown of the amount owed to Carmoola.</p></div></div>
@@ -1352,20 +1365,18 @@ function openRejCalc(which){
   }
   $('#rl_customer_deduction').value=rejHas(rejWork.customerDeductionAmount)?String(rejWork.customerDeductionAmount):'';
   $('#rl_retained').value=String(rejHas(rejWork.retainedPayments)?rejWork.retainedPayments:0);
-  $('#rl_proceeds').value=String(rejHas(rejWork.vehicleProceeds)?rejWork.vehicleProceeds:(PREFILL.vehicleProceeds||0));
+  var netAuction=(PREFILL.auctionMarked && PREFILL.auctionNetConfirmed);
+  $('#rl_proceeds').value=String(PREFILL.auctionMarked?(netAuction?PREFILL.vehicleProceeds:0):(rejHas(rejWork.vehicleProceeds)?rejWork.vehicleProceeds:(PREFILL.vehicleProceeds||0)));
   var vehicleOutcome = which==='fos' ? ($('#fosRejection').value||'') : ($('#rejection').value||'');
   var proceedsLabel='Vehicle Proceeds Received';
   if(vehicleOutcome==='Sold at Auction') proceedsLabel='Auction Proceeds Received';
   else if(vehicleOutcome==='Rejected to Dealership') proceedsLabel='Vehicle Proceeds From Dealership';
   else if(vehicleOutcome==='Rejected to Broker') proceedsLabel='Vehicle Proceeds From '+(PREFILL.introducerName||'Broker');
   $('#rl_proceedsLabel').textContent=proceedsLabel;
-  var proceedsHint = PREFILL.auctionMarked ? 'Seeded from the auction Sale Value' : (PREFILL.suspenseTotal>0 ? 'Seeded from suspense funds received' : 'From auction or dealership');
+  var proceedsHint = PREFILL.auctionMarked ? (PREFILL.auctionNetConfirmed ? 'Net auction funds verified in suspense (gross auction value is before fees)' : 'No verified auction receipt yet — do not use the gross sale price') : (PREFILL.suspenseTotal>0 ? 'Seeded from suspense funds received' : 'From auction or dealership');
   $('#rl_proceedsHint').textContent = proceedsHint;
   var mm=$('#rl_mismatch');
-  if(PREFILL.proceedsMismatch){
-    mm.style.display='block';
-    mm.textContent='Auction Sale Value ('+gbp.format(PREFILL.auctionSaleValue)+') and suspense funds received ('+gbp.format(PREFILL.suspenseTotal)+') do not match. Check which figure is correct before saving.';
-  } else { mm.style.display='none'; }
+  mm.style.display='none';
   var dep=$('#rl_deposit'),depRow=$('#rl_depositRow'),depBtn=$('#rl_depositCalcBtn');
   if(PREFILL.deposit===0 && !rejHas(rejWork.customerDeposit)){
     depRow.classList.add('disabled');depBtn.disabled=true;dep.value='0';
@@ -1513,7 +1524,7 @@ function initRejCalc(){
     var bd={used:true,creditAmount:num($('#rl_credit').value),retainedPayments:num($('#rl_retained').value),vehicleProceeds:num($('#rl_proceeds').value),depositPaidOut:num($('#rl_deposit').value),customerDeductionAmount:rejWork.customerDeductionAmount,repaymentsMadeByCustomer:rejHas(rejWork.repaymentsMadeByCustomer)?num(rejWork.repaymentsMadeByCustomer):null,repaymentsDeduction:rejHas(rejWork.repaymentsDeduction)?num(rejWork.repaymentsDeduction):null,customerRefundAmount:rejHas(rejWork.customerRefundAmount)?num(rejWork.customerRefundAmount):null,customerDeposit:rejHas(rejWork.customerDeposit)?num(rejWork.customerDeposit):null,depositDeduction:rejHas(rejWork.depositDeduction)?num(rejWork.depositDeduction):null,total:t};
     if(calcTarget==='fos'){fosRejBreakdown=bd;rejBreakdown={used:false};setMoney('f_rejloss',t);$('#fosRejCalcPill').hidden=false}
     else{rejBreakdown=bd;fosRejBreakdown={used:false};setMoney('c_rejloss',t);$('#rejLossCalcPill').hidden=false}
-    closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');recompute();
+    closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');recompute();if(ACTION_PAGE==='post'){postCustomerDraftDirty=true;prCustomerDraw();}
   });
 }
 
@@ -1655,7 +1666,7 @@ function restoreSavedBreakdowns(){
     var bd={used:true,
       creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),
       retainedPayments:has(s.rejRetained)?s.rejRetained:0,
-      vehicleProceeds:has(s.rejProceeds)?s.rejProceeds:0,
+      vehicleProceeds:PREFILL.auctionMarked?(PREFILL.auctionNetConfirmed?PREFILL.vehicleProceeds:0):(has(s.rejProceeds)?s.rejProceeds:0),
       depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0,
       customerDeductionAmount:has(s.rejCustomerDeduction)?s.rejCustomerDeduction:null,
       repaymentsMadeByCustomer:has(s.rejRepaymentsMade)?s.rejRepaymentsMade:null,
@@ -1846,7 +1857,7 @@ function costEditorCompute(){var t=0;document.querySelectorAll('#cost_rows .calc
 function openCostEditor(id){costCalcTarget=id;var meta=COST_META[id];if(!meta)return;$('#costModalTitle').textContent=meta.title;var box=$('#cost_rows');box.innerHTML='';var b=costBreakdowns[id]||{used:false,rows:[]};var rows=cleanCostRows(b.rows);if(!rows.length)rows=[{desc:'',amount:0}];rows.forEach(function(r){box.appendChild(costEditorRow(r));});$('#costEditorError').classList.remove('show');$('#costEditorError').textContent='';costEditorCompute();$('#costOverlay').classList.add('show');}
 function collectCostEditor(){var rows=[],error='';document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim(),a=num(raw);if(!d&&(!raw||a===0))return;if(!d){error='Each cost with an amount needs a description.';return;}if(raw===''){error='Each cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a});});return {rows:rows,error:error};}
 function initCostEditors(){document.querySelectorAll('[data-cost-target]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.costTarget;if(id==='c_insp'){openInspCalc('inv');return;}if(id==='f_insp'){openInspCalc('fos');return;}openCostEditor(id);});});$('#cost_add').addEventListener('click',function(){$('#cost_rows').appendChild(costEditorRow({desc:'',amount:0}));costEditorCompute();});$('#costCancel').addEventListener('click',function(){$('#costOverlay').classList.remove('show')});$('#costOverlay').addEventListener('click',function(e){if(e.target===$('#costOverlay'))$('#costOverlay').classList.remove('show')});$('#costSave').addEventListener('click',function(){var got=collectCostEditor(),er=$('#costEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}costBreakdowns[costCalcTarget]={used:true,rows:cleanCostRows(got.rows)};syncCostFromBreakdown(costCalcTarget);renderRunningMini();$('#costOverlay').classList.remove('show');});}
-function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:has(s.rejProceeds)?s.rejProceeds:0,depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false;}else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false;}}}
+function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:PREFILL.auctionMarked?(PREFILL.auctionNetConfirmed?PREFILL.vehicleProceeds:0):(has(s.rejProceeds)?s.rejProceeds:0),depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false;}else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false;}}}
 function rawJiraCost(id){
   var meta=COST_META[id],obj;
   if(!meta)return {present:false,value:0};
@@ -1950,7 +1961,7 @@ function applyPrefill(){
     // non-vehicle with no existing value: default to No Vehicle Rejection
     $('#rejection').value='No Vehicle Rejection';
   }
-  if(isVehicleComplaint && PREFILL.proceedsMismatch){var mmb=$('#mainMismatch');mmb.style.display='block';mmb.textContent='⚠ Auction Sale Value ('+gbp.format(PREFILL.auctionSaleValue)+') and suspense funds received ('+gbp.format(PREFILL.suspenseTotal)+') don\u2019t match. Check the rejection loss calculator.';}
+  // Differences between gross auction sale value and verified net suspense receipts are expected fees, not validation errors.
   // Note: initVehicleVisibility() owns showing/hiding the vehicle question + cost rows.
 
   if(PREFILL.fosApplicable){
@@ -2130,6 +2141,33 @@ function prUpdateMath(){
   $('#postPaidNote').textContent=suggestedAllocation>0?'Identified · Pending save':paid>0?'Reconciled':'';
 }
 
+// Shared customer rejection loss view: uses the same rejection calculator as Complaint Closure.
+var postCustomerDraftDirty=false;
+function prCustomerBreakdown(){return prCustomerStage()==='fos'?fosRejBreakdown:rejBreakdown;}
+function prCustomerStage(){var saved=(PREFILL.saved||{}).rejStage;return saved==='FOS'?'fos':saved==='Investigation'?'inv':(PREFILL.fosApplicable&&$('#fosRejection').value?'fos':'inv');}
+function prCustomerDraw(){
+  var s=PREFILL.saved||{},bd=prCustomerBreakdown()||{},v=function(x){return x===null||x===undefined?'Not recorded':gbp.format(Number(x))};
+  var data=[['Customer deduction',bd.customerDeductionAmount??s.rejCustomerDeduction],['Repayments made',bd.repaymentsMadeByCustomer??s.rejRepaymentsMade],['Repayments deduction',bd.repaymentsDeduction??s.rejRepaymentsDeduction],['Customer refund',bd.customerRefundAmount??s.rejCustomerRefund],['Customer deposit',bd.customerDeposit??s.rejCustomerDeposit??PREFILL.deposit],['Deposit deduction',bd.depositDeduction??s.rejDepositDeduction],['Deposit paid out',bd.depositPaidOut??s.rejDeposit],['Retained repayments',bd.retainedPayments??s.rejRetained],['Vehicle proceeds',bd.vehicleProceeds??s.rejProceeds],['Rejection loss',bd.used?bd.total:null]];
+  $('#postCustomerSummary').innerHTML=data.map(function(x){return '<div class="post-customer-datum"><span>'+prHtml(x[0])+'</span><strong>'+v(x[1])+'</strong></div>';}).join('');
+  var customer=bd.customerDeductionAmount??s.rejCustomerDeduction;
+  var different=customer!==null&&customer!==undefined&&Math.abs(prCash(customer)-prCash($('#postDeduction').value))>0.009;
+  $('#postDeductionDifference').hidden=!different;
+  $('#postDeductionDifference').textContent=different?'Customer deduction ('+gbp.format(customer)+') differs from dealership deduction ('+gbp.format(prCash($('#postDeduction').value))+'). This may be intentional.':'';
+  $('#postCopyDeduction').disabled=customer===null||customer===undefined;
+  $('#postSaveCustomer').disabled=!postCustomerDraftDirty;
+}
+function prCustomerSave(btn){
+ var stage=prCustomerStage(),bd=stage==='fos'?fosRejBreakdown:rejBreakdown;
+ if(!bd||!bd.used){$('#postCustomerError').textContent='Open and complete the customer rejection-loss calculator first.';return;}
+ prRequest({action:'post_customer_rejection_save',stage:stage==='fos'?'FOS':'Investigation',breakdown:bd},btn,function(data){
+   PREFILL.saved=Object.assign({},PREFILL.saved||{},data.saved||{});
+   postCustomerDraftDirty=false;
+   if(stage==='fos')setMoney('f_rejloss',bd.total);else setMoney('c_rejloss',bd.total);
+   if(data.postResolution)POST_DATA=data.postResolution;
+   prCustomerDraw();
+   showActionsSaveToast('Customer rejection loss saved in Jira and reflected in Complaint Closure.');
+ });
+}
 function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation','Holding Letter Due','Final Response Due'];var target=s==='Outsourced'?'Partner Funds Outstanding':nonOut.includes(s)?'Post-Resolution Tasks':'';var active=['Post-Resolution Tasks','Partner Funds Outstanding'].includes(s);$('#postStageChip').textContent=s||'Unknown status';$('#postTransition').hidden=!target;$('#postWorkspace').hidden=!active;$('#postNotAvailable').hidden=!!target||active;
   if(target){$('#postTransitionDesc').textContent='Current status: '+s+'. The next Jira workflow stage is '+target+'.';$('#postTransitionBtn').textContent='Move to '+target;}
   if(!active)return;
@@ -2143,7 +2181,7 @@ function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation'
   $('#postOriginal').textContent=p.originalBalance===null?'Not set':gbp.format(p.originalBalance);
   $('#postLines').innerHTML='';(p.adjustments||[]).forEach(function(r){prAddLine(r[0],r[1]);});
   var hist=(p.history||{}).e||[];$('#postHistory').innerHTML=hist.length?hist.slice().reverse().map(function(e){var code={N:'Initial calculation',A:'Balance amended',P:'Payment received',W:'Write-off'}[e[1]]||'Recovery updated';return '<div class="post-record"><strong>'+prHtml(code)+'</strong> · '+prHtml(String(e[0]))+' · Balance '+gbp.format(Number(e[2])/100)+'</div>';}).join(''):'<div class="post-hint">No recovery history recorded yet.</div>';
-  prUpdateMath();
+  prUpdateMath();prCustomerDraw();
 }
 function prRenderVehicle(){var p=POST_DATA,v=$('#postVehicle').value;$('#postAuctionDetails').hidden=!v.startsWith('Carmoola Auction');$('#postAuctionGross').textContent=p.auction.gross===null?'Not recorded':gbp.format(p.auction.gross);$('#postAuctionDate').textContent=p.auction.date||'Not recorded';$('#postVehicleWarning').textContent=v==='Carmoola Auction — Completed'&&!p.auction.sold?'Auction cannot be marked completed until Vehicle Auction Sale is Y in Jira.':'';}
 function prRenderSuspense(){var p=POST_DATA,items=p.suspense||{rows:[],valid:true},known=new Map((p.reconciled||[]).map(function(x){return [String(x[0]),x];}));$('#postSuspenseWarning').textContent=items.warning||'';$('#postSuspenseList').innerHTML=items.rows.length?items.rows.map(function(r){var applied=known.get(String(r.id)),excluded=applied&&applied[2]==='X',isAuction=applied&&applied[2]==='A';var candidate=!applied&&p.auction&&p.auction.sold&&p.auction.gross>0&&r.amount<=p.auction.gross&&r.amount>=p.auction.gross*0.8;var isPreview=(p.auctionPreview||[]).some(function(x){return x.id===r.id;});var label=excluded?'Excluded from auction reconciliation':applied?(isAuction?'Auction proceeds':'Partner payment'):isPreview?'Auction proceeds identified — allocated on save':candidate?'Possible net auction receipt — verify reference':'Unclassified / not allocated';var action=isAuction?' <button type="button" class="post-btn-secondary post-unlink-auction" data-item="'+prHtml(r.id)+'">Unlink auction receipt</button>':(candidate&&!isPreview)?' <button type="button" class="post-btn-secondary post-confirm-auction" data-item="'+prHtml(r.id)+'">Confirm auction receipt</button>':'';return '<div class="post-suspense-row"><div><strong>'+prHtml(r.reference||'No reference')+'</strong><small>Suspense #'+prHtml(r.id)+' · '+gbp.format(r.amount)+'</small></div><span class="post-suspense-state'+(applied&&!excluded?' applied':'')+'">'+prHtml(applied&&!excluded?'Applied '+gbp.format(applied[1]/100)+' · '+label:label)+action+'</span></div>';}).join(''):'<p class="post-hint">No individual suspense receipts recorded.</p>';}
@@ -2154,7 +2192,10 @@ function prCloseWriteoff(){if($('#postRecordWriteoff').disabled)return;$('#postW
 function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DATA)return;
   $('#postSuspenseList').addEventListener('click',function(event){var unlink=event.target.closest('.post-unlink-auction');if(unlink){var unlinkId=unlink.getAttribute('data-item');if(!window.confirm('Unlink this auction receipt from the recovery? The amount will be added back to the outstanding balance, and this suspense item will be excluded from future automatic matching.'))return;prRequest({action:'post_unlink_auction',itemId:unlinkId,confirmed:true},unlink,function(data){POST_DATA=data.postResolution;prRender();refreshClosureRecoverySummary(POST_DATA);showActionsSaveToast('Auction receipt unlinked and excluded from automatic reconciliation.');});return;}var b=event.target.closest('.post-confirm-auction');if(!b)return;var itemId=b.getAttribute('data-item');var row=(POST_DATA.suspense.rows||[]).find(function(x){return x.id===itemId;});if(!row)return;var msg='Confirm that suspense item '+itemId+' ('+gbp.format(row.amount)+') is the NET auction proceeds for this vehicle?\nReference: '+(row.reference||'Not recorded')+'\nGross auction sale: '+(POST_DATA.auction.gross==null?'Not recorded':gbp.format(POST_DATA.auction.gross))+'\nThis will reduce the recovery balance and cannot be automatically undone.';if(!window.confirm(msg))return;prRequest({action:'post_confirm_auction',itemId:itemId,confirmed:true},b,function(data){POST_DATA=data.postResolution;prRender();refreshClosureRecoverySummary(POST_DATA);showActionsSaveToast('Auction proceeds allocated from suspense.');});});
   $('#postVehicle').addEventListener('change',prRenderVehicle);
-  $('#postDeduction').addEventListener('input',prUpdateMath);$('#postDepositRefunded').addEventListener('change',prUpdateMath);$('#postDepositDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();});
+  $('#postEditCustomer').addEventListener('click',function(){openRejCalc(prCustomerStage());});
+  $('#postCopyDeduction').addEventListener('click',function(){var b=prCustomerBreakdown(),v=b&&b.customerDeductionAmount!=null?b.customerDeductionAmount:(PREFILL.saved||{}).rejCustomerDeduction;if(v===null||v===undefined)return;$('#postDeduction').value=prCash(v);prUpdateMath();prCustomerDraw();});
+  $('#postSaveCustomer').addEventListener('click',function(){prCustomerSave(this);});
+  $('#postDeduction').addEventListener('input',function(){prUpdateMath();prCustomerDraw();});$('#postDepositRefunded').addEventListener('change',prUpdateMath);$('#postDepositDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();});
   $('#postOpenWriteoff').addEventListener('click',prOpenWriteoff);$('#postCloseWriteoff').addEventListener('click',prCloseWriteoff);$('#postCancelWriteoff').addEventListener('click',prCloseWriteoff);$('#postWriteoffModal').addEventListener('click',function(e){if(e.target===this)prCloseWriteoff();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#postWriteoffModal').hidden)prCloseWriteoff();});
   $('#postTransitionBtn').addEventListener('click',function(){var target=PREFILL.statusName==='Outsourced'?'Partner Funds Outstanding':'Post-Resolution Tasks';if(!window.confirm('Confirm that the appropriate complaint response and resolution requirements are complete. Move this complaint to '+target+'?'))return;prRequest({action:'post_transition',confirmed:true},this,function(data){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;prRender();showActionsSaveToast('Complaint moved to '+data.statusName+'.');});});
   function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),depositRefunded:$('#postDepositRefunded').checked,depositDeduction:prCash($('#postDepositDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,vehicleResolution:$('#postVehicle').value,expectedReconciledRaw:POST_DATA.reconciledRaw||'',expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(payload.depositRefunded&&!prDeposit().valid){prError('Deposit Amount (customfield_11128) is missing or zero in Jira. Cannot save a deposit refund.');return;}if(payload.depositRefunded&&payload.depositDeduction>prDeposit().amount){prError('Deposit deduction cannot exceed the fixed customer deposit.');return;}if(rows.some(function(r){return !r[0];})){prError('Every other loss needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Jira.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;if(PREFILL.saved){PREFILL.saved.rejCustomerDeposit=POST_DATA.depositRefunded?POST_DATA.depositAmount:null;PREFILL.saved.rejDepositDeduction=POST_DATA.depositRefunded?POST_DATA.depositDeduction:null;PREFILL.saved.rejDeposit=POST_DATA.depositRefunded?POST_DATA.depositPaidOut:null;}$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();if(closureRecoveryModalOpen){refreshClosureRecoverySummary(POST_DATA);closeClosureRecoveryModal();}else gotoActionsPage('home');showActionsSaveToast((mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.')+(data.reportingSync&&!data.reportingSync.ok?' '+data.reportingSync.warning:''));prAutoReconcile();});}
