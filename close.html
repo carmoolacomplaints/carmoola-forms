@@ -113,6 +113,26 @@
   .modal-foot .foot-info.show{display:inline-flex}
   .modal-foot .foot-info .k{font-weight:600}
   .modal-foot .foot-info .v{font-weight:800;color:var(--pink-dark);font-variant-numeric:tabular-nums}
+
+/* Standalone rejection loss workspace, reusing the existing shared calculator DOM. */
+.rejection-page-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:23px 26px;border-radius:16px;background:linear-gradient(110deg,#30172e,#612344);color:#fff;margin-bottom:18px}
+.rejection-page-hero .eyebrow{font-size:10px;font-weight:800;letter-spacing:.12em;color:#f2b8d6}
+.rejection-page-hero h2{font-size:25px;letter-spacing:-.03em;margin:8px 0 5px}
+.rejection-page-hero p{font-size:13px;color:#efd2e2;margin:0}
+.rejection-page-chip{border:1px solid #ffffff55;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:700;white-space:nowrap}
+.rejection-page-layout{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:23px;max-width:970px;margin:0 auto 30px}
+.rejection-page-intro{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.rejection-page-intro h3{margin:0 0 5px;font-size:19px}.rejection-page-intro p{margin:0;font-size:13px;color:var(--muted)}
+.rejection-page-layout .rej-workspace{width:100%;max-height:none;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.rejection-page-layout .rej-workspace>.modal{max-width:none;width:100%;max-height:none;overflow:visible;border-radius:13px;box-shadow:none;border:1px solid var(--line)}
+.rejection-page-layout .modal-head{padding:18px 21px 14px}.rejection-page-layout .modal-body{padding:15px 21px}
+.rejection-page-layout .modal-foot{padding:16px 21px 20px}
+.rejection-page-layout .rej-workspace:has(.rej-side.show){grid-template-columns:minmax(0,1fr) minmax(310px,.88fr)}
+.rejection-page-layout .rej-side{position:static;left:auto;top:auto;width:100%;max-height:none;box-shadow:none;border:1px solid var(--line);border-radius:13px;grid-column:2;grid-row:1}
+.rejection-page-layout .calcrow .in{width:155px}.rejection-page-layout .calcrow.with-action .in{width:210px}
+@media(max-width:850px){.rejection-page-layout .rej-workspace:has(.rej-side.show){grid-template-columns:minmax(0,1fr)}.rejection-page-layout .rej-side{grid-column:1;grid-row:auto}}
+@media(max-width:560px){.rejection-page-layout{padding:12px}.rejection-page-hero{padding:19px;align-items:flex-start;flex-direction:column}.rejection-page-layout .calcrow{flex-wrap:wrap}.rejection-page-layout .calcrow .in,.rejection-page-layout .calcrow.with-action .in{width:100%}.rejection-page-layout .modal-body{padding:12px 14px}}
+
   /* Rejection-loss nested calculators */
   /* Keep the main rejection-loss calculator centred. Side calculators open to its right. */
   .rej-workspace{position:relative;width:min(470px,100%);max-height:90vh}
@@ -543,6 +563,13 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   </div>
   <div class="home-footer-note">COMPLAINT ACTIONS <span>·</span> <span id="homeFooterRef">—</span></div>
 </section>
+<section id="actionsRejection" class="actions-page" aria-label="Calculate Vehicle Rejection Loss">
+  <div class="rejection-page-hero"><div><span class="eyebrow">COMPLAINT ACTIONS · CUSTOMER-SIDE CALCULATION</span><h2>Vehicle Rejection Loss</h2><p>Review customer payments, deductions and net proceeds, then save the calculation to Jira.</p></div><span class="rejection-page-chip">Shared Jira calculation</span></div>
+  <div class="rejection-page-layout">
+    <div class="rejection-page-intro"><h3>Rejection loss calculation</h3><p>The same figures appear in Complaint Closure and Post-Resolution. Repayment and deposit calculators open alongside the calculation.</p></div>
+    <div id="rejectionPageCalculatorSlot"></div>
+  </div>
+</section>
 <section id="actionsSolicitor" class="actions-page" aria-label="Solicitor escalation summary">
   <div class="post-hero"><div><span class="post-eyebrow">COMPLAINT ACTIONS · LEGAL RECOVERY</span><h2>Solicitor Escalation</h2><p>Case progress, outstanding debt and the most recent solicitor update.</p></div><span class="post-chip">Jira case summary</span></div>
   <div class="sol-layout">
@@ -787,7 +814,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 
 <!-- Rejection Loss calculators (shared markup, two instances via id prefix) -->
 <div class="overlay" id="rejOverlay">
-  <div class="rej-workspace">
+  <div class="rej-workspace" id="rejWorkspace">
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-head"><h3 id="rejCalcTitle">Vehicle Rejection Loss</h3><p>Work out the net loss (or gain) to Carmoola.</p></div>
       <div class="modal-body">
@@ -1347,6 +1374,30 @@ function ensureRejWork(bd){
   if(!rejHas(w.depositPaidOut))w.depositPaidOut=rejHas(s.rejDeposit)?s.rejDeposit:0;
   return w;
 }
+// The homepage uses the same calculator DOM as the other sections, rather than a duplicate form.
+function setRejectionPageMode(on){
+  var overlay=$('#rejOverlay'),work=$('#rejWorkspace'),slot=$('#rejectionPageCalculatorSlot');
+  if(on){
+    slot.appendChild(work);
+    overlay.classList.remove('show');
+    work.querySelector('.modal').setAttribute('role','region');
+    work.querySelector('.modal').removeAttribute('aria-modal');
+    $('#rejCancel').textContent='Back to Home';
+    $('#rejSave').textContent='Save to Jira';
+  }else{
+    overlay.appendChild(work);
+    work.querySelector('.modal').setAttribute('role','dialog');
+    work.querySelector('.modal').setAttribute('aria-modal','true');
+    $('#rejCancel').textContent='Cancel';
+    $('#rejSave').textContent='Save';
+  }
+}
+function closeRejectionPage(){
+  closeRejSides();rejWork=null;homeRejectionDirect=false;
+  setRejectionPageMode(false);
+  $('#rejOverlay').classList.remove('show');
+  gotoActionsPage('home');
+}
 function openRejCalc(which){
   calcTarget=which;
   closeRejSides();
@@ -1392,7 +1443,7 @@ function openRejCalc(which){
   $('#rejCalcTitle').textContent=which==='fos'?'FOS Rejection Loss':'Vehicle Rejection Loss';
   updateRejRefundInfo();
   refreshRejectionPartnerRecovery();
-  rejCalcCompute();overlay.classList.add('show');
+  rejCalcCompute();if(ACTION_PAGE==='rejection'&&homeRejectionDirect){overlay.classList.remove('show');}else{overlay.classList.add('show');}
 }
 function updateRejRefundInfo(){
   var box=$('#rejRefundInfo'),val=$('#rejRefundInfoValue');
@@ -1537,7 +1588,7 @@ function initRejCalc(){
     rejWork.depositPaidOut=r.paidOut;
     $('#rl_deposit').value=String(r.paidOut);rejCalcCompute();closeRejSides();
   });
-  $('#rejCancel').addEventListener('click',function(){if($('#rejSave').disabled)return;homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')});
+  $('#rejCancel').addEventListener('click',function(){if($('#rejSave').disabled)return;if(ACTION_PAGE==='rejection'&&homeRejectionDirect){closeRejectionPage();return;}homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')});
   $('#rejOverlay').addEventListener('click',function(e){if(e.target===$('#rejOverlay')&&!$('#rejSave').disabled){homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')}});
   $('#rejSave').addEventListener('click',function(){
     if(!rejWork)rejWork={};
@@ -1560,13 +1611,13 @@ function initRejCalc(){
         if(!data.ok)throw new Error((data.errors&&data.errors[0])||'Could not save rejection loss to Jira.');
         PREFILL.saved=Object.assign({},PREFILL.saved||{},data.saved||{});
         if(data.postResolution)POST_DATA=data.postResolution;
-        postCustomerDraftDirty=false;homeRejectionDirect=false;
-        closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');
-        prCustomerDraw();gotoActionsPage('home');
+        postCustomerDraftDirty=false;
+        if(ACTION_PAGE==='rejection'){closeRejectionPage();}else{homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');gotoActionsPage('home');}
+        prCustomerDraw();
         showActionsSaveToast('Vehicle rejection loss saved to Jira and updated across Complaint Actions.');
       })
       .catch(function(err){alert('Unable to save rejection loss: '+err.message+' Your calculator values are still here.');})
-      .finally(function(){btn.disabled=false;btn.textContent=savedText;});
+      .finally(function(){btn.disabled=false;btn.textContent=(ACTION_PAGE==='rejection'&&homeRejectionDirect)?'Save to Jira':'Save';});
       return;
     }
     closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');if(ACTION_PAGE==='post'){postCustomerDraftDirty=true;prCustomerDraw();}
@@ -2282,6 +2333,7 @@ function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DA
 var ACTION_PAGE='home';var PR_RECON_BUSY=false;function prAutoReconcile(){if(PR_RECON_BUSY||!POST_DATA||POST_DATA.originalBalance===null||!['Post-Resolution Tasks','Partner Funds Outstanding'].includes(PREFILL.statusName))return;PR_RECON_BUSY=true;fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'post_reconcile'})}).then(r=>r.json()).then(data=>{if(!data.ok)throw Error((data.errors||[])[0]||'Reconciliation failed');POST_DATA=data.postResolution;prRender();refreshClosureRecoverySummary(POST_DATA);if(data.updated)showActionsSaveToast('New suspense funds automatically reconciled.'+(data.reportingSync&&!data.reportingSync.ok?' '+data.reportingSync.warning:''));}).catch(err=>prError('Suspense reconciliation: '+err.message)).finally(()=>{PR_RECON_BUSY=false;});}
 var ACTION_PAGE='home';
 function gotoActionsPage(page){
+  if(page!=='rejection'&&ACTION_PAGE==='rejection'&&homeRejectionDirect){closeRejSides();rejWork=null;homeRejectionDirect=false;setRejectionPageMode(false);}
   if(closureRecoveryModalOpen)closeClosureRecoveryModal();
   if(page==='review'&&!PREFILL.fosApplicable)return;
   if(page==='solicitor'&&!(PREFILL.solicitorEscalation&&PREFILL.solicitorEscalation.enabled))return;
@@ -2292,13 +2344,14 @@ function gotoActionsPage(page){
   $('#actionsHome').classList.toggle('active',page==='home');
   $('#actionsRunning').classList.toggle('active',page==='running');
   $('#actionsPost').classList.toggle('active',page==='post');
+  $('#actionsRejection').classList.toggle('active',page==='rejection');
   $('#actionsSolicitor').classList.toggle('active',page==='solicitor');
   if(page==='post' && POST_DATA){prRender();prAutoReconcile();}
   $('#closureShell').style.display=page==='closure'?'':'none';
   $('#reviewShell').classList.toggle('active',page==='review');
   $('#reviewViewSwitch').hidden=true;
   $('#actionsNav').hidden=true;
-  $('#actionsCurrent').textContent={'closure':'/ Complaint Closure','running':'/ Running Costs','review':'/ FOS Decision Review','post':'/ Post-Resolution','solicitor':'/ Solicitor Escalation'}[page]||'';
+  $('#actionsCurrent').textContent={'closure':'/ Complaint Closure','running':'/ Running Costs','review':'/ FOS Decision Review','post':'/ Post-Resolution','rejection':'/ Vehicle Rejection Loss','solicitor':'/ Solicitor Escalation'}[page]||'';
   $('#footer').hidden=page!=='closure';
   $('#manageBtn').style.display=page==='closure'?'':'none';
   $('#closedBanner').style.display=(page==='closure'&&PREFILL.alreadyClosed&&$('#unlockBtn').dataset.unlocked!=='1')?'block':'none';
@@ -2350,7 +2403,7 @@ function initActionsHome(){
   if(/^https:\/\//i.test(esc.zendeskTicket||'')){var a=document.createElement('a');a.href=esc.zendeskTicket;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open Zendesk ticket ↗';links.appendChild(a);}
   $('#fosHomeHint').textContent=!p.fosApplicable?'Not available — this complaint has not been referred to FOS.':(fosReviewIsAvailable()?'Review the latest decision and choose the next action.':'FOS referral recorded. No active decision review is currently available.');
   document.querySelectorAll('[data-go]').forEach(function(btn){btn.addEventListener('click',function(){gotoActionsPage(btn.dataset.go);});});
-  $('#homeRejectionTile').addEventListener('click',function(){homeRejectionDirect=true;openRejCalc(prCustomerStage());});
+  $('#homeRejectionTile').addEventListener('click',function(){gotoActionsPage('rejection');homeRejectionDirect=true;setRejectionPageMode(true);openRejCalc(prCustomerStage());});
   $('#actionsHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
   $('#globalHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
   $('#runningPageSave').addEventListener('click',function(){
