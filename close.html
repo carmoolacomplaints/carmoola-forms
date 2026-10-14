@@ -415,9 +415,9 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 .post-financial-credit{background:#FCF7FA}.post-financial-label{display:flex;gap:13px;align-items:flex-start;min-width:0}.post-financial-label strong{display:block;font-size:14px;color:var(--ink);font-weight:800}.post-financial-label small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:5px;line-height:1.4}
 .post-step-num{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:9px;background:#FCE7F2;color:#AE1266;font-size:11px;font-weight:800}
 .post-financial-value{position:relative}.post-financial-value input{width:100%;font-family:inherit;font-size:17px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums;border:1.5px solid #DDD1DD;border-radius:10px;padding:11px 14px;min-height:48px;background:#fff;box-sizing:border-box}.post-financial-value input:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 3px var(--tint)}.post-financial-value input[readonly]{background:#F4EEF3;border-color:#E6DBE4;color:#443347}.post-money-input>span{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-weight:700;color:#796C7A}
-.post-losses{padding:18px 20px}.post-losses-heading{display:flex;align-items:center;justify-content:space-between;gap:14px}.post-losses .post-lines{margin:12px 0 0}.post-losses .post-line{margin:9px 0}.post-losses .post-hint{margin:10px 0 0 43px}
+.post-losses{padding:18px 20px}.post-losses-heading{display:flex;align-items:center;justify-content:space-between;gap:14px}.post-losses .post-lines{margin:12px 0 0}.post-losses .post-line{margin:9px 0}.post-losses .post-hint{margin:10px 0 0 43px}.post-running-costs{margin:12px 0 0 43px}.post-running-costs .rcmini{margin-top:0}.post-running-costs .rcmini td:nth-child(2){text-align:right;white-space:nowrap}.post-running-costs .rcmini td:last-child{width:68px}
 .post-recovery-card .post-out{margin-top:0;padding:18px 20px;background:#FDF0F7;border-top:1px solid #EFCBDD;border-radius:0 0 11px 11px}.post-recovery-meta{padding-top:23px;margin-top:23px;border-top:1px solid var(--line)}.post-recovery-meta h4{font-size:14px;margin:0 0 15px;color:#49384A}
-@media(max-width:700px){.post-financial-row{grid-template-columns:1fr;gap:12px;padding:16px}.post-losses{padding:16px}.post-losses-heading{align-items:flex-start;flex-wrap:wrap}.post-losses .post-hint{margin-left:0}}
+@media(max-width:700px){.post-financial-row{grid-template-columns:1fr;gap:12px;padding:16px}.post-losses{padding:16px}.post-losses-heading{align-items:flex-start;flex-wrap:wrap}.post-losses .post-hint{margin-left:0}.post-running-costs{margin-left:0}}
 .post-statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:16px}
 .post-stat{background:#FAF6F9;border:1px solid #EEE1EA;border-radius:11px;padding:15px}.post-stat span{display:block;color:#705C6E;font-size:11px;font-weight:700}.post-stat strong{display:block;font-size:21px;margin-top:5px;font-variant-numeric:tabular-nums}
 .post-stat.owed{background:#FDECF5;border-color:#F2C6DF}.post-stat.owed strong{color:#A6005B}.post-stat .post-stat-note{display:block;margin-top:5px;font-size:11px;line-height:1.3;font-weight:500;color:#806F7F}.post-stat .post-stat-note:empty{display:none}
@@ -532,12 +532,13 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   <div class="closure-check-dialog"><h3 id="closureCheckTitle">Post-Resolution check</h3><p id="closureCheckDescription"></p><label id="closureMoveClosedRow" class="closure-move-closed" hidden><input id="closureMoveClosed" type="checkbox"><span><strong>Move the complaint to Closed</strong><small>After saving, transition the Jira complaint to Complaint Closed.</small></span></label><div class="closure-check-actions"><button type="button" class="post-btn-secondary" id="closureCheckCancel">Cancel</button><button type="button" class="post-btn-secondary" id="closureCheckReview">Review Recovery</button><button type="button" class="btn" id="closureCheckContinue">Continue &amp; Save Closure</button></div></div>
 </div>
 <section id="actionsHome" class="actions-page active" aria-label="Complaint homepage">
-  <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">5 WORKSPACES</span></div>
+  <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">6 WORKSPACES</span></div>
   <div class="actions-tiles home-tiles home-tiles-five">
-    <button type="button" class="actions-tile" data-go="closure"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Complaint Closure</strong><small>Outcomes, redress and final costs</small></span></button>
     <button type="button" class="actions-tile" data-go="running"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M8 15h3"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Running Costs</strong><small>Record and manage complaint expenses</small></span></button>
-    <button type="button" class="actions-tile" data-go="review" id="fosHomeTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l4 4v14H4V3h4z"/><path d="M15 3v5h5M8 12h8M8 16h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>FOS Decision Review</strong><small id="fosHomeHint">Review Investigator and Ombudsman decisions</small></span></button>
+    <button type="button" class="actions-tile" id="homeRejectionTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 7h8M8 12h3M8 17h8M15 11v5M12.5 13.5h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Calculate Vehicle Rejection Loss</strong><small>Calculate and save the customer-side loss to Jira</small></span></button>
     <button type="button" class="actions-tile" data-go="post"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6 6 6-6 6"/><path d="M4 5v14"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Post-Resolution</strong><small>Follow-up actions after the complaint ends</small></span></button>
+    <button type="button" class="actions-tile" data-go="closure"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Complaint Closure</strong><small>Outcomes, redress and final costs</small></span></button>
+    <button type="button" class="actions-tile" data-go="review" id="fosHomeTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l4 4v14H4V3h4z"/><path d="M15 3v5h5M8 12h8M8 16h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>FOS Decision Review</strong><small id="fosHomeHint">Review Investigator and Ombudsman decisions</small></span></button>
     <button type="button" class="actions-tile" data-go="solicitor" id="solicitorHomeTile" disabled><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l4 4v14H3V3h4z"/><path d="M14 3v5h7M7 13h10M7 17h7"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Solicitor Escalation</strong><small id="solicitorHomeHint">Available when solicitor escalation is enabled in Jira</small></span></button>
   </div>
   <div class="home-footer-note">COMPLAINT ACTIONS <span>·</span> <span id="homeFooterRef">—</span></div>
@@ -604,6 +605,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         <div class="post-losses">
           <div class="post-losses-heading"><div class="post-financial-label"><span class="post-step-num">04</span><div><strong>Other losses to recover</strong><small>Add compensation, fees or any other amounts Carmoola is recovering.</small></div></div><button id="postAddLine" type="button" class="post-btn-secondary">+ Add loss</button></div>
           <div id="postLines" class="post-lines"></div>
+          <div id="postRunningCosts" class="post-running-costs"></div>
           
         </div>
         <div class="post-financial-row" id="postAuctionNetRow" hidden><div class="post-financial-label"><span class="post-step-num">05</span><div><strong>Net auction proceeds received</strong><small id="postAuctionNetHint">Only confirmed, reconciled suspense receipts; gross auction proceeds are not deducted.</small></div></div><div class="post-financial-value"><strong id="postAuctionNetAmount" style="font-size:18px;color:#9e145b">−£0.00</strong></div></div>
@@ -798,8 +800,10 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Credit Amount</div><div class="hint" id="rl_creditHint">Purchase price &minus; deposit &minus; part exchange</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_credit" value="0"></div></div>
         <div class="calcrow with-action"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Calculated from the customer's repayments and the repayments deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_retainedCalcBtn">Calculate</button></div></div>
         <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm" id="rl_proceedsLabel">Vehicle Proceeds Received</div><div class="hint" id="rl_proceedsHint">From auction / dealership</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_proceeds" value="0"></div></div>
+        <div class="calcrow" id="rl_partnerRecoveryRow" hidden><span class="op minus">&minus;</span><div class="rl"><div class="nm">Dealership / Partner Recoveries Received</div><div class="hint">Confirmed partner receipts from Post-Resolution. Shown separately; does not change the original rejection loss saved to Jira.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" id="rl_partnerRecovery" value="0" readonly aria-label="Confirmed dealership or partner receipts"></div></div>
         <div class="calcrow with-action" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Calculated from the customer deposit and deposit deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_depositCalcBtn">Calculate</button></div></div>
-        <div class="calc-total"><span class="l">Vehicle Rejection Loss</span><span class="v" id="rl_total">&pound;0.00</span></div>
+        <div class="calc-total"><span class="l">Vehicle Rejection Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Original complaint loss; saved to Jira</small></span><span class="v" id="rl_total">&pound;0.00</span></div>
+        <div class="calc-total" id="rl_remainingLossRow" hidden style="margin-top:8px;background:#fff4f9;border:1px solid #edbfd5"><span class="l">Remaining Unrecovered Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">After confirmed dealership / partner receipts; indicative, not written to rejection-loss field</small></span><span class="v" id="rl_remainingLoss">&pound;0.00</span></div>
       </div>
       <div class="modal-foot"><div class="foot-info" id="rejRefundInfo" aria-live="polite"><span class="k">Customer refund</span><span class="v" id="rejRefundInfoValue">&pound;0.00</span></div><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
     </div>
@@ -1387,6 +1391,7 @@ function openRejCalc(which){
   }
   $('#rejCalcTitle').textContent=which==='fos'?'FOS Rejection Loss':'Vehicle Rejection Loss';
   updateRejRefundInfo();
+  refreshRejectionPartnerRecovery();
   rejCalcCompute();overlay.classList.add('show');
 }
 function updateRejRefundInfo(){
@@ -1396,9 +1401,28 @@ function updateRejRefundInfo(){
   if(refund!==null&&refund>0){val.textContent=gbp.format(refund);box.classList.add('show');}
   else{val.textContent=gbp.format(0);box.classList.remove('show');}
 }
+function confirmedPartnerRecoveryForRejection(){
+  // Reuse the classified Jira suspense allocations already supplied by Post-Resolution.
+  // 'A' = auction, 'P' = dealership / partner; exclude 'X' and unclassified funds.
+  var p=POST_DATA||(PREFILL&&PREFILL.postResolution)||{};
+  return Math.round(((p.reconciled||[]).filter(function(item){return Array.isArray(item)&&item[2]==='P';})
+    .reduce(function(sum,item){return sum+(Number(item[1])||0);},0))/100*100)/100;
+}
+function refreshRejectionPartnerRecovery(){
+  var auction=!!(PREFILL&&PREFILL.auctionMarked);
+  var amount=auction?confirmedPartnerRecoveryForRejection():0;
+  var row=$('#rl_partnerRecoveryRow'),remaining=$('#rl_remainingLossRow'),input=$('#rl_partnerRecovery');
+  if(row)row.hidden=!auction;
+  if(remaining)remaining.hidden=!auction;
+  if(input)input.value=amount.toFixed(2);
+  return amount;
+}
 function rejCalcCompute(){
   var t=num($('#rl_credit').value)-num($('#rl_retained').value)-num($('#rl_proceeds').value)+num($('#rl_deposit').value);
-  $('#rl_total').textContent=gbp.format(t);return t;
+  $('#rl_total').textContent=gbp.format(t);
+  var partner=refreshRejectionPartnerRecovery();
+  $('#rl_remainingLoss').textContent=gbp.format(t-partner);
+  return t;
 }
 function allocationState(rpDed,depDed){
   var total=currentCustomerDeduction();
@@ -1513,8 +1537,8 @@ function initRejCalc(){
     rejWork.depositPaidOut=r.paidOut;
     $('#rl_deposit').value=String(r.paidOut);rejCalcCompute();closeRejSides();
   });
-  $('#rejCancel').addEventListener('click',function(){closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')});
-  $('#rejOverlay').addEventListener('click',function(e){if(e.target===$('#rejOverlay')){closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')}});
+  $('#rejCancel').addEventListener('click',function(){if($('#rejSave').disabled)return;homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')});
+  $('#rejOverlay').addEventListener('click',function(e){if(e.target===$('#rejOverlay')&&!$('#rejSave').disabled){homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show')}});
   $('#rejSave').addEventListener('click',function(){
     if(!rejWork)rejWork={};
     rejWork.customerDeductionAmount=currentCustomerDeduction();
@@ -1524,7 +1548,28 @@ function initRejCalc(){
     var bd={used:true,creditAmount:num($('#rl_credit').value),retainedPayments:num($('#rl_retained').value),vehicleProceeds:num($('#rl_proceeds').value),depositPaidOut:num($('#rl_deposit').value),customerDeductionAmount:rejWork.customerDeductionAmount,repaymentsMadeByCustomer:rejHas(rejWork.repaymentsMadeByCustomer)?num(rejWork.repaymentsMadeByCustomer):null,repaymentsDeduction:rejHas(rejWork.repaymentsDeduction)?num(rejWork.repaymentsDeduction):null,customerRefundAmount:rejHas(rejWork.customerRefundAmount)?num(rejWork.customerRefundAmount):null,customerDeposit:rejHas(rejWork.customerDeposit)?num(rejWork.customerDeposit):null,depositDeduction:rejHas(rejWork.depositDeduction)?num(rejWork.depositDeduction):null,total:t};
     if(calcTarget==='fos'){fosRejBreakdown=bd;rejBreakdown={used:false};setMoney('f_rejloss',t);$('#fosRejCalcPill').hidden=false}
     else{rejBreakdown=bd;fosRejBreakdown={used:false};setMoney('c_rejloss',t);$('#rejLossCalcPill').hidden=false}
-    closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');recompute();if(ACTION_PAGE==='post'){postCustomerDraftDirty=true;prCustomerDraw();}
+    recompute();
+    if(homeRejectionDirect){
+      // The homepage action persists the shared calculator directly to Jira.
+      // Keep the calculator open on failure so edits are not lost.
+      var btn=$('#rejSave'),savedText=btn.textContent,stage=calcTarget==='fos'?'FOS':'Investigation';
+      btn.disabled=true;btn.textContent='Saving to Jira…';
+      fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'post_customer_rejection_save',stage:stage,breakdown:bd})})
+      .then(function(response){return response.json();})
+      .then(function(data){
+        if(!data.ok)throw new Error((data.errors&&data.errors[0])||'Could not save rejection loss to Jira.');
+        PREFILL.saved=Object.assign({},PREFILL.saved||{},data.saved||{});
+        if(data.postResolution)POST_DATA=data.postResolution;
+        postCustomerDraftDirty=false;homeRejectionDirect=false;
+        closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');
+        prCustomerDraw();gotoActionsPage('home');
+        showActionsSaveToast('Vehicle rejection loss saved to Jira and updated across Complaint Actions.');
+      })
+      .catch(function(err){alert('Unable to save rejection loss: '+err.message+' Your calculator values are still here.');})
+      .finally(function(){btn.disabled=false;btn.textContent=savedText;});
+      return;
+    }
+    closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');if(ACTION_PAGE==='post'){postCustomerDraftDirty=true;prCustomerDraw();}
   });
 }
 
@@ -1821,7 +1866,7 @@ function initRunningCosts(){
   $('#rc_add').addEventListener('click',function(){$('#rc_rows').appendChild(rcEditorRow({desc:'',amount:0,type:''}));rcEditorCompute();});
   $('#runningCancel').addEventListener('click',function(){$('#runningOverlay').classList.remove('show')});
   $('#runningOverlay').addEventListener('click',function(e){if(e.target===$('#runningOverlay'))$('#runningOverlay').classList.remove('show')});
-  $('#runningSave').addEventListener('click',function(){var got=collectRunningEditor();var er=$('#rcEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}runningCostsRows=normaliseRunningRows(got.rows);runningCostsDirty=runningRowsKey(runningCostsRows)!==runningCostsInitial;renderRunningMain();renderRunningMini();updateCostRequirements();$('#runningOverlay').classList.remove('show');});
+  $('#runningSave').addEventListener('click',function(){var got=collectRunningEditor();var er=$('#rcEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}runningCostsRows=normaliseRunningRows(got.rows);runningCostsDirty=runningRowsKey(runningCostsRows)!==runningCostsInitial;renderRunningMain();renderRunningMini();prRenderRunningCosts();updateCostRequirements();$('#runningOverlay').classList.remove('show');});
 }
 function showRunningOnlyWarning(errors){pendingValidationErrors=errors||[];$('#runningOnlyError').classList.remove('show');$('#runningOnlyError').textContent='';$('#runningOnlySave').disabled=false;$('#runningOnlySave').textContent='Save Running Costs Only';$('#runningOnlyOverlay').classList.add('show');}
 function initRunningOnlySave(){
@@ -2113,7 +2158,38 @@ function prHtml(s){return String(s).replace(/[&<>"']/g,function(x){return {'&':'
 function prCash(x){var v=Number(x);return Number.isFinite(v)?Math.round(v*100)/100:0;}
 function prDefaultDueDate(){var d=new Date();d.setDate(d.getDate()+5);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function prRows(){return Array.from(document.querySelectorAll('.post-line')).map(function(el){return [el.querySelector('.pr-desc').value.trim(),prCash(el.querySelector('.pr-amount').value)];}).filter(function(x){return x[0]||x[1];});}
-function prAddLine(desc,amount){var panel=$('#postLines');var row=document.createElement('div');row.className='post-line';row.innerHTML='<input class="pr-desc" type="text" maxlength="25" placeholder="e.g. FOS compensation" aria-label="Other loss description"><input class="pr-amount" type="number" step="0.01" min="0" placeholder="Amount (£)" aria-label="Other loss amount"><button type="button" class="post-btn-secondary" aria-label="Remove loss">×</button>';row.querySelector('.pr-desc').value=desc||'';row.querySelector('.pr-amount').value=amount===undefined?'':amount;row.querySelector('button').addEventListener('click',function(){row.remove();prUpdateMath();});row.querySelectorAll('input').forEach(function(input){input.addEventListener('input',prUpdateMath);});panel.appendChild(row);}
+function prAddLine(desc,amount){var panel=$('#postLines');var row=document.createElement('div');row.className='post-line';row.innerHTML='<input class="pr-desc" type="text" maxlength="25" placeholder="e.g. FOS compensation" aria-label="Other loss description"><input class="pr-amount" type="number" step="0.01" min="0" placeholder="Amount (£)" aria-label="Other loss amount"><button type="button" class="post-btn-secondary" aria-label="Remove loss">×</button>';row.querySelector('.pr-desc').value=desc||'';row.querySelector('.pr-amount').value=amount===undefined?'':amount;row.querySelector('button').addEventListener('click',function(){row.remove();prUpdateMath();prRenderRunningCosts();});row.querySelectorAll('input').forEach(function(input){input.addEventListener('input',function(){prUpdateMath();prRenderRunningCosts();});});panel.appendChild(row);}
+// Reuse the same Running Costs ledger shown in Complaint Closure.
+// Transfer copies a value into the separate Jira recovery adjustments field;
+// it never modifies the underlying Running Costs ledger.
+function prRunningKey(desc,amount){return String(desc||'').trim().toLowerCase()+'|'+Math.round(prCash(amount)*100);}
+function prRunningDescription(row){
+  // Jira Recovery Adjustments descriptions are deliberately capped at 25 characters.
+  // Prefer the specific cost description; preserve its amount exactly.
+  return String(row.desc||row.type||'Running cost').trim().slice(0,25);
+}
+function prRenderRunningCosts(){
+  var holder=$('#postRunningCosts');if(!holder)return;
+  var rows=normaliseRunningRows(runningCostsRows).filter(function(r){return Number(r.amount)>0;});
+  if(!rows.length){holder.innerHTML='';return;}
+  var used={};prRows().forEach(function(r){var k=prRunningKey(r[0],r[1]);used[k]=(used[k]||0)+1;});
+  var seen={},available=rows.map(function(r,i){
+    var desc=prRunningDescription(r),key=prRunningKey(desc,r.amount),n=seen[key]||0;seen[key]=n+1;
+    return {row:r,desc:desc,index:i,added:n<(used[key]||0)};
+  });
+  var pending=available.filter(function(x){return !x.added;});
+  var html='<details class="rcmini post-running-mini"><summary><span>Running costs available ('+rows.length+')</span><span>'+gbp.format(runningTotal(rows))+'</span></summary><div class="rcmini-body"><table>';
+  available.forEach(function(x){html+='<tr><td>'+prHtml(x.row.desc||x.desc)+' <span style="color:var(--muted)">· '+prHtml(x.row.type||'Running cost')+'</span></td><td>'+gbp.format(x.row.amount)+'</td><td class="rc-addcell"><button type="button" class="transfer-btn'+(x.added?' added':'')+'" data-running-index="'+x.index+'"'+(x.added?' disabled':'')+'>'+(x.added?'Added':'Add')+'</button></td></tr>';});
+  html+='</table><div class="rcmini-actions"><span>'+pending.length+' not yet added</span>'+(pending.length>1?'<button type="button" class="transfer-all" id="postRunningAddAll">Add All</button>':'')+'</div></div></details>';
+  holder.innerHTML=html;
+  holder.querySelectorAll('[data-running-index]').forEach(function(button){button.addEventListener('click',function(){
+    var chosen=available[Number(button.dataset.runningIndex)];if(!chosen||chosen.added)return;
+    prAddLine(chosen.desc,prCash(chosen.row.amount));prUpdateMath();prRenderRunningCosts();
+  });});
+  var all=holder.querySelector('#postRunningAddAll');if(all)all.addEventListener('click',function(){
+    pending.forEach(function(x){prAddLine(x.desc,prCash(x.row.amount));});prUpdateMath();prRenderRunningCosts();
+  });
+}
 function prDeposit(){var p=POST_DATA||{},raw=p.depositAmount==null?(PREFILL&&PREFILL.deposit!=null?PREFILL.deposit:null):p.depositAmount,valid=raw!==null&&raw!==''&&Number.isFinite(Number(raw))&&Number(raw)>0,amount=valid?prCash(raw):0,enabled=$('#postDepositRefunded').checked,ded=prCash($('#postDepositDeduction').value);return {amount:amount,valid:valid,enabled:enabled,deduction:ded,paid:enabled&&valid?Math.max(0,prCash(amount-ded)):0};}
 function prUpdateMath(){
   if(!POST_DATA)return;
@@ -2143,6 +2219,7 @@ function prUpdateMath(){
 
 // Shared customer rejection loss view: uses the same rejection calculator as Complaint Closure.
 var postCustomerDraftDirty=false;
+var homeRejectionDirect=false;
 function prCustomerBreakdown(){return prCustomerStage()==='fos'?fosRejBreakdown:rejBreakdown;}
 function prCustomerStage(){var saved=(PREFILL.saved||{}).rejStage;return saved==='FOS'?'fos':saved==='Investigation'?'inv':(PREFILL.fosApplicable&&$('#fosRejection').value?'fos':'inv');}
 function prCustomerDraw(){
@@ -2181,9 +2258,9 @@ function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation'
   $('#postOriginal').textContent=p.originalBalance===null?'Not set':gbp.format(p.originalBalance);
   $('#postLines').innerHTML='';(p.adjustments||[]).forEach(function(r){prAddLine(r[0],r[1]);});
   var hist=(p.history||{}).e||[];$('#postHistory').innerHTML=hist.length?hist.slice().reverse().map(function(e){var code={N:'Initial calculation',A:'Balance amended',P:'Payment received',W:'Write-off'}[e[1]]||'Recovery updated';return '<div class="post-record"><strong>'+prHtml(code)+'</strong> · '+prHtml(String(e[0]))+' · Balance '+gbp.format(Number(e[2])/100)+'</div>';}).join(''):'<div class="post-hint">No recovery history recorded yet.</div>';
-  prUpdateMath();prCustomerDraw();
+  prUpdateMath();prCustomerDraw();prRenderRunningCosts();
 }
-function prRenderVehicle(){var p=POST_DATA,v=$('#postVehicle').value;$('#postAuctionDetails').hidden=!v.startsWith('Carmoola Auction');$('#postAuctionGross').textContent=p.auction.gross===null?'Not recorded':gbp.format(p.auction.gross);$('#postAuctionDate').textContent=p.auction.date||'Not recorded';$('#postVehicleWarning').textContent=v==='Carmoola Auction — Completed'&&!p.auction.sold?'Auction cannot be marked completed until Vehicle Auction Sale is Y in Jira.':'';}
+function prRenderVehicle(){var p=POST_DATA,v=$('#postVehicle').value;$('#postAuctionDetails').hidden=!v.startsWith('Carmoola Auction');$('#postAuctionGross').textContent=p.auction.gross===null?'Not recorded':gbp.format(p.auction.gross);$('#postAuctionDate').textContent=p.auction.date?fmtReviewDate(p.auction.date):'Not recorded';$('#postVehicleWarning').textContent=v==='Carmoola Auction — Completed'&&!p.auction.sold?'Auction cannot be marked completed until Vehicle Auction Sale is Y in Jira.':'';}
 function prRenderSuspense(){var p=POST_DATA,items=p.suspense||{rows:[],valid:true},known=new Map((p.reconciled||[]).map(function(x){return [String(x[0]),x];}));$('#postSuspenseWarning').textContent=items.warning||'';$('#postSuspenseList').innerHTML=items.rows.length?items.rows.map(function(r){var applied=known.get(String(r.id)),excluded=applied&&applied[2]==='X',isAuction=applied&&applied[2]==='A';var candidate=!applied&&p.auction&&p.auction.sold&&p.auction.gross>0&&r.amount<=p.auction.gross&&r.amount>=p.auction.gross*0.8;var isPreview=(p.auctionPreview||[]).some(function(x){return x.id===r.id;});var label=excluded?'Excluded from auction reconciliation':applied?(isAuction?'Auction proceeds':'Partner payment'):isPreview?'Auction proceeds identified — allocated on save':candidate?'Possible net auction receipt — verify reference':'Unclassified / not allocated';var action=isAuction?' <button type="button" class="post-btn-secondary post-unlink-auction" data-item="'+prHtml(r.id)+'">Unlink auction receipt</button>':(candidate&&!isPreview)?' <button type="button" class="post-btn-secondary post-confirm-auction" data-item="'+prHtml(r.id)+'">Confirm auction receipt</button>':'';return '<div class="post-suspense-row"><div><strong>'+prHtml(r.reference||'No reference')+'</strong><small>Suspense #'+prHtml(r.id)+' · '+gbp.format(r.amount)+'</small></div><span class="post-suspense-state'+(applied&&!excluded?' applied':'')+'">'+prHtml(applied&&!excluded?'Applied '+gbp.format(applied[1]/100)+' · '+label:label)+action+'</span></div>';}).join(''):'<p class="post-hint">No individual suspense receipts recorded.</p>';}
 function prError(msg){$('#postError').textContent=msg||'';$('#postError').classList.toggle('show',!!msg);}
 function prRequest(payload,btn,after){if(btn.disabled)return;prError('');var label=btn.textContent;btn.disabled=true;btn.textContent='Saving…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))}).then(function(r){return r.json();}).then(function(data){if(!data.ok)throw Error((data.errors&&data.errors[0])||'Could not save in Jira.');after(data);}).catch(function(error){prError(error.message||'Network error saving recovery.');if(!$('#postWriteoffModal').hidden){$('#postWriteoffError').textContent=error.message||'Network error saving recovery.';$('#postWriteoffError').classList.add('show');}}).finally(function(){btn.disabled=false;btn.textContent=label;});}
@@ -2195,7 +2272,7 @@ function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DA
   $('#postEditCustomer').addEventListener('click',function(){openRejCalc(prCustomerStage());});
   $('#postCopyDeduction').addEventListener('click',function(){var b=prCustomerBreakdown(),v=b&&b.customerDeductionAmount!=null?b.customerDeductionAmount:(PREFILL.saved||{}).rejCustomerDeduction;if(v===null||v===undefined)return;$('#postDeduction').value=prCash(v);prUpdateMath();prCustomerDraw();});
   $('#postSaveCustomer').addEventListener('click',function(){prCustomerSave(this);});
-  $('#postDeduction').addEventListener('input',function(){prUpdateMath();prCustomerDraw();});$('#postDepositRefunded').addEventListener('change',prUpdateMath);$('#postDepositDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();});
+  $('#postDeduction').addEventListener('input',function(){prUpdateMath();prCustomerDraw();});$('#postDepositRefunded').addEventListener('change',prUpdateMath);$('#postDepositDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();prRenderRunningCosts();});
   $('#postOpenWriteoff').addEventListener('click',prOpenWriteoff);$('#postCloseWriteoff').addEventListener('click',prCloseWriteoff);$('#postCancelWriteoff').addEventListener('click',prCloseWriteoff);$('#postWriteoffModal').addEventListener('click',function(e){if(e.target===this)prCloseWriteoff();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#postWriteoffModal').hidden)prCloseWriteoff();});
   $('#postTransitionBtn').addEventListener('click',function(){var target=PREFILL.statusName==='Outsourced'?'Partner Funds Outstanding':'Post-Resolution Tasks';if(!window.confirm('Confirm that the appropriate complaint response and resolution requirements are complete. Move this complaint to '+target+'?'))return;prRequest({action:'post_transition',confirmed:true},this,function(data){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;prRender();showActionsSaveToast('Complaint moved to '+data.statusName+'.');});});
   function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),depositRefunded:$('#postDepositRefunded').checked,depositDeduction:prCash($('#postDepositDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,vehicleResolution:$('#postVehicle').value,expectedReconciledRaw:POST_DATA.reconciledRaw||'',expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(payload.depositRefunded&&!prDeposit().valid){prError('Deposit Amount (customfield_11128) is missing or zero in Jira. Cannot save a deposit refund.');return;}if(payload.depositRefunded&&payload.depositDeduction>prDeposit().amount){prError('Deposit deduction cannot exceed the fixed customer deposit.');return;}if(rows.some(function(r){return !r[0];})){prError('Every other loss needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Jira.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;if(PREFILL.saved){PREFILL.saved.rejCustomerDeposit=POST_DATA.depositRefunded?POST_DATA.depositAmount:null;PREFILL.saved.rejDepositDeduction=POST_DATA.depositRefunded?POST_DATA.depositDeduction:null;PREFILL.saved.rejDeposit=POST_DATA.depositRefunded?POST_DATA.depositPaidOut:null;}$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();if(closureRecoveryModalOpen){refreshClosureRecoverySummary(POST_DATA);closeClosureRecoveryModal();}else gotoActionsPage('home');showActionsSaveToast((mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.')+(data.reportingSync&&!data.reportingSync.ok?' '+data.reportingSync.warning:''));prAutoReconcile();});}
@@ -2273,6 +2350,7 @@ function initActionsHome(){
   if(/^https:\/\//i.test(esc.zendeskTicket||'')){var a=document.createElement('a');a.href=esc.zendeskTicket;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open Zendesk ticket ↗';links.appendChild(a);}
   $('#fosHomeHint').textContent=!p.fosApplicable?'Not available — this complaint has not been referred to FOS.':(fosReviewIsAvailable()?'Review the latest decision and choose the next action.':'FOS referral recorded. No active decision review is currently available.');
   document.querySelectorAll('[data-go]').forEach(function(btn){btn.addEventListener('click',function(){gotoActionsPage(btn.dataset.go);});});
+  $('#homeRejectionTile').addEventListener('click',function(){homeRejectionDirect=true;openRejCalc(prCustomerStage());});
   $('#actionsHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
   $('#globalHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
   $('#runningPageSave').addEventListener('click',function(){
