@@ -555,22 +555,22 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   <div class="closure-recovery-dialog"><header><h3>Post-Resolution · Recovery details</h3><button type="button" class="post-btn-secondary" id="closureCloseRecovery">← Back to Closure</button></header><div class="closure-modal-body" id="closureRecoveryModalBody"></div></div>
 </div>
 <div class="closure-check-overlay" id="closureCheckModal" hidden role="dialog" aria-modal="true" aria-labelledby="closureCheckTitle">
-  <div class="closure-check-dialog"><h3 id="closureCheckTitle">Post-Resolution check</h3><p id="closureCheckDescription"></p><label id="closureMoveClosedRow" class="closure-move-closed" hidden><input id="closureMoveClosed" type="checkbox"><span><strong>Move the complaint to Closed</strong><small>After saving, transition the Jira complaint to Complaint Closed.</small></span></label><div class="closure-check-actions"><button type="button" class="post-btn-secondary" id="closureCheckCancel">Cancel</button><button type="button" class="post-btn-secondary" id="closureCheckReview">Review Recovery</button><button type="button" class="btn" id="closureCheckContinue">Continue &amp; Save Closure</button></div></div>
+  <div class="closure-check-dialog"><h3 id="closureCheckTitle">Post-Resolution check</h3><p id="closureCheckDescription"></p><label id="closureMoveClosedRow" class="closure-move-closed" hidden><input id="closureMoveClosed" type="checkbox"><span><strong>Move the complaint to Closed</strong><small>After saving, transition the Complaints Hub complaint to Complaint Closed.</small></span></label><div class="closure-check-actions"><button type="button" class="post-btn-secondary" id="closureCheckCancel">Cancel</button><button type="button" class="post-btn-secondary" id="closureCheckReview">Review Recovery</button><button type="button" class="btn" id="closureCheckContinue">Continue &amp; Save Closure</button></div></div>
 </div>
 <section id="actionsHome" class="actions-page active" aria-label="Complaint homepage">
   <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">6 WORKSPACES</span></div>
   <div class="actions-tiles home-tiles home-tiles-five">
     <button type="button" class="actions-tile" data-go="running"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M8 15h3"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Running Costs</strong><small>Record and manage complaint expenses</small></span></button>
-    <button type="button" class="actions-tile" id="homeRejectionTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 7h8M8 12h3M8 17h8M15 11v5M12.5 13.5h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Calculate Vehicle Rejection Loss</strong><small>Calculate and save the customer-side loss to Jira</small></span></button>
-    <button type="button" class="actions-tile" data-go="post"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6 6 6-6 6"/><path d="M4 5v14"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Post-Resolution</strong><small>Follow-up actions after the complaint ends</small></span></button>
+    <button type="button" class="actions-tile" id="homeRejectionTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 7h8M8 12h3M8 17h8M15 11v5M12.5 13.5h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Calculate Vehicle Rejection Loss</strong><small>Calculate and save the customer-side loss to Complaints Hub</small></span></button>
+    <button type="button" class="actions-tile" data-go="post" id="postHomeTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6 6 6-6 6"/><path d="M4 5v14"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Post-Resolution</strong><small id="postHomeHint">Follow-up actions after the complaint ends</small></span></button>
     <button type="button" class="actions-tile" data-go="closure"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Complaint Closure</strong><small>Outcomes, redress and final costs</small></span></button>
     <button type="button" class="actions-tile" data-go="review" id="fosHomeTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l4 4v14H4V3h4z"/><path d="M15 3v5h5M8 12h8M8 16h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>FOS Decision Review</strong><small id="fosHomeHint">Review Investigator and Ombudsman decisions</small></span></button>
-    <button type="button" class="actions-tile" data-go="solicitor" id="solicitorHomeTile" disabled><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l4 4v14H3V3h4z"/><path d="M14 3v5h7M7 13h10M7 17h7"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Solicitor Escalation</strong><small id="solicitorHomeHint">Available when solicitor escalation is enabled in Jira</small></span></button>
+    <button type="button" class="actions-tile" data-go="solicitor" id="solicitorHomeTile" disabled><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l4 4v14H3V3h4z"/><path d="M14 3v5h7M7 13h10M7 17h7"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Solicitor Escalation</strong><small id="solicitorHomeHint">Available when solicitor escalation is enabled in Complaints Hub</small></span></button>
   </div>
   <div class="home-footer-note">COMPLAINT ACTIONS <span>·</span> <span id="homeFooterRef">—</span></div>
 </section>
 <section id="actionsRejection" class="actions-page" aria-label="Calculate Vehicle Rejection Loss">
-  <div class="rejection-page-hero"><div><span class="eyebrow">COMPLAINT ACTIONS · CUSTOMER-SIDE CALCULATION</span><h2>Vehicle Rejection Loss</h2><p>Review customer payments, deductions and net proceeds, then save the calculation to Jira.</p></div><span class="rejection-page-chip">Shared Jira calculation</span></div>
+  <div class="rejection-page-hero"><div><span class="eyebrow">COMPLAINT ACTIONS · CUSTOMER-SIDE CALCULATION</span><h2>Vehicle Rejection Loss</h2><p>Review customer payments, deductions and net proceeds, then save the calculation to Complaints Hub.</p></div><span class="rejection-page-chip">Shared Complaints Hub calculation</span></div>
   <div class="rejection-page-layout">
     <div class="rejection-page-intro"><h3>Rejection loss calculation</h3><p>The same figures appear in Complaint Closure and Post-Resolution. Repayment and deposit calculators open alongside the calculation.</p></div>
     <div class="rejection-outcome-panel" id="rejectionPageOutcomePanel">
@@ -581,7 +581,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   </div>
 </section>
 <section id="actionsSolicitor" class="actions-page" aria-label="Solicitor escalation summary">
-  <div class="post-hero"><div><span class="post-eyebrow">COMPLAINT ACTIONS · LEGAL RECOVERY</span><h2>Solicitor Escalation</h2><p>Case progress, outstanding debt and the most recent solicitor update.</p></div><span class="post-chip">Jira case summary</span></div>
+  <div class="post-hero"><div><span class="post-eyebrow">COMPLAINT ACTIONS · LEGAL RECOVERY</span><h2>Solicitor Escalation</h2><p>Case progress, outstanding debt and the most recent solicitor update.</p></div><span class="post-chip">Complaints Hub case summary</span></div>
   <div class="sol-layout">
     <div class="sol-stat"><div class="k">Original debt</div><div class="v" id="solOriginal">—</div></div>
     <div class="sol-stat"><div class="k">Current balance</div><div class="v" id="solBalance">—</div></div>
@@ -600,7 +600,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
       <div class="sol-datum"><span>Sheet document ID</span><strong id="solSheet">—</strong></div>
       <div class="sol-links" id="solLinks"></div>
     </div>
-    <div class="sol-card"><h3>Latest solicitor update</h3><div class="sol-update" id="solUpdate">No update recorded.</div><p class="sol-footnote">Solicitor information is generally refreshed once a week. This displays the latest text held in Jira; it does not confirm when the solicitor last provided an update.</p></div>
+    <div class="sol-card"><h3>Latest solicitor update</h3><div class="sol-update" id="solUpdate">No update recorded.</div><p class="sol-footnote">Solicitor information is generally refreshed once a week. This displays the latest text held in Complaints Hub; it does not confirm when the solicitor last provided an update.</p></div>
   </div>
 </section>
 <section id="actionsRunning" class="actions-page">
@@ -613,13 +613,13 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   <div class="actions-save-row"><span class="actions-feedback" id="runningPageFeedback" role="status"></span><button type="button" class="btn" id="runningPageSave">Save Running Costs</button></div>
 </section>
 <section id="actionsPost" class="actions-page">
-  <div class="post-hero"><div><span class="post-eyebrow">COMPLAINT ACTIONS · RECOVERY MANAGEMENT</span><h2>Post-Resolution</h2><p>Manage third-party recovery, payments and the audit trail in Jira.</p></div><span class="post-chip" id="postStageChip">Loading…</span></div>
+  <div class="post-hero"><div><span class="post-eyebrow">COMPLAINT ACTIONS · RECOVERY MANAGEMENT</span><h2>Post-Resolution</h2><p>Manage third-party recovery, payments and the audit trail in Complaints Hub.</p></div><span class="post-chip" id="postStageChip">Loading…</span></div>
   <div id="postTransition" class="post-card" hidden><h3>Move complaint to post-resolution</h3><p class="post-muted" id="postTransitionDesc"></p><div class="post-alert">Only proceed once the appropriate response and resolution requirements have been completed.</div><button type="button" class="btn" id="postTransitionBtn">Move to Post-Resolution Tasks</button></div>
   <div id="postNotAvailable" class="post-card" hidden><h3>Recovery workspace not yet available</h3><p class="post-muted">This complaint must be in Post-Resolution Tasks or Partner Funds Outstanding before financial details can be saved.</p></div>
   <div id="postWorkspace" hidden>
     <div class="post-card post-vehicle"><div class="post-section-heading"><span class="post-eyebrow-light">VEHICLE DISPOSAL</span><h3>Vehicle resolution</h3><p class="post-muted">Choose the confirmed vehicle route. Planned auction is not the same as a completed auction.</p></div>
       <label class="post-field">Vehicle position<select id="postVehicle"><option>Not Yet Decided</option><option>Dealership Return</option><option>Partner/Broker Return</option><option>Carmoola Auction — Planned</option><option>Carmoola Auction — Completed</option><option>No Vehicle Rejection</option><option>Other</option></select></label>
-      <div id="postAuctionDetails" class="post-auction-details" hidden><div class="post-auction-line"><span>Gross auction sale (Jira)</span><strong id="postAuctionGross">—</strong></div><div class="post-auction-line"><span>Auction sold date</span><strong id="postAuctionDate">—</strong></div><p>Only confirmed <strong>net receipts in suspense</strong> will reduce the recovery. The gross sale value is not deducted.</p></div>
+      <div id="postAuctionDetails" class="post-auction-details" hidden><div class="post-auction-line"><span>Gross auction sale (Complaints Hub)</span><strong id="postAuctionGross">—</strong></div><div class="post-auction-line"><span>Auction sold date</span><strong id="postAuctionDate">—</strong></div><p>Only confirmed <strong>net receipts in suspense</strong> will reduce the recovery. The gross sale value is not deducted.</p></div>
       <div class="post-hint" id="postVehicleWarning"></div></div>
     <details class="post-card post-customer-panel" id="postCustomerPanel">
       <summary><span><span class="post-eyebrow-light">CUSTOMER-SIDE CALCULATION</span><strong>Customer rejection loss &amp; deductions</strong><small>View or edit the same calculation used in Complaint Closure.</small></span><span class="post-customer-chevron">⌄</span></summary>
@@ -627,8 +627,8 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         <div class="post-customer-summary" id="postCustomerSummary"></div>
         <div class="post-customer-controls"><button type="button" class="post-btn-secondary" id="postEditCustomer">Edit customer rejection loss</button><button type="button" class="post-btn-secondary" id="postCopyDeduction">Copy customer deduction to dealership</button></div>
         <p class="post-customer-difference" id="postDeductionDifference" hidden></p>
-        <p class="post-hint">Customer deductions and dealership deductions are separate amounts. Changes to the customer calculator are saved in the same Jira fields as Complaint Closure; the dealership deduction changes only when you choose to copy it.</p>
-        <div class="post-actions"><button type="button" class="btn" id="postSaveCustomer" disabled>Save customer calculation to Jira</button></div>
+        <p class="post-hint">Customer deductions and dealership deductions are separate amounts. Changes to the customer calculator are saved in the same Complaints Hub fields as Complaint Closure; the dealership deduction changes only when you choose to copy it.</p>
+        <div class="post-actions"><button type="button" class="btn" id="postSaveCustomer" disabled>Save customer calculation to Complaints Hub</button></div>
         <p class="post-error" id="postCustomerError" role="alert"></p>
       </div>
     </details>
@@ -636,8 +636,8 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
     <div class="post-card post-recovery-card">
       <div class="post-section-heading"><div><span class="post-eyebrow-light">RECOVERY BREAKDOWN</span><h3>Recovery calculation</h3><p class="post-muted">A clear breakdown of the amount owed to Carmoola.</p></div></div>
       <div class="post-financial-stack">
-        <div class="post-financial-row post-financial-credit"><div class="post-financial-label"><span class="post-step-num">01</span><div><strong>Credit amount</strong><small>Purchase price less deposit and part exchange · calculated from Jira</small></div></div><div class="post-financial-value"><input id="postCredit" type="text" readonly aria-label="Credit amount"></div></div>
-        <div class="post-financial-row post-deposit-row"><div class="post-financial-label"><span class="post-step-num">02</span><div><strong>Customer deposit refunded</strong><small>Deposit amount is fixed in Jira. Add back the amount actually paid to the customer.</small><label class="post-deposit-toggle"><input type="checkbox" id="postDepositRefunded"> We refunded the customer's deposit</label><div id="postDepositCalculator" hidden class="post-deposit-calc"><span>Deposit amount <strong id="postDepositFixed">£0.00</strong></span><label>Less deposit deduction (£) <input id="postDepositDeduction" type="number" min="0" step="0.01" value="0"></label><small id="postDepositCalcNote">Deposit paid out is calculated automatically and shared with Complaint Closure.</small></div></div></div><div class="post-financial-value"><strong id="postDepositPaidOut">+£0.00</strong></div></div>
+        <div class="post-financial-row post-financial-credit"><div class="post-financial-label"><span class="post-step-num">01</span><div><strong>Credit amount</strong><small>Purchase price less deposit and part exchange · calculated from Complaints Hub</small></div></div><div class="post-financial-value"><input id="postCredit" type="text" readonly aria-label="Credit amount"></div></div>
+        <div class="post-financial-row post-deposit-row"><div class="post-financial-label"><span class="post-step-num">02</span><div><strong>Customer deposit refunded</strong><small>Deposit amount is fixed in Complaints Hub. Add back the amount actually paid to the customer.</small><label class="post-deposit-toggle"><input type="checkbox" id="postDepositRefunded"> We refunded the customer's deposit</label><div id="postDepositCalculator" hidden class="post-deposit-calc"><span>Deposit amount <strong id="postDepositFixed">£0.00</strong></span><label>Less deposit deduction (£) <input id="postDepositDeduction" type="number" min="0" step="0.01" value="0"></label><small id="postDepositCalcNote">Deposit paid out is calculated automatically and shared with Complaint Closure.</small></div></div></div><div class="post-financial-value"><strong id="postDepositPaidOut">+£0.00</strong></div></div>
         <div class="post-financial-row"><div class="post-financial-label"><span class="post-step-num">03</span><div><strong>Dealership / partner deduction</strong><small>Amount to deduct from the credit amount</small></div></div><div class="post-financial-value post-money-input"><span aria-hidden="true">£</span><input id="postDeduction" type="number" step="0.01" min="0" value="0" aria-label="Dealership or partner deduction"></div></div>
         <div class="post-losses">
           <div class="post-losses-heading"><div class="post-financial-label"><span class="post-step-num">04</span><div><strong>Other losses to recover</strong><small>Add compensation, fees or any other amounts Carmoola is recovering.</small></div></div><button id="postAddLine" type="button" class="post-btn-secondary">+ Add loss</button></div>
@@ -658,7 +658,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
       <div class="post-writeoff-dialog" role="dialog" aria-modal="true" aria-labelledby="postWriteoffTitle" aria-describedby="postWriteoffHelp">
         <div class="post-writeoff-dialog-head"><div class="post-writeoff-icon" aria-hidden="true">!</div><button id="postCloseWriteoff" type="button" class="post-writeoff-close" aria-label="Close write-off dialog">×</button></div>
         <h3 id="postWriteoffTitle">Write off recovery balance</h3>
-        <p id="postWriteoffHelp" class="post-muted">Only use this when a recovery will no longer be pursued. The amount and reason will be recorded in Jira.</p>
+        <p id="postWriteoffHelp" class="post-muted">Only use this when a recovery will no longer be pursued. The amount and reason will be recorded in Complaints Hub.</p>
         <div class="post-writeoff-current"><span>Current outstanding</span><strong id="postWriteoffOutstanding">£0.00</strong></div>
         <label class="post-field">Amount to write off (£)<input id="postWriteoff" type="number" min="0.01" step="0.01" placeholder="0.00"></label>
         <label class="post-field" style="margin-top:14px">Reason for write-off<input id="postWriteoffReason" type="text" maxlength="180" placeholder="Enter a reason for writing off this amount"></label>
@@ -666,7 +666,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         <div class="post-writeoff-dialog-actions"><button id="postCancelWriteoff" type="button" class="post-btn-secondary">Cancel</button><button id="postRecordWriteoff" type="button" class="post-writeoff-confirm">Confirm write-off</button></div>
       </div>
     </div>
-    <div class="post-card"><h3>Balance history</h3><p class="post-muted">Latest balance movements. Detailed updates and payment references are also recorded in Jira comments.</p><div id="postHistory"></div></div>
+    <div class="post-card"><h3>Balance history</h3><p class="post-muted">Latest balance movements. Detailed updates and payment references are also recorded in Complaints Hub comments.</p><div id="postHistory"></div></div>
   </div>
 </section>
 
@@ -837,9 +837,9 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Credit Amount</div><div class="hint" id="rl_creditHint">Purchase price &minus; deposit &minus; part exchange</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_credit" value="0"></div></div>
         <div class="calcrow with-action"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Calculated from the customer's repayments and the repayments deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_retainedCalcBtn">Calculate</button></div></div>
         <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm" id="rl_proceedsLabel">Vehicle Proceeds Received</div><div class="hint" id="rl_proceedsHint">From auction / dealership</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_proceeds" value="0"></div></div>
-        <div class="calcrow" id="rl_partnerRecoveryRow" hidden><span class="op minus">&minus;</span><div class="rl"><div class="nm">Dealership / Partner Recoveries Received</div><div class="hint">Confirmed partner receipts from Post-Resolution. Shown separately; does not change the original rejection loss saved to Jira.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" id="rl_partnerRecovery" value="0" readonly aria-label="Confirmed dealership or partner receipts"></div></div>
+        <div class="calcrow" id="rl_partnerRecoveryRow" hidden><span class="op minus">&minus;</span><div class="rl"><div class="nm">Dealership / Partner Recoveries Received</div><div class="hint">Confirmed partner receipts from Post-Resolution. Shown separately; does not change the original rejection loss saved to Complaints Hub.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" id="rl_partnerRecovery" value="0" readonly aria-label="Confirmed dealership or partner receipts"></div></div>
         <div class="calcrow with-action" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Calculated from the customer deposit and deposit deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_depositCalcBtn">Calculate</button></div></div>
-        <div class="calc-total"><span class="l">Vehicle Rejection Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Original complaint loss; saved to Jira</small></span><span class="v" id="rl_total">&pound;0.00</span></div>
+        <div class="calc-total"><span class="l">Vehicle Rejection Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Original complaint loss; saved to Complaints Hub</small></span><span class="v" id="rl_total">&pound;0.00</span></div>
         <div class="calc-total" id="rl_remainingLossRow" hidden style="margin-top:8px;background:#fff4f9;border:1px solid #edbfd5"><span class="l">Remaining Unrecovered Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">After confirmed dealership / partner receipts; indicative, not written to rejection-loss field</small></span><span class="v" id="rl_remainingLoss">&pound;0.00</span></div>
       </div>
       <div class="modal-foot"><div class="foot-info" id="rejRefundInfo" aria-live="polite"><span class="k">Customer refund</span><span class="v" id="rejRefundInfoValue">&pound;0.00</span></div><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
@@ -862,7 +862,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
     <aside class="rej-side" id="depositSide" aria-label="Deposit Paid Out calculator">
       <div class="modal-head"><h3>Deposit Paid Out</h3><p>Work out the actual deposit returned to the customer.</p></div>
       <div class="modal-body">
-        <div class="calcrow"><div class="rl"><div class="nm">Customer Deposit</div><div class="hint">Defaults to the full customer deposit held in Jira when first opened.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="dp_customer_deposit" value="0"></div></div>
+        <div class="calcrow"><div class="rl"><div class="nm">Customer Deposit</div><div class="hint">Defaults to the full customer deposit held in Complaints Hub when first opened.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="dp_customer_deposit" value="0"></div></div>
         <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Deposit Deduction</div><div class="hint" id="dp_deductionHint">Cannot exceed the customer deposit or the remaining Customer Deduction Amount.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="dp_deduction" value="0"></div></div>
         <div class="allocation-strip"><div class="allocation-cell"><div class="k">Customer deduction</div><div class="v" id="dp_alloc_total">&pound;0.00</div></div><div class="allocation-cell"><div class="k">Allocated</div><div class="v" id="dp_alloc_used">&pound;0.00</div></div><div class="allocation-cell"><div class="k">Remaining</div><div class="v" id="dp_alloc_remaining">&pound;0.00</div></div></div>
         <div class="subcalc-error" id="dp_error"></div>
@@ -946,7 +946,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="runningOnlyTitle">
     <div class="modal-head"><h3 id="runningOnlyTitle">Closure details are incomplete</h3><p>Your Running Costs have changed, but the closure form still has required fields to complete.</p></div>
     <div class="modal-body">
-      <div class="warnbox"><strong>Save Running Costs only?</strong><br>Only the Running Costs field will be updated in Jira. No other values from this form will be saved, even if you have filled them in. After saving, you will leave this form and any other unsaved work will be lost.</div>
+      <div class="warnbox"><strong>Save Running Costs only?</strong><br>Only the Running Costs field will be updated in Complaints Hub. No other values from this form will be saved, even if you have filled them in. After saving, you will leave this form and any other unsaved work will be lost.</div>
       <div class="rc-editor-error" id="runningOnlyError" style="margin-top:10px"></div>
     </div>
     <div class="modal-foot"><button class="btn-ghost" id="runningOnlyReturn">Return to Form</button><button class="btn-sm" id="runningOnlySave">Save Running Costs Only</button></div>
@@ -960,7 +960,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
     <div class="modal-body">
       <div class="management-option">
         <h4>Force submit</h4>
-        <p>Bypass closure-form validation and submit the values currently on the form. Jira's own field validation still applies.</p>
+        <p>Bypass closure-form validation and submit the values currently on the form. Complaints Hub's own field validation still applies.</p>
         <div class="passcode-wrap"><label for="overridePasscode">Management passcode</label><input type="password" id="overridePasscode" autocomplete="off" placeholder="Enter passcode"></div>
       </div>
       <div class="warnbox" style="margin-top:12px"><strong>Use with care.</strong> Force submit may save an incomplete closure. Empty monetary values are treated as &pound;0 and invalid or missing outcome fields are left unchanged.</div>
@@ -1010,7 +1010,7 @@ function fosReviewIsAvailable(){
   if(!r||!r.allowed||!PREFILL.fosApplicable)return false;
 
   // Fail closed: the review workspace is only available when the complaint's
-  // actual Jira status is explicitly FOS Decision Review.
+  // actual Complaints Hub status is explicitly FOS Decision Review.
   var rawStatus=PREFILL.statusName||PREFILL.status||PREFILL.issueStatus||PREFILL.jiraStatus||'';
   if(rawStatus&&typeof rawStatus==='object')rawStatus=rawStatus.name||rawStatus.value||'';
   if(String(rawStatus||'').trim().toLowerCase()!=='fos decision review')return false;
@@ -1022,6 +1022,18 @@ function fosReviewIsAvailable(){
   return true;
 }
 function fmtReviewDate(v){if(!v)return '';var d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
+function formatDisplayDate(value){
+  if(value===null||value===undefined||String(value).trim()==='')return '';
+  var raw=String(value).trim();
+  // Format only actual date strings; leave Complaints Hub compact audit tokens untouched.
+  if(!/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(raw))return raw;
+  var parts=raw.slice(0,10).split('-').map(Number);
+  var d=new Date(Date.UTC(parts[0],parts[1]-1,parts[2]));
+  if(d.getUTCFullYear()!==parts[0]||d.getUTCMonth()!==parts[1]-1||d.getUTCDate()!==parts[2])return raw;
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+}
+function canOpenPostResolution(status){return ['Investigation','Holding Letter Due','Final Response Due','Outsourced','Post-Resolution Tasks','Partner Funds Outstanding'].includes(String(status||''));}
+
 function fmtReviewOutcome(v){var s=String(v||'').trim();if(!s)return '';var map={upheld:'Upheld',not_upheld:'Not Upheld',partially_upheld:'Partially Upheld',withdrawn:'Withdrawn',unclear:'Unclear'};var k=s.toLowerCase().replace(/[\s-]+/g,'_');if(map[k])return map[k];return s.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
 function reviewDocObject(kind){return (PREFILL&&PREFILL.fosReview&&PREFILL.fosReview.documents&&PREFILL.fosReview.documents[kind])||null;}
 function reviewSetMode(on){
@@ -1098,11 +1110,11 @@ function openReviewConfirm(action){
   var ov=$('#reviewConfirmOverlay'),title=$('#reviewConfirmTitle'),sub=$('#reviewConfirmSub'),copy=$('#reviewConfirmCopy'),go=$('#reviewConfirmGo'),er=$('#reviewConfirmError');
   er.classList.remove('show');er.textContent='';go.disabled=false;go.dataset.action=action;
   if(action==='accept_investigator'){
-    title.textContent='Accept the Investigator’s view?';sub.textContent='This confirms Carmoola will not ask for an Ombudsman review.';copy.innerHTML='<strong>Accept Investigator View</strong><br><br>This will record the review in Jira, move the complaint back to <strong>FOS Investigation</strong> and take you to the complaint so closure work can continue.';go.textContent='Yes, Accept View';go.className='btn-sm';
+    title.textContent='Accept the Investigator’s view?';sub.textContent='This confirms Carmoola will not ask for an Ombudsman review.';copy.innerHTML='<strong>Accept Investigator View</strong><br><br>This will record the review in Complaints Hub, move the complaint back to <strong>FOS Investigation</strong> and take you to the complaint so closure work can continue.';go.textContent='Yes, Accept View';go.className='btn-sm';
   }else if(action==='accept_ombudsman'){
-    title.textContent='Continue with the Ombudsman decision?';sub.textContent='This confirms the final FOS decision has been reviewed.';copy.innerHTML='<strong>Continue to Closure Logging</strong><br><br>This will record the review in Jira and move the complaint back to <strong>Ombudsman Investigation</strong> so the final outcome, redress and costs can be completed.';go.textContent='Yes, Continue';go.className='btn-sm';
+    title.textContent='Continue with the Ombudsman decision?';sub.textContent='This confirms the final FOS decision has been reviewed.';copy.innerHTML='<strong>Continue to Closure Logging</strong><br><br>This will record the review in Complaints Hub and move the complaint back to <strong>Ombudsman Investigation</strong> so the final outcome, redress and costs can be completed.';go.textContent='Yes, Continue';go.className='btn-sm';
   }else{
-    title.textContent='Escalate to an Ombudsman?';sub.textContent='This will progress the complaint to the final FOS stage.';copy.innerHTML='<strong>Escalate to Ombudsman</strong><br><br>Carmoola will reply on the FOS Zendesk ticket asking for an Ombudsman to review the complaint, then Jira will move to <strong>Ombudsman Investigation</strong>.'+'<div class="confirm-note">Only continue if you are satisfied Carmoola should challenge the Investigator’s view.</div>';go.textContent='Yes, Escalate';go.className='btn-dangersoft';
+    title.textContent='Escalate to an Ombudsman?';sub.textContent='This will progress the complaint to the final FOS stage.';copy.innerHTML='<strong>Escalate to Ombudsman</strong><br><br>Carmoola will reply on the FOS Zendesk ticket asking for an Ombudsman to review the complaint, then Complaints Hub will move to <strong>Ombudsman Investigation</strong>.'+'<div class="confirm-note">Only continue if you are satisfied Carmoola should challenge the Investigator’s view.</div>';go.textContent='Yes, Escalate';go.className='btn-dangersoft';
   }
   ov.classList.add('show');
 }
@@ -1117,7 +1129,7 @@ function showReviewActionComplete(action,status){
     var other=document.createElement('button');other.type='button';other.disabled=true;other.className='review-action-muted';other.textContent=action==='accept_investigator'?'Escalate to Ombudsman':'Accept Investigator View';buttons.appendChild(other);
   }
   $('#rvActionTitle').innerHTML='Decision recorded <span class="review-badge">Completed</span>';
-  $('#rvActionCopy').textContent='Jira has been moved to '+(status||'the next stage')+'. Returning to the complaint…';
+  $('#rvActionCopy').textContent='Complaints Hub has been moved to '+(status||'the next stage')+'. Returning to the complaint…';
 }
 function submitReviewAction(action){
   var go=$('#reviewConfirmGo'),er=$('#reviewConfirmError');go.disabled=true;go.textContent=action==='escalate_ombudsman'?'Escalating…':'Saving…';er.classList.remove('show');
@@ -1206,7 +1218,7 @@ function hasExistingVehicleData(){
   // vehicle outcome already set to a real rejection?
   var rej=(PREFILL.rejectionOutcome&&PREFILL.rejectionOutcome[0])||'';
   if(rej && rej!=='No Vehicle Rejection') return true;
-  // any vehicle cost non-zero in Jira? (repair, rejection loss, inspection, courtesy, both tabs)
+  // any vehicle cost non-zero in Complaints Hub? (repair, rejection loss, inspection, courtesy, both tabs)
   var im=PREFILL.internal||{};
   if(num(im.customfield_10281)||num(im.customfield_10282)||num(im.customfield_10283)||num(im.customfield_11192)) return true;
   if(PREFILL.fosApplicable){
@@ -1393,7 +1405,7 @@ function setRejectionPageMode(on){
     work.querySelector('.modal').setAttribute('role','region');
     work.querySelector('.modal').removeAttribute('aria-modal');
     $('#rejCancel').textContent='Back to Home';
-    $('#rejSave').textContent='Save to Jira';
+    $('#rejSave').textContent='Save to Complaints Hub';
   }else{
     overlay.appendChild(work);
     work.querySelector('.modal').setAttribute('role','dialog');
@@ -1415,13 +1427,13 @@ function syncRejectionPageOutcome(){
   if(auctionConfirmed && owner!=='fos')selected='Sold at Auction';
   page.value=selected||'';
   page.disabled=(owner==='fos' && savedRejectionStage()==='Investigation');
-  $('#rejectionPageOutcomeNote').textContent=auctionConfirmed?'Auction sale confirmed in Jira — Sold at Auction is required.':'Saved outcome is shared with Complaint Closure.';
+  $('#rejectionPageOutcomeNote').textContent=auctionConfirmed?'Auction sale confirmed in Complaints Hub — Sold at Auction is required.':'Saved outcome is shared with Complaint Closure.';
 }
 function initRejectionPageOutcome(){
   $('#rejectionPageOutcome').addEventListener('change',function(){
     var v=this.value, owner=prCustomerStage(), target=owner==='fos'?$('#fosRejection'):$('#rejection');
     if(PREFILL.auctionMarked&&v!=='Sold at Auction'){
-      alert('Jira confirms the vehicle was sold at auction. Select Sold at Auction.');
+      alert('Complaints Hub confirms the vehicle was sold at auction. Select Sold at Auction.');
       this.value='Sold at Auction';v='Sold at Auction';
     }
     target.value=v;
@@ -1452,7 +1464,7 @@ function openRejCalc(which){
   } else {
     credEl.removeAttribute('readonly');
     credEl.value=String(rejHas(rejWork.creditAmount)?rejWork.creditAmount:computedCredit);
-    $('#rl_creditHint').textContent='Enter manually (a source value is missing in Jira)';
+    $('#rl_creditHint').textContent='Enter manually (a source value is missing in Complaints Hub)';
   }
   $('#rl_customer_deduction').value=rejHas(rejWork.customerDeductionAmount)?String(rejWork.customerDeductionAmount):'';
   $('#rl_retained').value=String(rejHas(rejWork.retainedPayments)?rejWork.retainedPayments:0);
@@ -1489,7 +1501,7 @@ function updateRejRefundInfo(){
   else{val.textContent=gbp.format(0);box.classList.remove('show');}
 }
 function confirmedPartnerRecoveryForRejection(){
-  // Reuse the classified Jira suspense allocations already supplied by Post-Resolution.
+  // Reuse the classified Complaints Hub suspense allocations already supplied by Post-Resolution.
   // 'A' = auction, 'P' = dealership / partner; exclude 'X' and unclassified funds.
   var p=POST_DATA||(PREFILL&&PREFILL.postResolution)||{};
   return Math.round(((p.reconciled||[]).filter(function(item){return Array.isArray(item)&&item[2]==='P';})
@@ -1640,24 +1652,24 @@ function initRejCalc(){
       var vehicleOutcome=$('#rejectionPageOutcome').value;
       if(!isRealVehicleRejection(vehicleOutcome)){alert('Choose what happened to the vehicle before saving.');return;}
       if(PREFILL.auctionMarked&&vehicleOutcome!=='Sold at Auction'){alert('This auction has completed. Select Sold at Auction.');return;}
-      // The homepage action persists the shared calculator directly to Jira.
+      // The homepage action persists the shared calculator directly to Complaints Hub.
       // Keep the calculator open on failure so edits are not lost.
       var btn=$('#rejSave'),savedText=btn.textContent,stage=calcTarget==='fos'?'FOS':'Investigation';
-      btn.disabled=true;btn.textContent='Saving to Jira…';
+      btn.disabled=true;btn.textContent='Saving to Complaints Hub…';
       fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'post_customer_rejection_save',stage:stage,vehicleOutcome:vehicleOutcome,breakdown:bd})})
       .then(function(response){return response.json();})
       .then(function(data){
-        if(!data.ok)throw new Error((data.errors&&data.errors[0])||'Could not save rejection loss to Jira.');
+        if(!data.ok)throw new Error((data.errors&&data.errors[0])||'Could not save rejection loss to Complaints Hub.');
         PREFILL.saved=Object.assign({},PREFILL.saved||{},data.saved||{});
         if(data.rejectionOutcome)PREFILL.rejectionOutcome=data.rejectionOutcome;
         if(data.postResolution)POST_DATA=data.postResolution;
         postCustomerDraftDirty=false;
         if(ACTION_PAGE==='rejection'){closeRejectionPage();}else{homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');gotoActionsPage('home');}
         prCustomerDraw();
-        showActionsSaveToast('Vehicle rejection loss saved to Jira and updated across Complaint Actions.');
+        showActionsSaveToast('Vehicle rejection loss saved to Complaints Hub and updated across Complaint Actions.');
       })
       .catch(function(err){alert('Unable to save rejection loss: '+err.message+' Your calculator values are still here.');})
-      .finally(function(){btn.disabled=false;btn.textContent=(ACTION_PAGE==='rejection'&&homeRejectionDirect)?'Save to Jira':'Save';});
+      .finally(function(){btn.disabled=false;btn.textContent=(ACTION_PAGE==='rejection'&&homeRejectionDirect)?'Save to Complaints Hub':'Save';});
       return;
     }
     closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');if(ACTION_PAGE==='post'){postCustomerDraftDirty=true;prCustomerDraw();}
@@ -1793,7 +1805,7 @@ function lockAll(lock){
   }
 }
 
-// Restore calculator breakdown state from Jira-saved fields, so reopening shows them.
+// Restore calculator breakdown state from Complaints Hub-saved fields, so reopening shows them.
 function restoreSavedBreakdowns(){
   var s=PREFILL.saved||{};
   var has=function(v){return v!==null&&v!==undefined;};
@@ -2073,7 +2085,7 @@ function applyPrefill(){
   $('#returnBtn').href=PREFILL.jiraUrl;
   $('#ibCustomer').textContent=PREFILL.customerName;
   $('#ibType').textContent=PREFILL.complaintType;
-  $('#ibReceived').textContent=PREFILL.receivedDate||'\u2014';
+  $('#ibReceived').textContent=formatDisplayDate(PREFILL.receivedDate)||'\u2014';
   if(PREFILL.outcome)$('#outcome').value=PREFILL.outcome;
 
   var im=PREFILL.internal;
@@ -2084,12 +2096,12 @@ function applyPrefill(){
   var rej=PREFILL.rejectionOutcome||[];
   var savedStage=((PREFILL.saved||{}).rejStage)||'';
   if(rej.length && savedStage==='FOS'){
-    // The shared Jira vehicle outcome records the physical outcome; when FOS owns
+    // The shared Complaints Hub vehicle outcome records the physical outcome; when FOS owns
     // the rejection it belongs on the FOS side, not the Investigation selector.
     $('#rejection').value='No Vehicle Rejection';
     if(rej[0]!=='No Vehicle Rejection')$('#fosRejection').value=rej[0];
   } else if(rej.length){
-    // Existing Investigation value in Jira wins.
+    // Existing Investigation value in Complaints Hub wins.
     $('#rejection').value=rej[0];
   } else if(isVehicleComplaint && PREFILL.autoOutcome){
     $('#rejection').value=PREFILL.autoOutcome;$('#rejAutoPill').hidden=false;
@@ -2166,7 +2178,7 @@ function refreshClosureRecoverySummary(p){
   var isCompleted=!hasBalance&&['Paid','Written Off','Not Required'].includes(p.recoveryStatus||'');
   el.hidden=false;el.classList.toggle('is-complete',isCompleted);
   $('#closureRecoveryHeading').textContent=isCompleted?'Post-Resolution · Recovery complete':hasBalance?'Post-Resolution · '+gbp.format(balance)+' outstanding':'Post-Resolution · Recovery recorded';
-  $('#closureRecoveryDescription').textContent=(p.party||'Recovery party not set')+' · '+(p.recoveryStatus||'Status not set')+(p.dueDate?' · Due '+p.dueDate:'')+'. Recovery can continue after closure.';
+  $('#closureRecoveryDescription').textContent=(p.party||'Recovery party not set')+' · '+(p.recoveryStatus||'Status not set')+(p.dueDate?' · Due '+formatDisplayDate(p.dueDate):'')+'. This recovery must be resolved before the complaint can be closed.';
 }
 function openClosureRecoveryModal(){
   var page=$('#actionsPost'),slot=$('#closureRecoveryModalBody');
@@ -2243,7 +2255,7 @@ function initSubmit(){
 
 
 
-// Post-Resolution: all persisted data is stored on the Jira issue.
+// Post-Resolution: all persisted data is stored on the Complaints Hub issue.
 var POST_DATA=null;
 function prHtml(s){return String(s).replace(/[&<>"']/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x];});}
 function prCash(x){var v=Number(x);return Number.isFinite(v)?Math.round(v*100)/100:0;}
@@ -2251,11 +2263,11 @@ function prDefaultDueDate(){var d=new Date();d.setDate(d.getDate()+5);return d.g
 function prRows(){return Array.from(document.querySelectorAll('.post-line')).map(function(el){return [el.querySelector('.pr-desc').value.trim(),prCash(el.querySelector('.pr-amount').value)];}).filter(function(x){return x[0]||x[1];});}
 function prAddLine(desc,amount){var panel=$('#postLines');var row=document.createElement('div');row.className='post-line';row.innerHTML='<input class="pr-desc" type="text" maxlength="25" placeholder="e.g. FOS compensation" aria-label="Other loss description"><input class="pr-amount" type="number" step="0.01" min="0" placeholder="Amount (£)" aria-label="Other loss amount"><button type="button" class="post-btn-secondary" aria-label="Remove loss">×</button>';row.querySelector('.pr-desc').value=desc||'';row.querySelector('.pr-amount').value=amount===undefined?'':amount;row.querySelector('button').addEventListener('click',function(){row.remove();prUpdateMath();prRenderRunningCosts();});row.querySelectorAll('input').forEach(function(input){input.addEventListener('input',function(){prUpdateMath();prRenderRunningCosts();});});panel.appendChild(row);}
 // Reuse the same Running Costs ledger shown in Complaint Closure.
-// Transfer copies a value into the separate Jira recovery adjustments field;
+// Transfer copies a value into the separate Complaints Hub recovery adjustments field;
 // it never modifies the underlying Running Costs ledger.
 function prRunningKey(desc,amount){return String(desc||'').trim().toLowerCase()+'|'+Math.round(prCash(amount)*100);}
 function prRunningDescription(row){
-  // Jira Recovery Adjustments descriptions are deliberately capped at 25 characters.
+  // Complaints Hub Recovery Adjustments descriptions are deliberately capped at 25 characters.
   // Prefer the specific cost description; preserve its amount exactly.
   return String(row.desc||row.type||'Running cost').trim().slice(0,25);
 }
@@ -2286,7 +2298,7 @@ function prUpdateMath(){
   if(!POST_DATA)return;
   var p=POST_DATA;
   var dep=prDeposit();var calc=prCash(p.creditAmount+dep.paid-prCash($('#postDeduction').value)+prRows().reduce(function(v,r){return v+r[1];},0));
-  $('#postDepositCalculator').hidden=!dep.enabled;$('#postDepositFixed').textContent=dep.valid?gbp.format(dep.amount):'Not available from Jira';$('#postDepositPaidOut').textContent='+'+gbp.format(dep.paid);$('#postDepositCalcNote').textContent=!dep.valid?'Deposit Amount (customfield_11128) was not returned by Jira. This must be resolved before saving a deposit refund.':dep.deduction>dep.amount?'Deposit deduction cannot exceed the original deposit.':'Deposit paid out: '+gbp.format(dep.paid)+' · included in recovery entitlement.';
+  $('#postDepositCalculator').hidden=!dep.enabled;$('#postDepositFixed').textContent=dep.valid?gbp.format(dep.amount):'Not available from Complaints Hub';$('#postDepositPaidOut').textContent='+'+gbp.format(dep.paid);$('#postDepositCalcNote').textContent=!dep.valid?'Deposit Amount (customfield_11128) was not returned by Complaints Hub. This must be resolved before saving a deposit refund.':dep.deduction>dep.amount?'Deposit deduction cannot exceed the original deposit.':'Deposit paid out: '+gbp.format(dep.paid)+' · included in recovery entitlement.';
   var paid=prCash((p.history||{}).p),written=prCash((p.history||{}).w);
   var auctionPaid=prCash((p.reconciled||[]).filter(function(x){return x[2]==='A';}).reduce(function(n,x){return n+Number(x[1]||0)/100;},0));
   var preview=(p.auctionPreview||[]).reduce(function(n,r){return n+Number(r.amount||0);},0);
@@ -2334,11 +2346,11 @@ function prCustomerSave(btn){
    if(stage==='fos')setMoney('f_rejloss',bd.total);else setMoney('c_rejloss',bd.total);
    if(data.postResolution)POST_DATA=data.postResolution;
    prCustomerDraw();
-   showActionsSaveToast('Customer rejection loss saved in Jira and reflected in Complaint Closure.');
+   showActionsSaveToast('Customer rejection loss saved in Complaints Hub and reflected in Complaint Closure.');
  });
 }
 function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation','Holding Letter Due','Final Response Due'];var target=s==='Outsourced'?'Partner Funds Outstanding':nonOut.includes(s)?'Post-Resolution Tasks':'';var active=['Post-Resolution Tasks','Partner Funds Outstanding'].includes(s);$('#postStageChip').textContent=s||'Unknown status';$('#postTransition').hidden=!target;$('#postWorkspace').hidden=!active;$('#postNotAvailable').hidden=!!target||active;
-  if(target){$('#postTransitionDesc').textContent='Current status: '+s+'. The next Jira workflow stage is '+target+'.';$('#postTransitionBtn').textContent='Move to '+target;}
+  if(target){$('#postTransitionDesc').textContent='Current status: '+s+'. The next Complaints Hub workflow stage is '+target+'.';$('#postTransitionBtn').textContent='Move to '+target;}
   if(!active)return;
   $('#postVehicle').value=(p.auction&&p.auction.sold)?'Carmoola Auction — Completed':(p.vehicleResolution||'Not Yet Decided');prRenderVehicle();prRenderSuspense();
   $('#postParty').value=p.party||(s==='Partner Funds Outstanding'?PREFILL.introducerName:PREFILL.dealershipName)||'';
@@ -2349,13 +2361,13 @@ function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation'
   $('#postStatus').value=p.recoveryStatus||'Not Requested';
   $('#postOriginal').textContent=p.originalBalance===null?'Not set':gbp.format(p.originalBalance);
   $('#postLines').innerHTML='';(p.adjustments||[]).forEach(function(r){prAddLine(r[0],r[1]);});
-  var hist=(p.history||{}).e||[];$('#postHistory').innerHTML=hist.length?hist.slice().reverse().map(function(e){var code={N:'Initial calculation',A:'Balance amended',P:'Payment received',W:'Write-off'}[e[1]]||'Recovery updated';return '<div class="post-record"><strong>'+prHtml(code)+'</strong> · '+prHtml(String(e[0]))+' · Balance '+gbp.format(Number(e[2])/100)+'</div>';}).join(''):'<div class="post-hint">No recovery history recorded yet.</div>';
+  var hist=(p.history||{}).e||[];$('#postHistory').innerHTML=hist.length?hist.slice().reverse().map(function(e){var code={N:'Initial calculation',A:'Balance amended',P:'Payment received',W:'Write-off'}[e[1]]||'Recovery updated';return '<div class="post-record"><strong>'+prHtml(code)+'</strong> · '+prHtml(formatDisplayDate(e[0]))+' · Balance '+gbp.format(Number(e[2])/100)+'</div>';}).join(''):'<div class="post-hint">No recovery history recorded yet.</div>';
   prUpdateMath();prCustomerDraw();prRenderRunningCosts();
 }
-function prRenderVehicle(){var p=POST_DATA,v=$('#postVehicle').value;$('#postAuctionDetails').hidden=!v.startsWith('Carmoola Auction');$('#postAuctionGross').textContent=p.auction.gross===null?'Not recorded':gbp.format(p.auction.gross);$('#postAuctionDate').textContent=p.auction.date?fmtReviewDate(p.auction.date):'Not recorded';$('#postVehicleWarning').textContent=v==='Carmoola Auction — Completed'&&!p.auction.sold?'Auction cannot be marked completed until Vehicle Auction Sale is Y in Jira.':'';}
+function prRenderVehicle(){var p=POST_DATA,v=$('#postVehicle').value;$('#postAuctionDetails').hidden=!v.startsWith('Carmoola Auction');$('#postAuctionGross').textContent=p.auction.gross===null?'Not recorded':gbp.format(p.auction.gross);$('#postAuctionDate').textContent=p.auction.date?formatDisplayDate(p.auction.date):'Not recorded';$('#postVehicleWarning').textContent=v==='Carmoola Auction — Completed'&&!p.auction.sold?'Auction cannot be marked completed until Vehicle Auction Sale is Y in Complaints Hub.':'';}
 function prRenderSuspense(){var p=POST_DATA,items=p.suspense||{rows:[],valid:true},known=new Map((p.reconciled||[]).map(function(x){return [String(x[0]),x];}));$('#postSuspenseWarning').textContent=items.warning||'';$('#postSuspenseList').innerHTML=items.rows.length?items.rows.map(function(r){var applied=known.get(String(r.id)),excluded=applied&&applied[2]==='X',isAuction=applied&&applied[2]==='A';var candidate=!applied&&p.auction&&p.auction.sold&&p.auction.gross>0&&r.amount<=p.auction.gross&&r.amount>=p.auction.gross*0.8;var isPreview=(p.auctionPreview||[]).some(function(x){return x.id===r.id;});var label=excluded?'Excluded from auction reconciliation':applied?(isAuction?'Auction proceeds':'Partner payment'):isPreview?'Auction proceeds identified — allocated on save':candidate?'Possible net auction receipt — verify reference':'Unclassified / not allocated';var action=isAuction?' <button type="button" class="post-btn-secondary post-unlink-auction" data-item="'+prHtml(r.id)+'">Unlink auction receipt</button>':(candidate&&!isPreview)?' <button type="button" class="post-btn-secondary post-confirm-auction" data-item="'+prHtml(r.id)+'">Confirm auction receipt</button>':'';return '<div class="post-suspense-row"><div><strong>'+prHtml(r.reference||'No reference')+'</strong><small>Suspense #'+prHtml(r.id)+' · '+gbp.format(r.amount)+'</small></div><span class="post-suspense-state'+(applied&&!excluded?' applied':'')+'">'+prHtml(applied&&!excluded?'Applied '+gbp.format(applied[1]/100)+' · '+label:label)+action+'</span></div>';}).join(''):'<p class="post-hint">No individual suspense receipts recorded.</p>';}
 function prError(msg){$('#postError').textContent=msg||'';$('#postError').classList.toggle('show',!!msg);}
-function prRequest(payload,btn,after){if(btn.disabled)return;prError('');var label=btn.textContent;btn.disabled=true;btn.textContent='Saving…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))}).then(function(r){return r.json();}).then(function(data){if(!data.ok)throw Error((data.errors&&data.errors[0])||'Could not save in Jira.');after(data);}).catch(function(error){prError(error.message||'Network error saving recovery.');if(!$('#postWriteoffModal').hidden){$('#postWriteoffError').textContent=error.message||'Network error saving recovery.';$('#postWriteoffError').classList.add('show');}}).finally(function(){btn.disabled=false;btn.textContent=label;});}
+function prRequest(payload,btn,after){if(btn.disabled)return;prError('');var label=btn.textContent;btn.disabled=true;btn.textContent='Saving…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))}).then(function(r){return r.json();}).then(function(data){if(!data.ok)throw Error((data.errors&&data.errors[0])||'Could not save in Complaints Hub.');after(data);}).catch(function(error){prError(error.message||'Network error saving recovery.');if(!$('#postWriteoffModal').hidden){$('#postWriteoffError').textContent=error.message||'Network error saving recovery.';$('#postWriteoffError').classList.add('show');}}).finally(function(){btn.disabled=false;btn.textContent=label;});}
 function prOpenWriteoff(){var modal=$('#postWriteoffModal');$('#postWriteoffError').textContent='';$('#postWriteoffError').classList.remove('show');$('#postWriteoffOutstanding').textContent=$('#postOutstanding').textContent;modal.hidden=false;$('#postWriteoff').focus();}
 function prCloseWriteoff(){if($('#postRecordWriteoff').disabled)return;$('#postWriteoffModal').hidden=true;$('#postWriteoffError').textContent='';$('#postWriteoffError').classList.remove('show');$('#postOpenWriteoff').focus();}
 function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DATA)return;
@@ -2366,8 +2378,8 @@ function initPostResolution(){POST_DATA=PREFILL.postResolution||null;if(!POST_DA
   $('#postSaveCustomer').addEventListener('click',function(){prCustomerSave(this);});
   $('#postDeduction').addEventListener('input',function(){prUpdateMath();prCustomerDraw();});$('#postDepositRefunded').addEventListener('change',prUpdateMath);$('#postDepositDeduction').addEventListener('input',prUpdateMath);$('#postAddLine').addEventListener('click',function(){prAddLine();prRenderRunningCosts();});
   $('#postOpenWriteoff').addEventListener('click',prOpenWriteoff);$('#postCloseWriteoff').addEventListener('click',prCloseWriteoff);$('#postCancelWriteoff').addEventListener('click',prCloseWriteoff);$('#postWriteoffModal').addEventListener('click',function(e){if(e.target===this)prCloseWriteoff();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#postWriteoffModal').hidden)prCloseWriteoff();});
-  $('#postTransitionBtn').addEventListener('click',function(){var target=PREFILL.statusName==='Outsourced'?'Partner Funds Outstanding':'Post-Resolution Tasks';if(!window.confirm('Confirm that the appropriate complaint response and resolution requirements are complete. Move this complaint to '+target+'?'))return;prRequest({action:'post_transition',confirmed:true},this,function(data){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;prRender();showActionsSaveToast('Complaint moved to '+data.statusName+'.');});});
-  function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),depositRefunded:$('#postDepositRefunded').checked,depositDeduction:prCash($('#postDepositDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,vehicleResolution:$('#postVehicle').value,expectedReconciledRaw:POST_DATA.reconciledRaw||'',expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(payload.depositRefunded&&!prDeposit().valid){prError('Deposit Amount (customfield_11128) is missing or zero in Jira. Cannot save a deposit refund.');return;}if(payload.depositRefunded&&payload.depositDeduction>prDeposit().amount){prError('Deposit deduction cannot exceed the fixed customer deposit.');return;}if(rows.some(function(r){return !r[0];})){prError('Every other loss needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Jira.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;if(PREFILL.saved){PREFILL.saved.rejCustomerDeposit=POST_DATA.depositRefunded?POST_DATA.depositAmount:null;PREFILL.saved.rejDepositDeduction=POST_DATA.depositRefunded?POST_DATA.depositDeduction:null;PREFILL.saved.rejDeposit=POST_DATA.depositRefunded?POST_DATA.depositPaidOut:null;}$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();if(closureRecoveryModalOpen){refreshClosureRecoverySummary(POST_DATA);closeClosureRecoveryModal();}else gotoActionsPage('home');showActionsSaveToast((mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.')+(data.reportingSync&&!data.reportingSync.ok?' '+data.reportingSync.warning:''));prAutoReconcile();});}
+  $('#postTransitionBtn').addEventListener('click',function(){var target=PREFILL.statusName==='Outsourced'?'Partner Funds Outstanding':'Post-Resolution Tasks';if(!window.confirm('Confirm that the appropriate complaint response and resolution requirements are complete. Move this complaint to '+target+'?'))return;prRequest({action:'post_transition',confirmed:true},this,function(data){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;$('#postHomeTile').disabled=!canOpenPostResolution(data.statusName);$('#postHomeHint').textContent='Follow-up actions after the complaint ends';prRender();showActionsSaveToast('Complaint moved to '+data.statusName+'.');});});
+  function submit(mode,btn){var rows=prRows();var payload={action:'post_recovery_save',mode:mode,party:$('#postParty').value,deduction:prCash($('#postDeduction').value),depositRefunded:$('#postDepositRefunded').checked,depositDeduction:prCash($('#postDepositDeduction').value),adjustments:rows,recoveryStatus:$('#postStatus').value,dueDate:$('#postDue').value,vehicleResolution:$('#postVehicle').value,expectedReconciledRaw:POST_DATA.reconciledRaw||'',expectedHistoryRaw:POST_DATA.historyRaw||'',expectedAdjustmentsRaw:POST_DATA.adjustmentsRaw||''};if(payload.depositRefunded&&!prDeposit().valid){prError('Deposit Amount (customfield_11128) is missing or zero in Complaints Hub. Cannot save a deposit refund.');return;}if(payload.depositRefunded&&payload.depositDeduction>prDeposit().amount){prError('Deposit deduction cannot exceed the fixed customer deposit.');return;}if(rows.some(function(r){return !r[0];})){prError('Every other loss needs a description.');return;}if(mode==='payment'){payload.paymentAmount=prCash($('#postPayment').value);payload.paymentReference=$('#postPaymentRef').value;if(!payload.paymentReference.trim()){prError('Enter the payment reference.');return;}}if(mode==='writeoff'){payload.writeoffAmount=prCash($('#postWriteoff').value);payload.reason=$('#postWriteoffReason').value;if(!window.confirm('Record a write-off of '+gbp.format(payload.writeoffAmount)+'? This will be logged in Complaints Hub.'))return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;if(PREFILL.saved){PREFILL.saved.rejCustomerDeposit=POST_DATA.depositRefunded?POST_DATA.depositAmount:null;PREFILL.saved.rejDepositDeduction=POST_DATA.depositRefunded?POST_DATA.depositDeduction:null;PREFILL.saved.rejDeposit=POST_DATA.depositRefunded?POST_DATA.depositPaidOut:null;}$('#postPayment').value='';$('#postPaymentRef').value='';$('#postWriteoff').value='';$('#postWriteoffReason').value='';prRender();if(closureRecoveryModalOpen){refreshClosureRecoverySummary(POST_DATA);closeClosureRecoveryModal();}else gotoActionsPage('home');showActionsSaveToast((mode==='payment'?'Recovery payment recorded successfully.':mode==='writeoff'?'Recovery write-off recorded successfully.':'Recovery details updated successfully.')+(data.reportingSync&&!data.reportingSync.ok?' '+data.reportingSync.warning:''));prAutoReconcile();});}
   $('#postSave').addEventListener('click',function(){submit('save',this);});$('#postRecordPayment').addEventListener('click',function(){submit('payment',this);});$('#postRecordWriteoff').addEventListener('click',function(){submit('writeoff',this);});prRender();
 }
 
@@ -2376,6 +2388,7 @@ var ACTION_PAGE='home';
 function gotoActionsPage(page){
   if(page!=='rejection'&&ACTION_PAGE==='rejection'&&homeRejectionDirect){closeRejSides();rejWork=null;homeRejectionDirect=false;setRejectionPageMode(false);}
   if(closureRecoveryModalOpen)closeClosureRecoveryModal();
+  if(page==='post'&&!canOpenPostResolution(PREFILL.statusName))return;
   if(page==='review'&&!PREFILL.fosApplicable)return;
   if(page==='solicitor'&&!(PREFILL.solicitorEscalation&&PREFILL.solicitorEscalation.enabled))return;
   ACTION_PAGE=page;
@@ -2410,7 +2423,7 @@ function showActionsSaveToast(message){
 }
 function initActionsHome(){
   var p=PREFILL;
-  var values={homeReference:p.issueKey,homeDealership:p.dealershipName,homeIntroducer:p.introducerName,homeAssignee:p.assigneeName,homeReceived:p.receivedDate,homeStatus:p.statusName,homeFooterRef:p.issueKey,homeComplaintType:p.complaintType};
+  var values={homeReference:p.issueKey,homeDealership:p.dealershipName,homeIntroducer:p.introducerName,homeAssignee:p.assigneeName,homeReceived:formatDisplayDate(p.receivedDate),homeStatus:p.statusName,homeFooterRef:p.issueKey,homeComplaintType:p.complaintType};
   Object.keys(values).forEach(function(id){document.getElementById(id).textContent=values[id]||'Not recorded';});
   var vehicleSection=$('#homeVehicleSection');
   var isVehicleIssues=/^vehicle\s+issues?$/i.test(String(p.complaintType||'').trim());
@@ -2431,13 +2444,15 @@ function initActionsHome(){
   }
   $('#homeCustomerHero').textContent=p.customerName||'Complaint overview';
   $('#homeJiraLink').href=p.jiraUrl||'#';
+  var postTile=$('#postHomeTile');postTile.disabled=!canOpenPostResolution(p.statusName);
+  $('#postHomeHint').textContent=postTile.disabled?'Not available from the current complaint status.':'Follow-up actions after the complaint ends';
   var tile=$('#fosHomeTile');tile.disabled=!p.fosApplicable;
   var esc=p.solicitorEscalation||{};
   $('#solicitorHomeTile').disabled=!esc.enabled;
   $('#solicitorHomeHint').textContent=esc.enabled?'View solicitor case details and latest weekly update.':'Only available where Solicitor Escalation is Y.';
   function field(id,value){document.getElementById(id).textContent=(value===null||value===undefined||String(value).trim()==='')?'Not recorded':String(value);}
   function money(id,value){field(id,value===null||value===undefined?'Not recorded':gbp.format(Number(value)));}
-  function date(id,value){var str=String(value||'');field(id,str?new Date(str+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Not recorded');}
+  function date(id,value){field(id,formatDisplayDate(value)||'Not recorded');}
   money('solOriginal',esc.originalDebt);money('solBalance',esc.currentBalance);money('solRecovered',esc.recovered);money('solBudget',esc.caseBudget);money('solFees',esc.solicitorFees);
   field('solName',esc.solicitorName);field('solTarget',esc.target);field('solRef',esc.externalReference);field('solFile',esc.fileSent);field('solSheet',esc.sheetDocumentId);field('solUpdate',esc.externalUpdate||'No update recorded.');date('solDate',esc.escalationDate);date('solFileDate',esc.fileSentDate);
   var links=$('#solLinks');links.textContent='';
