@@ -407,6 +407,8 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 .post-writeoff-dialog .post-error.show{margin-top:13px}
 @media(max-width:530px){.post-writeoff-entry{justify-content:space-between}.post-writeoff-dialog{padding:20px}}
 
+/* Keep conditional rejection calculator rows truly hidden despite .calcrow display:flex. */
+#rl_partnerRecoveryRow[hidden],#rl_remainingLossRow[hidden],#rl_earlyComplaintWarning[hidden]{display:none!important}
 /* Post-resolution recovery workspace */
 .post-hero{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:23px 26px;background:linear-gradient(120deg,#32172f,#642348);border-radius:16px;color:white;margin-bottom:18px}
 .post-eyebrow{color:#FBAAD3;font-size:11px;letter-spacing:.08em;font-weight:800;text-transform:uppercase}
@@ -831,22 +833,22 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 <div class="overlay" id="rejOverlay">
   <div class="rej-workspace" id="rejWorkspace">
     <div class="modal" role="dialog" aria-modal="true">
-      <div class="modal-head"><h3 id="rejCalcTitle">Vehicle Rejection Loss</h3><p>Work out the net loss (or gain) to Carmoola.</p></div>
+      <div class="modal-head"><h3 id="rejCalcTitle">Vehicle Rejection Loss</h3></div>
       <div class="modal-body">
         <div id="rl_mismatch" style="display:none;background:#FFF3D6;border:1px solid #F0D48A;color:#7A5A00;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;font-weight:600"></div>
         <div class="deduction-box">
           <label for="rl_customer_deduction">Customer Deduction Amount</label>
-          <div class="hint">The total amount Carmoola is deducting from the customer's repayments and/or deposit. Repayments Deduction + Deposit Deduction cannot exceed this amount.</div>
+          <div class="hint">Maximum deduction from repayments and deposit.</div>
           <div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_customer_deduction" placeholder="0.00"></div>
         </div>
         <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Credit Amount</div><div class="hint" id="rl_creditHint">Purchase price &minus; deposit &minus; part exchange</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_credit" value="0"></div></div>
-        <div class="calcrow with-action"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Calculated from the customer's repayments and the repayments deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_retainedCalcBtn">Calculate</button></div></div>
+        <div class="calcrow with-action"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Repayments kept by Carmoola.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_retainedCalcBtn">Calculate</button></div></div>
         <div id="rl_earlyComplaintWarning" role="status" aria-live="polite" hidden style="background:#FFF3D6;border:1px solid #E6C775;color:#6F5100;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12.5px;line-height:1.5"><strong>Early complaint — retained payments require review</strong><div id="rl_earlyComplaintWarningDetail" style="margin-top:4px"></div><div style="margin-top:5px">Generally, deductions from customer payments should not be made where the complaint was raised within the first 30 days. Please review the basis for the deduction before proceeding. This warning does not prevent saving.</div></div>
         <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm" id="rl_proceedsLabel">Vehicle Proceeds Received</div><div class="hint" id="rl_proceedsHint">From auction / dealership</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_proceeds" value="0"></div></div>
-        <div class="calcrow" id="rl_partnerRecoveryRow" hidden><span class="op minus">&minus;</span><div class="rl"><div class="nm">Additional Dealership / Partner Contribution Received</div><div class="hint">Only shown for completed auctions. Separately classified partner contributions (P), in addition to auction proceeds (A). Deducted only from the indicative remaining loss, never twice from the saved rejection loss.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" id="rl_partnerRecovery" value="0" readonly aria-label="Confirmed dealership or partner receipts"></div></div>
-        <div class="calcrow with-action" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Calculated from the customer deposit and deposit deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_depositCalcBtn">Calculate</button></div></div>
-        <div class="calc-total"><span class="l">Vehicle Rejection Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Original complaint loss; saved to Complaints Hub</small></span><span class="v" id="rl_total">&pound;0.00</span></div>
-        <div class="calc-total" id="rl_remainingLossRow" hidden style="margin-top:8px;background:#fff4f9;border:1px solid #edbfd5"><span class="l">Remaining Unrecovered Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Original rejection loss less additional classified partner contributions; indicative only, not saved to the rejection-loss field</small></span><span class="v" id="rl_remainingLoss">&pound;0.00</span></div>
+        <div class="calcrow" id="rl_partnerRecoveryRow" hidden><span class="op minus">&minus;</span><div class="rl"><div class="nm">Additional Dealership / Partner Payment</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" id="rl_partnerRecovery" value="0" readonly aria-label="Confirmed dealership or partner receipts"></div></div>
+        <div class="calcrow with-action" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Deposit refunded to customer.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_depositCalcBtn">Calculate</button></div></div>
+        <div class="calc-total"><span class="l">Vehicle Rejection Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Saved to Complaints Hub</small></span><span class="v" id="rl_total">&pound;0.00</span></div>
+        <div class="calc-total" id="rl_remainingLossRow" hidden style="margin-top:8px;background:#fff4f9;border:1px solid #edbfd5"><span class="l">Remaining Unrecovered Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">After additional partner payments · indicative</small></span><span class="v" id="rl_remainingLoss">&pound;0.00</span></div>
       </div>
       <div class="modal-foot"><div class="foot-info" id="rejRefundInfo" aria-live="polite"><span class="k">Customer refund</span><span class="v" id="rejRefundInfoValue">&pound;0.00</span></div><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
     </div>
@@ -1475,7 +1477,7 @@ function openRejCalc(which){
   $('#rl_customer_deduction').value=rejHas(rejWork.customerDeductionAmount)?String(rejWork.customerDeductionAmount):'';
   $('#rl_retained').value=String(rejHas(rejWork.retainedPayments)?rejWork.retainedPayments:0);
   var vehicleOutcome = which==='fos' ? ($('#fosRejection').value||'') : ($('#rejection').value||'');
-  var auctionRoute=!!PREFILL.auctionMarked || vehicleOutcome==='Sold at Auction';
+  var auctionRoute=vehicleOutcome ? vehicleOutcome==='Sold at Auction' : !!PREFILL.auctionMarked;
   var receipts=rejectionClassifiedReceipts();
   // A-classified net auction receipts are vehicle proceeds; P-classified receipts
   // are ADDITIONAL contributions only on the auction route. Never use the
@@ -1492,9 +1494,7 @@ function openRejCalc(which){
   else if(vehicleOutcome==='Rejected to Dealership') proceedsLabel='Vehicle Proceeds From Dealership';
   else if(vehicleOutcome==='Rejected to Broker') proceedsLabel='Vehicle Proceeds From '+(PREFILL.introducerName||'Broker');
   $('#rl_proceedsLabel').textContent=proceedsLabel;
-  $('#rl_proceedsHint').textContent=auctionRoute
-    ? (receipts.auction>0?'Confirmed auction-classified suspense receipts (A); excludes partner contributions':PREFILL.auctionNetConfirmed?'Verified net auction proceeds; excludes partner contributions':'Only enter confirmed NET auction sale proceeds; never the gross sale value')
-    : (receipts.partner>0?'Dealership return proceeds (P); do not also deduct as an additional contribution':'Enter confirmed vehicle return proceeds only; not the total unclassified suspense balance');
+  $('#rl_proceedsHint').textContent=auctionRoute ? 'Net amount received from auction' : 'Amount received for the vehicle';
   var mm=$('#rl_mismatch');
   mm.style.display='none';
   var dep=$('#rl_deposit'),depRow=$('#rl_depositRow'),depBtn=$('#rl_depositCalcBtn');
@@ -1535,7 +1535,7 @@ function rejectionClassifiedReceipts(){
 function confirmedPartnerRecoveryForRejection(){return rejectionClassifiedReceipts().partner;}
 function refreshRejectionPartnerRecovery(){
   var chosen=calcTarget==='fos' ? ($('#fosRejection').value||'') : ($('#rejection').value||'');
-  var auction=!!(PREFILL&&PREFILL.auctionMarked)||chosen==='Sold at Auction';
+  var auction=chosen ? chosen==='Sold at Auction' : !!(PREFILL&&PREFILL.auctionMarked);
   var amount=auction?confirmedPartnerRecoveryForRejection():0;
   var row=$('#rl_partnerRecoveryRow'),remaining=$('#rl_remainingLossRow'),input=$('#rl_partnerRecovery');
   if(row)row.hidden=!auction;
