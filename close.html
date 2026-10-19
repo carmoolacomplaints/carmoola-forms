@@ -841,11 +841,12 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         </div>
         <div class="calcrow"><span class="op plus">+</span><div class="rl"><div class="nm">Credit Amount</div><div class="hint" id="rl_creditHint">Purchase price &minus; deposit &minus; part exchange</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_credit" value="0"></div></div>
         <div class="calcrow with-action"><span class="op minus">&minus;</span><div class="rl"><div class="nm">Retained Customer Payments</div><div class="hint">Calculated from the customer's repayments and the repayments deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_retained" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_retainedCalcBtn">Calculate</button></div></div>
+        <div id="rl_earlyComplaintWarning" role="status" aria-live="polite" hidden style="background:#FFF3D6;border:1px solid #E6C775;color:#6F5100;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12.5px;line-height:1.5"><strong>Early complaint — retained payments require review</strong><div id="rl_earlyComplaintWarningDetail" style="margin-top:4px"></div><div style="margin-top:5px">Generally, deductions from customer payments should not be made where the complaint was raised within the first 30 days. Please review the basis for the deduction before proceeding. This warning does not prevent saving.</div></div>
         <div class="calcrow"><span class="op minus">&minus;</span><div class="rl"><div class="nm" id="rl_proceedsLabel">Vehicle Proceeds Received</div><div class="hint" id="rl_proceedsHint">From auction / dealership</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_proceeds" value="0"></div></div>
-        <div class="calcrow" id="rl_partnerRecoveryRow" hidden><span class="op minus">&minus;</span><div class="rl"><div class="nm">Dealership / Partner Recoveries Received</div><div class="hint">Confirmed partner receipts from Post-Resolution. Shown separately; does not change the original rejection loss saved to Complaints Hub.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" id="rl_partnerRecovery" value="0" readonly aria-label="Confirmed dealership or partner receipts"></div></div>
+        <div class="calcrow" id="rl_partnerRecoveryRow" hidden><span class="op minus">&minus;</span><div class="rl"><div class="nm">Additional Dealership / Partner Contribution Received</div><div class="hint">Only shown for completed auctions. Separately classified partner contributions (P), in addition to auction proceeds (A). Deducted only from the indicative remaining loss, never twice from the saved rejection loss.</div></div><div class="in money"><span class="sym">&pound;</span><input type="text" id="rl_partnerRecovery" value="0" readonly aria-label="Confirmed dealership or partner receipts"></div></div>
         <div class="calcrow with-action" id="rl_depositRow"><span class="op plus">+</span><div class="rl"><div class="nm">Deposit Paid Out</div><div class="hint" id="rl_depositHint">Calculated from the customer deposit and deposit deduction.</div></div><div class="in calc-readonly"><div class="money"><span class="sym">&pound;</span><input type="text" inputmode="decimal" id="rl_deposit" value="0" readonly></div><button type="button" class="subcalc-btn" id="rl_depositCalcBtn">Calculate</button></div></div>
         <div class="calc-total"><span class="l">Vehicle Rejection Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Original complaint loss; saved to Complaints Hub</small></span><span class="v" id="rl_total">&pound;0.00</span></div>
-        <div class="calc-total" id="rl_remainingLossRow" hidden style="margin-top:8px;background:#fff4f9;border:1px solid #edbfd5"><span class="l">Remaining Unrecovered Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">After confirmed dealership / partner receipts; indicative, not written to rejection-loss field</small></span><span class="v" id="rl_remainingLoss">&pound;0.00</span></div>
+        <div class="calc-total" id="rl_remainingLossRow" hidden style="margin-top:8px;background:#fff4f9;border:1px solid #edbfd5"><span class="l">Remaining Unrecovered Loss <small style="display:block;font-size:11px;font-weight:400;opacity:.75">Original rejection loss less additional classified partner contributions; indicative only, not saved to the rejection-loss field</small></span><span class="v" id="rl_remainingLoss">&pound;0.00</span></div>
       </div>
       <div class="modal-foot"><div class="foot-info" id="rejRefundInfo" aria-live="polite"><span class="k">Customer refund</span><span class="v" id="rejRefundInfoValue">&pound;0.00</span></div><button class="btn-ghost" id="rejCancel">Cancel</button><button class="btn-sm" id="rejSave">Save</button></div>
     </div>
@@ -1473,16 +1474,27 @@ function openRejCalc(which){
   }
   $('#rl_customer_deduction').value=rejHas(rejWork.customerDeductionAmount)?String(rejWork.customerDeductionAmount):'';
   $('#rl_retained').value=String(rejHas(rejWork.retainedPayments)?rejWork.retainedPayments:0);
-  var netAuction=(PREFILL.auctionMarked && PREFILL.auctionNetConfirmed);
-  $('#rl_proceeds').value=String(PREFILL.auctionMarked?(netAuction?PREFILL.vehicleProceeds:0):(rejHas(rejWork.vehicleProceeds)?rejWork.vehicleProceeds:(PREFILL.vehicleProceeds||0)));
   var vehicleOutcome = which==='fos' ? ($('#fosRejection').value||'') : ($('#rejection').value||'');
+  var auctionRoute=!!PREFILL.auctionMarked || vehicleOutcome==='Sold at Auction';
+  var receipts=rejectionClassifiedReceipts();
+  // A-classified net auction receipts are vehicle proceeds; P-classified receipts
+  // are ADDITIONAL contributions only on the auction route. Never use the
+  // undifferentiated suspense total for a new calculation.
+  var proceeds;
+  if(auctionRoute){
+    proceeds=receipts.auction>0?receipts.auction:(PREFILL.auctionNetConfirmed?Number(PREFILL.vehicleProceeds||0):(rejHas(rejWork.vehicleProceeds)?num(rejWork.vehicleProceeds):0));
+  } else {
+    proceeds=rejHas(rejWork.vehicleProceeds)?num(rejWork.vehicleProceeds):(receipts.partner>0?receipts.partner:0);
+  }
+  $('#rl_proceeds').value=String(proceeds);
   var proceedsLabel='Vehicle Proceeds Received';
-  if(vehicleOutcome==='Sold at Auction') proceedsLabel='Auction Proceeds Received';
+  if(auctionRoute) proceedsLabel='Net Auction Proceeds Received';
   else if(vehicleOutcome==='Rejected to Dealership') proceedsLabel='Vehicle Proceeds From Dealership';
   else if(vehicleOutcome==='Rejected to Broker') proceedsLabel='Vehicle Proceeds From '+(PREFILL.introducerName||'Broker');
   $('#rl_proceedsLabel').textContent=proceedsLabel;
-  var proceedsHint = PREFILL.auctionMarked ? (PREFILL.auctionNetConfirmed ? 'Net auction funds verified in suspense (gross auction value is before fees)' : 'No verified auction receipt yet — do not use the gross sale price') : (PREFILL.suspenseTotal>0 ? 'Seeded from suspense funds received' : 'From auction or dealership');
-  $('#rl_proceedsHint').textContent = proceedsHint;
+  $('#rl_proceedsHint').textContent=auctionRoute
+    ? (receipts.auction>0?'Confirmed auction-classified suspense receipts (A); excludes partner contributions':PREFILL.auctionNetConfirmed?'Verified net auction proceeds; excludes partner contributions':'Only enter confirmed NET auction sale proceeds; never the gross sale value')
+    : (receipts.partner>0?'Dealership return proceeds (P); do not also deduct as an additional contribution':'Enter confirmed vehicle return proceeds only; not the total unclassified suspense balance');
   var mm=$('#rl_mismatch');
   mm.style.display='none';
   var dep=$('#rl_deposit'),depRow=$('#rl_depositRow'),depBtn=$('#rl_depositCalcBtn');
@@ -1505,15 +1517,25 @@ function updateRejRefundInfo(){
   if(refund!==null&&refund>0){val.textContent=gbp.format(refund);box.classList.add('show');}
   else{val.textContent=gbp.format(0);box.classList.remove('show');}
 }
-function confirmedPartnerRecoveryForRejection(){
-  // Reuse the classified Complaints Hub suspense allocations already supplied by Post-Resolution.
-  // 'A' = auction, 'P' = dealership / partner; exclude 'X' and unclassified funds.
+function rejectionClassifiedReceipts(){
+  // Use allocated pence, not the full suspense amount; a receipt can only
+  // contribute to one category because the allocation is keyed by item ID.
   var p=POST_DATA||(PREFILL&&PREFILL.postResolution)||{};
-  return Math.round(((p.reconciled||[]).filter(function(item){return Array.isArray(item)&&item[2]==='P';})
-    .reduce(function(sum,item){return sum+(Number(item[1])||0);},0))/100*100)/100;
+  var seen=new Set(), auction=0, partner=0;
+  (p.reconciled||[]).forEach(function(item){
+    if(!Array.isArray(item)||item.length<3)return;
+    var id=String(item[0]), cents=Number(item[1]);
+    if(seen.has(id)||!Number.isSafeInteger(cents)||cents<=0)return;
+    seen.add(id);
+    if(item[2]==='A')auction+=cents;
+    if(item[2]==='P')partner+=cents;
+  });
+  return {auction:auction/100,partner:partner/100};
 }
+function confirmedPartnerRecoveryForRejection(){return rejectionClassifiedReceipts().partner;}
 function refreshRejectionPartnerRecovery(){
-  var auction=!!(PREFILL&&PREFILL.auctionMarked);
+  var chosen=calcTarget==='fos' ? ($('#fosRejection').value||'') : ($('#rejection').value||'');
+  var auction=!!(PREFILL&&PREFILL.auctionMarked)||chosen==='Sold at Auction';
   var amount=auction?confirmedPartnerRecoveryForRejection():0;
   var row=$('#rl_partnerRecoveryRow'),remaining=$('#rl_remainingLossRow'),input=$('#rl_partnerRecovery');
   if(row)row.hidden=!auction;
@@ -1521,7 +1543,18 @@ function refreshRejectionPartnerRecovery(){
   if(input)input.value=amount.toFixed(2);
   return amount;
 }
+function updateEarlyComplaintRetainedWarning(){
+  var warning=$('#rl_earlyComplaintWarning');
+  if(!warning)return;
+  var raw=PREFILL && PREFILL.vehicleDetails ? PREFILL.vehicleDetails.originationToComplaint : null;
+  var days=(raw===null||raw===undefined||String(raw).trim()==='')?null:Number(raw);
+  var retained=num($('#rl_retained').value);
+  var show=retained>0 && days!==null && Number.isFinite(days) && days>=0 && days<=30;
+  warning.hidden=!show;
+  if(show)$('#rl_earlyComplaintWarningDetail').textContent='Retained customer payments: '+gbp.format(retained)+' · Origination to complaint: '+days+' days.';
+}
 function rejCalcCompute(){
+  updateEarlyComplaintRetainedWarning();
   var t=num($('#rl_credit').value)-num($('#rl_retained').value)-num($('#rl_proceeds').value)+num($('#rl_deposit').value);
   $('#rl_total').textContent=gbp.format(t);
   var partner=refreshRejectionPartnerRecovery();
@@ -1819,7 +1852,7 @@ function restoreSavedBreakdowns(){
     var bd={used:true,
       creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),
       retainedPayments:has(s.rejRetained)?s.rejRetained:0,
-      vehicleProceeds:PREFILL.auctionMarked?(PREFILL.auctionNetConfirmed?PREFILL.vehicleProceeds:0):(has(s.rejProceeds)?s.rejProceeds:0),
+      vehicleProceeds:PREFILL.auctionMarked?(rejectionClassifiedReceipts().auction|| (PREFILL.auctionNetConfirmed?PREFILL.vehicleProceeds:0)):(has(s.rejProceeds)?s.rejProceeds:0),
       depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0,
       customerDeductionAmount:has(s.rejCustomerDeduction)?s.rejCustomerDeduction:null,
       repaymentsMadeByCustomer:has(s.rejRepaymentsMade)?s.rejRepaymentsMade:null,
@@ -2030,7 +2063,7 @@ function costEditorCompute(){var t=0;document.querySelectorAll('#cost_rows .calc
 function openCostEditor(id){costCalcTarget=id;var meta=COST_META[id];if(!meta)return;$('#costModalTitle').textContent=meta.title;var box=$('#cost_rows');box.innerHTML='';var b=costBreakdowns[id]||{used:false,rows:[]};var rows=cleanCostRows(b.rows);if(!rows.length)rows=[{desc:'',amount:0}];rows.forEach(function(r){box.appendChild(costEditorRow(r));});$('#costEditorError').classList.remove('show');$('#costEditorError').textContent='';costEditorCompute();$('#costOverlay').classList.add('show');}
 function collectCostEditor(){var rows=[],error='';document.querySelectorAll('#cost_rows .calcrow').forEach(function(row){var d=row.querySelector('.cost_desc').value.trim(),raw=row.querySelector('.cost_amt').value.trim(),a=num(raw);if(!d&&(!raw||a===0))return;if(!d){error='Each cost with an amount needs a description.';return;}if(raw===''){error='Each cost needs an amount (enter 0 if none).';return;}rows.push({desc:d,amount:a});});return {rows:rows,error:error};}
 function initCostEditors(){document.querySelectorAll('[data-cost-target]').forEach(function(btn){btn.addEventListener('click',function(){var id=btn.dataset.costTarget;if(id==='c_insp'){openInspCalc('inv');return;}if(id==='f_insp'){openInspCalc('fos');return;}openCostEditor(id);});});$('#cost_add').addEventListener('click',function(){$('#cost_rows').appendChild(costEditorRow({desc:'',amount:0}));costEditorCompute();});$('#costCancel').addEventListener('click',function(){$('#costOverlay').classList.remove('show')});$('#costOverlay').addEventListener('click',function(e){if(e.target===$('#costOverlay'))$('#costOverlay').classList.remove('show')});$('#costSave').addEventListener('click',function(){var got=collectCostEditor(),er=$('#costEditorError');if(got.error){er.textContent=got.error;er.classList.add('show');return;}costBreakdowns[costCalcTarget]={used:true,rows:cleanCostRows(got.rows)};syncCostFromBreakdown(costCalcTarget);renderRunningMini();$('#costOverlay').classList.remove('show');});}
-function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:PREFILL.auctionMarked?(PREFILL.auctionNetConfirmed?PREFILL.vehicleProceeds:0):(has(s.rejProceeds)?s.rejProceeds:0),depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false;}else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false;}}}
+function restoreRejectionBreakdowns(){var s=PREFILL.saved||{},has=function(v){return v!==null&&v!==undefined;};if(s.rejStage==='Investigation'||s.rejStage==='FOS'){var bd={used:true,creditAmount:Math.max(0,(PREFILL.purchasePrice||0)-(PREFILL.deposit||0)-(PREFILL.partEx||0)),retainedPayments:has(s.rejRetained)?s.rejRetained:0,vehicleProceeds:PREFILL.auctionMarked?(rejectionClassifiedReceipts().auction|| (PREFILL.auctionNetConfirmed?PREFILL.vehicleProceeds:0)):(has(s.rejProceeds)?s.rejProceeds:0),depositPaidOut:has(s.rejDeposit)?s.rejDeposit:0};bd.total=bd.creditAmount-bd.retainedPayments-bd.vehicleProceeds+bd.depositPaidOut;if(s.rejStage==='Investigation'){rejBreakdown=bd;$('#rejLossCalcPill').hidden=false;}else{fosRejBreakdown=bd;$('#fosRejCalcPill').hidden=false;}}}
 function rawJiraCost(id){
   var meta=COST_META[id],obj;
   if(!meta)return {present:false,value:0};
