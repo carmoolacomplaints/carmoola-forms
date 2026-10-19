@@ -2393,7 +2393,8 @@ function prRender(){var p=POST_DATA,s=PREFILL.statusName,nonOut=['Investigation'
 function prRenderVehicle(){var p=POST_DATA,v=$('#postVehicle').value;$('#postAuctionDetails').hidden=!v.startsWith('Carmoola Auction');$('#postAuctionGross').textContent=p.auction.gross===null?'Not recorded':gbp.format(p.auction.gross);$('#postAuctionDate').textContent=p.auction.date?formatDisplayDate(p.auction.date):'Not recorded';$('#postVehicleWarning').textContent=v==='Carmoola Auction — Completed'&&!p.auction.sold?'Auction cannot be marked completed until Vehicle Auction Sale is Y in Complaints Hub.':'';}
 function prRenderSuspense(){
   var p=POST_DATA,items=p.suspense||{rows:[],valid:true},known=new Map((p.reconciled||[]).map(function(x){return [String(x[0]),x];}));
-  $('#postSuspenseWarning').textContent=items.warning||'';
+  var review=(p.amountReviewCandidates||[]);
+  $('#postSuspenseWarning').textContent=[items.warning||'',review.length ? review.length+' suspense payment(s) within 10% of the outstanding recovery need manual review before allocation.':''].filter(Boolean).join(' ');
   var labels={A:'Auction proceeds',P:'Dealership / partner payment',C:'Customer money',O:'Other money',X:'Excluded / not recovery'};
   $('#postSuspenseList').innerHTML=items.rows.length?items.rows.map(function(r){
     var applied=known.get(String(r.id)),code=applied&&String(applied[2]),isPreview=(p.auctionPreview||[]).some(function(x){return String(x.id)===String(r.id);});
