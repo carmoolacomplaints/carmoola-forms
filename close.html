@@ -129,6 +129,7 @@
 .rejection-page-intro{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .rejection-outcome-panel{display:flex;justify-content:space-between;gap:18px;align-items:center;background:#fcf8fb;border:1px solid #eadce6;border-radius:12px;padding:17px 20px;margin-bottom:17px}.rejection-outcome-panel strong{font-size:14px}.rejection-outcome-panel p{font-size:12px;color:var(--muted);margin:5px 0 0}.rejection-outcome-input{min-width:285px;max-width:430px;flex:1}.rejection-outcome-input select{width:100%;border:1px solid #ded2df;border-radius:9px;padding:11px 12px;background:#fff;color:#261b2b;font:inherit}.rejection-outcome-input small{display:block;font-size:11px;color:#85536b;margin-top:5px}@media(max-width:700px){.rejection-outcome-panel{flex-direction:column;align-items:stretch}.rejection-outcome-input{min-width:0;max-width:none}}
 .rejection-page-intro h3{margin:0 0 5px;font-size:19px}.rejection-page-intro p{margin:0;font-size:13px;color:var(--muted)}
+.rejection-no-calculation{background:#F4FAF7;border:1px solid #B8DEC9;border-radius:12px;padding:22px 24px;margin-top:16px}.rejection-no-calculation[hidden]{display:none!important}.rejection-no-calculation strong{display:block;color:#126343;font-size:16px}.rejection-no-calculation p{color:#526B5F;font-size:13px;margin:6px 0 0;line-height:1.5}#rejectionPageCalculatorSlot[hidden]{display:none!important}
 .rejection-page-layout .rej-workspace{width:100%;max-height:none;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
 .rejection-page-layout .rej-workspace>.modal{max-width:none;width:100%;max-height:none;overflow:visible;border-radius:13px;box-shadow:none;border:1px solid var(--line)}
 .rejection-page-layout .modal-head{padding:18px 21px 14px}.rejection-page-layout .modal-body{padding:15px 21px}
@@ -589,6 +590,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
       <div><strong>What happened to the vehicle?</strong><p>Uses the same Vehicle Rejection Outcome as Complaint Closure.</p></div>
       <div class="rejection-outcome-input"><select id="rejectionPageOutcome" aria-label="Vehicle rejection outcome"><option value="">Select vehicle outcome…</option><option>Rejected to Broker</option><option>Rejected to Dealership</option><option>Sold at Auction</option><option>No Vehicle Rejection</option></select><small id="rejectionPageOutcomeNote"></small></div>
     </div>
+    <div id="rejectionPageNoCalculation" class="rejection-no-calculation" hidden><strong>No vehicle rejection loss calculation required</strong><p>This complaint does not involve a vehicle rejection requiring a financial loss calculation. Any repair costs or other third-party recoveries can still be managed in Post-Resolution.</p></div>
     <div id="rejectionPageCalculatorSlot"></div>
   </div>
 </section>
@@ -1452,6 +1454,15 @@ function setRejectionPageMode(on){
     $('#rejSave').textContent='Save';
   }
 }
+function updateRejectionPageVisibility(){
+  var selected=$('#rejectionPageOutcome').value;
+  var noRejection=selected==='No Vehicle Rejection';
+  $('#rejectionPageCalculatorSlot').hidden=noRejection;
+  $('#rejectionPageNoCalculation').hidden=!noRejection;
+  var intro=document.querySelector('#actionsRejection .rejection-page-intro');
+  if(intro)intro.hidden=noRejection;
+  if(noRejection)closeRejSides();
+}
 function syncRejectionPageOutcome(){
   var page=$('#rejectionPageOutcome'), inv=$('#rejection'), fos=$('#fosRejection');
   var owner=prCustomerStage();
@@ -1466,6 +1477,7 @@ function syncRejectionPageOutcome(){
   page.value=selected||'';
   page.disabled=(owner==='fos' && savedRejectionStage()==='Investigation');
   $('#rejectionPageOutcomeNote').textContent=auctionConfirmed?'Auction sale confirmed in Complaints Hub — Sold at Auction is required.':'Saved outcome is shared with Complaint Closure.';
+  updateRejectionPageVisibility();
 }
 function initRejectionPageOutcome(){
   $('#rejectionPageOutcome').addEventListener('change',function(){
@@ -1476,6 +1488,7 @@ function initRejectionPageOutcome(){
     }
     target.value=v;
     syncRejectionOwnership();
+    updateRejectionPageVisibility();
   });
 }
 function closeRejectionPage(){
@@ -2657,7 +2670,7 @@ function initActionsHome(){
   $('#fosHomeHint').textContent=!p.fosApplicable?'Not available — this complaint has not been referred to FOS.':(fosReviewIsAvailable()?'Review the latest decision and choose the next action.':'FOS referral recorded. No active decision review is currently available.');
   document.querySelectorAll('[data-go]').forEach(function(btn){btn.addEventListener('click',function(){gotoActionsPage(btn.dataset.go);});});
   initRejectionPageOutcome();
-  $('#homeRejectionTile').addEventListener('click',function(){gotoActionsPage('rejection');homeRejectionDirect=true;syncRejectionPageOutcome();setRejectionPageMode(true);openRejCalc(prCustomerStage());});
+  $('#homeRejectionTile').addEventListener('click',function(){gotoActionsPage('rejection');homeRejectionDirect=true;syncRejectionPageOutcome();setRejectionPageMode(true);openRejCalc(prCustomerStage());updateRejectionPageVisibility();});
   $('#actionsHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
   $('#globalHomeBtn').addEventListener('click',function(){gotoActionsPage('home');});
   gotoActionsPage('home');
