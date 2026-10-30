@@ -496,7 +496,13 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
 .pr-checklist-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}.pr-checklist-head h3{margin:0 0 4px}.pr-checklist-head p{margin:0}
 .pr-checklist{margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden}.pr-checklist-item{display:flex;align-items:flex-start;gap:13px;padding:16px;border-bottom:1px solid var(--line);background:#fff}.pr-checklist-item:last-child{border-bottom:0}.pr-checklist-item.is-done{background:#f7fbf9}.pr-checklist-item.is-no-longer{background:#faf9fb}.pr-checklist-tick{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--good);cursor:pointer}.pr-checklist-text{flex:1;min-width:0;font-size:14px;color:var(--ink);line-height:1.5}.pr-checklist-item.is-done .pr-checklist-text{text-decoration:line-through;color:#718079}.pr-checklist-item.is-no-longer .pr-checklist-text{text-decoration:line-through;color:var(--muted)}.pr-checklist-meta{display:block;font-size:11.5px;color:var(--muted);margin-top:4px}.pr-checklist-side{display:flex;align-items:center;gap:10px}.pr-task-subtle{border:0;background:transparent;color:#807586;font:600 11.5px 'DM Sans',sans-serif;cursor:pointer;padding:5px 0}.pr-task-subtle:hover{color:var(--pink-dark);text-decoration:underline}.pr-checklist-item button:disabled,.pr-checklist-item input:disabled{cursor:wait;opacity:.5}.pr-checklist-empty{padding:20px;color:var(--muted);font-size:13px}#prTaskSaveState{min-height:19px;font-size:12px;color:var(--muted);margin-top:8px}#prTaskSaveState.pr-save-error{color:var(--err);font-weight:700}#prTaskSaveState.pr-save-ok{color:var(--good)}.pr-new-task{display:flex;gap:9px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:9px}.pr-new-task input{flex:1;min-width:0}.pr-new-task button{flex:none}.pr-new-task[hidden]{display:none!important}@media(max-width:550px){.pr-checklist-item{padding:13px 10px}.pr-checklist-side{flex-direction:column;align-items:flex-end}.pr-new-task{flex-wrap:wrap}.pr-new-task input{width:100%;flex:auto}}
  #postWorkspace.pr-editor-hidden{display:none!important}
- </style>
+ 
+.dealer-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
+.dealer-card h3{margin:0 0 9px;font-size:19px}.dealer-card p{color:var(--muted);font-size:13px;margin:5px 0 14px}
+.dealer-summary{background:#FCF7FA;border:1px solid #EEDDE8;border-radius:12px;padding:17px;margin:14px 0}.dealer-summary strong{font-size:19px}.dealer-hist{overflow-wrap:anywhere;font-size:12px;color:#6E5F70;background:#F8F5F9;border-radius:9px;padding:12px}
+.dealer-field{display:block;font-size:13px;font-weight:700;margin:14px 0}.dealer-field select,.dealer-field textarea{display:block;width:100%;margin-top:6px;font:inherit;font-size:14px;border:1.5px solid #DDD1DD;border-radius:9px;padding:11px;background:#fff;color:var(--ink)}
+.dealer-field textarea{min-height:75px;resize:vertical}.dealer-hidden{display:none!important}
+</style>
 </head>
 <body>
 
@@ -571,10 +577,11 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   <div class="closure-check-dialog"><h3 id="closureCheckTitle">Post-Resolution check</h3><p id="closureCheckDescription"></p><label id="closureMoveClosedRow" class="closure-move-closed" hidden><input id="closureMoveClosed" type="checkbox"><span><strong>Move the complaint to Closed</strong><small>After saving, transition the Complaints Hub complaint to Complaint Closed.</small></span></label><div class="closure-check-actions"><button type="button" class="post-btn-secondary" id="closureCheckCancel">Cancel</button><button type="button" class="post-btn-secondary" id="closureCheckReview">Review Recovery</button><button type="button" class="btn" id="closureCheckContinue">Continue &amp; Save Closure</button></div></div>
 </div>
 <section id="actionsHome" class="actions-page active" aria-label="Complaint homepage">
-  <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">6 WORKSPACES</span></div>
+  <div class="home-action-heading"><div><h3>What would you like to do?</h3><p>Select a workspace to continue managing this complaint.</p></div><span class="home-action-count">7 WORKSPACES</span></div>
   <div class="actions-tiles home-tiles home-tiles-five">
     <button type="button" class="actions-tile" data-go="running"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M8 15h3"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Running Costs</strong><small>Record and manage complaint expenses</small></span></button>
     <button type="button" class="actions-tile" id="homeRejectionTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 7h8M8 12h3M8 17h8M15 11v5M12.5 13.5h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Calculate Vehicle Rejection Loss</strong><small>Calculate and save the customer-side loss to Complaints Hub</small></span></button>
+    <button type="button" class="actions-tile" id="dealerHomeTile" hidden data-go="dealer"><span class="tile-top"><span class="glyph">▣</span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Dealership Position</strong><small id="dealerHomeHint">Record trading or insolvency position</small></span></button>
     <button type="button" class="actions-tile" data-go="post" id="postHomeTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6 6 6-6 6"/><path d="M4 5v14"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Post-Resolution</strong><small id="postHomeHint">Follow-up actions after the complaint ends</small></span></button>
     <button type="button" class="actions-tile" data-go="closure"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>Complaint Closure</strong><small>Outcomes, redress and final costs</small></span></button>
     <button type="button" class="actions-tile" data-go="review" id="fosHomeTile"><span class="tile-top"><span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l4 4v14H4V3h4z"/><path d="M15 3v5h5M8 12h8M8 16h5"/></svg></span><span class="arrow">↗</span></span><span class="tile-copy"><strong>FOS Decision Review</strong><small id="fosHomeHint">Review Investigator and Ombudsman decisions</small></span></button>
@@ -582,9 +589,14 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
   </div>
   <div class="home-footer-note">COMPLAINT ACTIONS <span>·</span> <span id="homeFooterRef">—</span></div>
 </section>
+<section id="actionsDealer" class="actions-page" aria-label="Dealership Position">
+<div class="actions-subhero"><h2>Dealership Position</h2><p>Record the dealership’s current trading or insolvency position for this Vehicle Issues complaint.</p></div>
+<div class="dealer-card"><h3>Current dealership position</h3><div class="dealer-summary"><strong id="dealerCurrent">Not yet recorded</strong><p id="dealerNameDisplay"></p></div><button class="post-btn-secondary" id="dealerEditBtn" type="button">Add / edit position</button><div id="dealerEditor" hidden><label class="dealer-field">Dealership outcome<select id="dealerPositionSelect"><option value="">Select an outcome</option><option>Trading normally</option><option>No longer trading</option><option>In administration</option><option>In liquidation</option><option>Dissolved</option><option>Subject to winding-up proceedings</option><option>Unable to contact</option></select></label><label class="dealer-field">Reason for update<textarea id="dealerReason" placeholder="Evidence, context or reason for the change"></textarea></label><div id="dealerError" class="post-error" role="alert"></div><div class="post-actions"><button type="button" class="post-btn-secondary" id="dealerCancel">Cancel</button><button type="button" class="btn" id="dealerSave">Save dealership position</button></div></div></div>
+<div class="dealer-card"><h3>Recorded history</h3><p>Compact change history stored in Jira (maximum 255 characters).</p><div class="dealer-hist" id="dealerHistory">No changes recorded.</div></div></section>
 <section id="actionsRejection" class="actions-page" aria-label="Calculate Vehicle Rejection Loss">
   <div class="rejection-page-hero"><div><span class="eyebrow">COMPLAINT ACTIONS · CUSTOMER-SIDE CALCULATION</span><h2>Vehicle Rejection Loss</h2><p>Review customer payments, deductions and net proceeds, then save the calculation to Complaints Hub.</p></div><span class="rejection-page-chip">Shared Complaints Hub calculation</span></div>
   <div class="rejection-page-layout">
+    <div id="dealerRejectionPrompt" class="dealer-card" hidden><h3>Dealership position</h3><p>For non-outsourced Vehicle Issues complaints where the rejection loss exceeds £500, you can record the dealership position.</p><button type="button" class="post-btn-secondary" id="dealerRejectionOpen">Update dealership position</button></div>
     <div class="rejection-page-intro"><h3>Rejection loss calculation</h3><p>The same figures appear in Complaint Closure and Post-Resolution. Repayment and deposit calculators open alongside the calculation.</p></div>
     <div class="rejection-outcome-panel" id="rejectionPageOutcomePanel">
       <div><strong>What happened to the vehicle?</strong><p>Uses the same Vehicle Rejection Outcome as Complaint Closure.</p></div>
@@ -701,6 +713,7 @@ body.actions-in-workspace .footer-inner{max-width:1100px}
         <div class="post-writeoff-current"><span>Current outstanding</span><strong id="postWriteoffOutstanding">£0.00</strong></div>
         <label class="post-field">Amount to write off (£)<input id="postWriteoff" type="number" min="0.01" step="0.01" placeholder="0.00"></label>
         <label class="post-field" style="margin-top:14px">Reason for write-off<input id="postWriteoffReason" type="text" maxlength="180" placeholder="Enter a reason for writing off this amount"></label>
+        <div id="dealerWriteoffSection" hidden><label class="dealer-field">Dealership position (optional)<select id="dealerWriteoffPosition"><option value="">Keep existing position</option><option>Trading normally</option><option>No longer trading</option><option>In administration</option><option>In liquidation</option><option>Dissolved</option><option>Subject to winding-up proceedings</option><option>Unable to contact</option></select></label><label class="dealer-field">Reason for changing position<input id="dealerWriteoffReason" type="text" maxlength="180" placeholder="Reason, if changing the dealership position"></label><p class="post-hint">Dealership position is saved separately in Jira before the write-off. It does not automatically authorise a write-off.</p></div>
         <div id="postWriteoffError" class="post-error" role="alert"></div>
         <div class="post-writeoff-dialog-actions"><button id="postCancelWriteoff" type="button" class="post-btn-secondary">Cancel</button><button id="postRecordWriteoff" type="button" class="post-writeoff-confirm">Confirm write-off</button></div>
       </div>
@@ -1744,6 +1757,7 @@ function initRejCalc(){
         PREFILL.saved=Object.assign({},PREFILL.saved||{},data.saved||{});
         if(data.rejectionOutcome)PREFILL.rejectionOutcome=data.rejectionOutcome;
         if(data.postResolution)POST_DATA=data.postResolution;
+        if(dealerNonOutsourced()&&Number(t)>500){$('#dealerRejectionPrompt').hidden=false;}
         postCustomerDraftDirty=false;
         if(ACTION_PAGE==='rejection'){closeRejectionPage();}else{homeRejectionDirect=false;closeRejSides();rejWork=null;$('#rejOverlay').classList.remove('show');gotoActionsPage('home');}
         prCustomerDraw();
@@ -2560,7 +2574,7 @@ function prInitInlineTasks(){
 
 function prOpenSetup(){prSetupTasksDraft=(POST_DATA.tasks||[]).map(function(x){return Object.assign({},x);});if(!prSetupTasksDraft.length)prSetupTasksDraft.push({description:'',status:'outstanding'});prTaskRows($('#prSetupTasks'),prSetupTasksDraft);$('#prSetupModal').hidden=false;$('#prSetupError').textContent='';$('#prSetupError').classList.remove('show');$('#prNoFundsConfirmed').checked=false;}
 function prTaskMode(){return document.querySelector('input[name="prSetupMode"]:checked').value;}
-function prSaveTaskList(tasks,btn,opening){var descriptions=tasks.filter(function(x){return String(x.description||'').trim();});if(descriptions.length!==tasks.length||!descriptions.length){(opening?$('#prSetupError'):$('#prTaskError')).textContent='Enter at least one task with a description.';return;}if(tasks.some(function(x){return x.status==='not_required'&&!String(x.reason||'').trim();})){(opening?$('#prSetupError'):$('#prTaskError')).textContent='Provide a reason for every task marked No Longer Required.';return;}var payload={action:opening?'post_tasks_only_open':'post_tasks_save',tasks:tasks,confirmedNoFunds:opening&&$('#prNoFundsConfirmed').checked,expectedTasksRaw:(POST_DATA&&POST_DATA.tasksRaw)||''};prRequest(payload,btn,function(data){POST_DATA=data.postResolution;if(data.statusName){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;}$('#prTasksModal').hidden=true;$('#prSetupModal').hidden=true;prOpeningStarted=false;prRender();refreshClosureRecoverySummary(POST_DATA);showActionsSaveToast('Post-Resolution tasks saved.');});}
+function prSaveTaskList(tasks,btn,opening){var descriptions=tasks.filter(function(x){return String(x.description||'').trim();});if(descriptions.length!==tasks.length||!descriptions.length){(opening?$('#prSetupError'):$('#prTaskError')).textContent='Enter at least one task with a description.';return;}if(tasks.some(function(x){return x.status==='not_required'&&!String(x.reason||'').trim();})){(opening?$('#prSetupError'):$('#prTaskError')).textContent='Provide a reason for every task marked No Longer Required.';return;}var payload={action:opening?'post_tasks_only_open':'post_tasks_save',tasks:tasks,confirmedNoFunds:opening&&$('#prNoFundsConfirmed').checked,expectedTasksRaw:(POST_DATA&&POST_DATA.tasksRaw)||''};if(mode==='writeoff'&&dealerNonOutsourced()&&$('#dealerWriteoffPosition').value&&$('#dealerWriteoffPosition').value!==(PREFILL.dealershipPosition?.value||'')){dealerSavePosition($('#dealerWriteoffPosition').value,$('#dealerWriteoffReason').value,btn).then(function(){$('#dealerWriteoffPosition').value='';submit('writeoff',btn);}).catch(function(err){prError('Dealership position: '+err.message);});return;}prRequest(payload,btn,function(data){POST_DATA=data.postResolution;if(data.statusName){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;}$('#prTasksModal').hidden=true;$('#prSetupModal').hidden=true;prOpeningStarted=false;prRender();refreshClosureRecoverySummary(POST_DATA);showActionsSaveToast('Post-Resolution tasks saved.');});}
 function initPrDashboard(){
  document.querySelectorAll('input[name="prSetupMode"]').forEach(function(r){r.addEventListener('change',function(){var task=prTaskMode()==='tasks';$('#prTasksOnlyConfirm').hidden=!task;$('#prFundsInfo').hidden=task;});});
  $('#prSetupAddTask').addEventListener('click',function(){prSetupTasksDraft.push({description:'',status:'outstanding'});prTaskRows($('#prSetupTasks'),prSetupTasksDraft);});
@@ -2608,6 +2622,7 @@ function gotoActionsPage(page){
   $('#actionsHome').classList.toggle('active',page==='home');
   $('#actionsRunning').classList.toggle('active',page==='running');
   $('#actionsPost').classList.toggle('active',page==='post');
+  $('#actionsDealer').classList.toggle('active',page==='dealer');
   $('#actionsRejection').classList.toggle('active',page==='rejection');
   $('#actionsSolicitor').classList.toggle('active',page==='solicitor');
   if(page==='post' && POST_DATA){prRender();prAutoReconcile();}
@@ -2615,7 +2630,7 @@ function gotoActionsPage(page){
   $('#reviewShell').classList.toggle('active',page==='review');
   $('#reviewViewSwitch').hidden=true;
   $('#actionsNav').hidden=true;
-  $('#actionsCurrent').textContent={'closure':'/ Complaint Closure','running':'/ Running Costs','review':'/ FOS Decision Review','post':'/ Post-Resolution','rejection':'/ Vehicle Rejection Loss','solicitor':'/ Solicitor Escalation'}[page]||'';
+  $('#actionsCurrent').textContent={'closure':'/ Complaint Closure','running':'/ Running Costs','review':'/ FOS Decision Review','post':'/ Post-Resolution','rejection':'/ Vehicle Rejection Loss','solicitor':'/ Solicitor Escalation','dealer':'/ Dealership Position'}[page]||'';
   $('#footer').hidden=page!=='closure';
   $('#manageBtn').style.display=page==='closure'?'':'none';
   $('#closedBanner').style.display=(page==='closure'&&PREFILL.alreadyClosed&&$('#unlockBtn').dataset.unlocked!=='1')?'block':'none';
@@ -2638,6 +2653,8 @@ function initActionsHome(){
   var vehicleSection=$('#homeVehicleSection');
   var isVehicleIssues=/^vehicle\s+issues?$/i.test(String(p.complaintType||'').trim());
   vehicleSection.hidden=!isVehicleIssues;
+  $('#dealerHomeTile').hidden=!isVehicleIssues;
+  if(isVehicleIssues)dealerRefresh();
   if(isVehicleIssues){
     var vd=p.vehicleDetails||{};
     var valueOrDash=function(v){return v===null||v===undefined||String(v).trim()===''?'Not recorded':String(v).trim();};
@@ -2676,6 +2693,39 @@ function initActionsHome(){
   gotoActionsPage('home');
 }
 
+
+function dealerEligible(){return /^vehicle\s+issues?$/i.test(String(PREFILL?.complaintType||'').trim());}
+function dealerNonOutsourced(){return dealerEligible()&&!PREFILL?.dealershipPosition?.outsourced;}
+function dealerRefresh(){
+ var data=PREFILL.dealershipPosition||{value:'',history:''};
+ $('#dealerCurrent').textContent=data.value||'Not yet recorded';
+ $('#dealerNameDisplay').textContent=PREFILL.dealershipName||'';
+ $('#dealerHistory').textContent=data.history||'No changes recorded.';
+ $('#dealerHomeHint').textContent=data.value||'Not yet recorded';
+ $('#dealerPositionSelect').value=data.value||'';
+ $('#dealerWriteoffSection').hidden=!dealerNonOutsourced();
+ $('#dealerRejectionPrompt').hidden=!(dealerNonOutsourced()&&Number(PREFILL.saved?.customfield_10282||0)>500);
+}
+async function dealerSavePosition(value,reason,btn){
+ if(!dealerEligible())throw Error('Dealership position is limited to Vehicle Issues complaints.');
+ var existing=PREFILL.dealershipPosition||{value:'',history:''};
+ if(!value||value===existing.value)return;
+ if(existing.value&&String(reason||'').trim().length<8)throw Error('Enter a reason of at least 8 characters when changing an existing position.');
+ var previous=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='Saving…';}
+ try{
+  var response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:getToken(),action:'dealership_position_save',position:value,reason:reason||'',expectedPosition:existing.value||'',expectedHistory:existing.history||''})});
+  var result=await response.json();if(!result.ok)throw Error((result.errors||[]).join('; ')||'Could not save dealership position.');
+  PREFILL.dealershipPosition=Object.assign({},existing,result.dealershipPosition);
+  dealerRefresh();showActionsSaveToast('Dealership position saved in Jira.');
+ }finally{if(btn){btn.disabled=false;btn.textContent=previous;}}
+}
+function initDealer(){
+ $('#dealerEditBtn').addEventListener('click',function(){$('#dealerEditor').hidden=false;$('#dealerError').classList.remove('show');});
+ $('#dealerCancel').addEventListener('click',function(){$('#dealerEditor').hidden=true;});
+ $('#dealerSave').addEventListener('click',async function(){var err=$('#dealerError');err.classList.remove('show');try{await dealerSavePosition($('#dealerPositionSelect').value,$('#dealerReason').value,this);$('#dealerEditor').hidden=true;$('#dealerReason').value='';}catch(ex){err.textContent=ex.message;err.classList.add('show');}});
+ $('#dealerRejectionOpen').addEventListener('click',function(){gotoActionsPage('dealer');$('#dealerEditor').hidden=false;});
+}
+
 function boot(){
   var token=getToken();
   if(!token){$('#loading').textContent='This link is missing its access token. Please regenerate it from the complaint.';return;}
@@ -2691,7 +2741,7 @@ function boot(){
       initRejCalc();initInspCalc();initCostEditors();
       applyPrefill();restoreRejectionBreakdowns();restoreCostBreakdowns();restoreInspectionBreakdowns();syncRej();syncFos();recompute();initRunningCosts();updateCostRequirements();renderFosRequiredActions();initRunningOnlySave();initSubmit();initManagementActions();initClosedLock();initReview();
       // Outside FOS Decision Review, keep the existing default-to-FOS behaviour.
-      initPostResolution();initClosureRecoveryUI();initActionsHome();
+      initPostResolution();initClosureRecoveryUI();initActionsHome();initDealer();
     })
     .catch(function(){$('#loading').textContent='Network error loading the complaint.';});
 }
