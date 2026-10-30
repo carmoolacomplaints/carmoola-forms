@@ -2465,7 +2465,31 @@ function prRenderSuspense(){
   }).join(''):'<p class="post-hint">No individual suspense receipts recorded.</p>';
 }
 function prError(msg){$('#postError').textContent=msg||'';$('#postError').classList.toggle('show',!!msg);}
-function prRequest(payload,btn,after){if(btn.disabled)return;prError('');var label=btn.textContent;btn.disabled=true;btn.textContent='Saving…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))}).then(function(r){return r.json();}).then(function(data){if(!data.ok)throw Error((data.errors&&data.errors[0])||'Could not save in Complaints Hub.');after(data);}).catch(function(error){prError(error.message||'Network error saving recovery.');if(!$('#postWriteoffModal').hidden){$('#postWriteoffError').textContent=error.message||'Network error saving recovery.';$('#postWriteoffError').classList.add('show');}}).finally(function(){btn.disabled=false;btn.textContent=label;});}
+function prRequest(payload,btn,after){
+ if(btn.disabled)return;
+ prError('');
+ var label=btn.textContent;
+ var opening=payload.action==='post_tasks_only_open';
+ var taskEdit=payload.action==='post_tasks_save';
+ var errorEl=opening?$('#prSetupError'):(taskEdit?$('#prTaskError'):$('#postError'));
+ if(errorEl){errorEl.textContent='';errorEl.classList.remove('show');}
+ btn.disabled=true;btn.textContent='Saving…';
+ fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({token:getToken()},payload))})
+ .then(async function(r){
+   var data;try{data=await r.json();}catch(_){throw Error('The server returned an invalid response (HTTP '+r.status+').');}
+   if(!r.ok||!data.ok)throw Error((data.errors&&data.errors.join(' '))||data.error||('Unable to save (HTTP '+r.status+').'));
+   return data;
+ })
+ .then(after)
+ .catch(function(error){
+   var message=error.message||'Network error saving recovery.';
+   if(errorEl){errorEl.textContent=message;errorEl.classList.add('show');errorEl.scrollIntoView({block:'nearest',behavior:'smooth'});}
+   if(!opening&&!taskEdit)prError(message);
+   if(!$('#postWriteoffModal').hidden){$('#postWriteoffError').textContent=message;$('#postWriteoffError').classList.add('show');}
+   console.error('Post-Resolution save failed:',message);
+ })
+ .finally(function(){btn.disabled=false;btn.textContent=label;});
+}
 function prOpenWriteoff(){var modal=$('#postWriteoffModal');$('#postWriteoffError').textContent='';$('#postWriteoffError').classList.remove('show');$('#postWriteoffOutstanding').textContent=$('#postOutstanding').textContent;modal.hidden=false;$('#postWriteoff').focus();}
 function prCloseWriteoff(){if($('#postRecordWriteoff').disabled)return;$('#postWriteoffModal').hidden=true;$('#postWriteoffError').textContent='';$('#postWriteoffError').classList.remove('show');$('#postOpenWriteoff').focus();}
 
@@ -2478,7 +2502,7 @@ function prTaskRows(container,tasks,editable){
  if(task.status==='not_required'){var reason=document.createElement('input');reason.className='pr-reason';reason.placeholder='Reason no longer required (mandatory)';reason.value=task.reason||'';reason.addEventListener('input',function(){task.reason=this.value;});row.appendChild(reason);}container.appendChild(row);});
 }
 function prDisplayTasks(){var p=POST_DATA||{},tasks=p.tasks||[],open=tasks.filter(function(x){return x.status==='outstanding';});$('#prDashboardTaskCount').textContent=String(open.length);$('#prDashboardBalance').textContent=p.currentBalance==null?'£0.00':gbp.format(p.currentBalance);$('#prDashboardStatus').textContent=p.originalBalance===null?'Tasks only':(p.recoveryStatus||'Not requested');$('#prTaskList').innerHTML=tasks.length?tasks.map(function(x){return '<div class="pr-task-display"><span>'+prHtml(x.description)+'</span><small>'+prHtml(({outstanding:'Outstanding',done:'Done',not_required:'No longer required'})[x.status]||x.status)+'</small></div>';}).join(''):'<p class="post-muted">No tasks recorded.</p>';}
-function prOpenSetup(){prSetupTasksDraft=(POST_DATA.tasks||[]).map(function(x){return Object.assign({},x);});if(!prSetupTasksDraft.length)prSetupTasksDraft.push({description:'',status:'outstanding'});prTaskRows($('#prSetupTasks'),prSetupTasksDraft);$('#prSetupModal').hidden=false;$('#prSetupError').textContent='';$('#prNoFundsConfirmed').checked=false;}
+function prOpenSetup(){prSetupTasksDraft=(POST_DATA.tasks||[]).map(function(x){return Object.assign({},x);});if(!prSetupTasksDraft.length)prSetupTasksDraft.push({description:'',status:'outstanding'});prTaskRows($('#prSetupTasks'),prSetupTasksDraft);$('#prSetupModal').hidden=false;$('#prSetupError').textContent='';$('#prSetupError').classList.remove('show');$('#prNoFundsConfirmed').checked=false;}
 function prTaskMode(){return document.querySelector('input[name="prSetupMode"]:checked').value;}
 function prSaveTaskList(tasks,btn,opening){var descriptions=tasks.filter(function(x){return String(x.description||'').trim();});if(descriptions.length!==tasks.length||!descriptions.length){(opening?$('#prSetupError'):$('#prTaskError')).textContent='Enter at least one task with a description.';return;}if(tasks.some(function(x){return x.status==='not_required'&&!String(x.reason||'').trim();})){(opening?$('#prSetupError'):$('#prTaskError')).textContent='Provide a reason for every task marked No Longer Required.';return;}var payload={action:opening?'post_tasks_only_open':'post_tasks_save',tasks:tasks,confirmedNoFunds:opening&&$('#prNoFundsConfirmed').checked,expectedTasksRaw:(POST_DATA&&POST_DATA.tasksRaw)||''};prRequest(payload,btn,function(data){POST_DATA=data.postResolution;if(data.statusName){PREFILL.statusName=data.statusName;$('#homeStatus').textContent=data.statusName;}$('#prTasksModal').hidden=true;$('#prSetupModal').hidden=true;prOpeningStarted=false;prRender();refreshClosureRecoverySummary(POST_DATA);showActionsSaveToast('Post-Resolution tasks saved.');});}
 function initPrDashboard(){
